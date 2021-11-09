@@ -1,0 +1,26 @@
+{
+    "leadID": "437282430869512192",
+    "createTimestamp": "1636428031",
+    "price": "More information needed to give an estimate",
+    "request": {
+        "requestID": "437282427823792129",
+        "category": "House Cleaning",
+        "title": "House Cleaning",
+        "description": "I am looking for someone to clean my apartment before I move",
+        "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+        "location": {
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94103"
+        },
+        "travelPreferences": "Professional must travel to my address"
+    },
+    "customer": {
+        "customerID": "437282427635040257",
+        "name": "John Doe"
+    },
+    "business": {
+        "businessID": "437282430088732672",
+        "name": "Mr. Clean's Sparkly Cleaning Service"
+    }
+}
