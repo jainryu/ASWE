@@ -15,7 +15,7 @@ def create_test_data() -> dict:
     data = resp.json()
     return data 
 
-def thumbtack_json_to_pandas(json_dict) -> pd.DataFrame:
+def thumbtack_lead_json_to_pandas(json_dict) -> pd.DataFrame:
     staging_row = []
     for key in json_dict:
         if key == "request":
@@ -37,6 +37,10 @@ def thumbtack_json_to_pandas(json_dict) -> pd.DataFrame:
     print(staging_row)
 
     return pd.DataFrame([staging_row])
+
+def thumbtack_message_json_to_pandas(json_dict) -> pd.DataFrame:
+    # TODO
+    return None
 
 
 
