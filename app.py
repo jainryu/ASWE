@@ -32,7 +32,7 @@ def receive_lead():
     return data, 200
 
 @app.route("/thumbtack_messages", methods=["POST"])
-def receive_lead():
+def receive_message():
     if not verify(request.authorization['username'], request.authorization['password']):
         return {'status': 'bad password'}, 401 
     print("data ", request.json)
