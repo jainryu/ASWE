@@ -2,12 +2,16 @@ from flask import Flask, request, jsonify
 from flask_httpauth import HTTPBasicAuth
 #from thumbtack_conn import thumbtack_json_to_pandas
 
+import pandas as pd
+import db
+
 app = Flask(__name__)
 auth = HTTPBasicAuth()
 
 USER_DATA = {
     "jenna": "smith22"
 }
+db_obj = db.Database()
 
 @auth.verify_password
 def verify(username, password):
@@ -17,7 +21,10 @@ def verify(username, password):
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello World!</p>"
+    result = db_obj.get_all_leads()
+    df = pd.DataFrame(list(result.fetchall()))
+    x = (df.to_json(orient="records"))
+    return x
 # TODO: initialize with the right business credentials/api keys 
 
 @app.route("/thumbtack_lead", methods=["POST"])
@@ -43,6 +50,6 @@ def receive_message():
     return data, 200
 
 if __name__ == '__main__':
-    app.run(debug=True, host='127.0.0.1')
+    app.run(debug=True)
 
 
