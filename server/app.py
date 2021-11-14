@@ -1,11 +1,10 @@
 from flask import Flask, request, jsonify, Response
 from flask_httpauth import HTTPBasicAuth
+from thumbtack_conn import thumbtack_lead_json_to_list, thumbtack_message_json_to_list, create_test_data
 from passlib.hash import sha256_crypt
 import validators
-#from thumbtack_conn import thumbtack_json_to_pandas
 import json
 import pandas as pd
-# from misc.thumbtack_conn import thumbtack_lead_json_to_pandas
 import db
 import helper
 import uuid
@@ -36,13 +35,23 @@ def hello_world():
 
 # TODO: initialize with the right business credentials/api keys
 
+@app.route("/dummy_thumbtack_lead", methods=["GET"])
+def create_dummy_data():
+    dummy_dict = create_test_data()
+    data, column_names = thumbtack_lead_json_to_list(dummy_dict)
+    db_obj.insert_row_from_list("thumbtack", "leads", data, column_names)
+
+    return dummy_dict, 200
+
 @app.route("/thumbtack_lead", methods=["POST"])
 @auth.login_required
 def receive_lead():
-    print("data ", request.json)
+    if not verify(request.authorization['username'], request.authorization['password']):
+        return {'status': 'bad password'}, 401 
     data = {"status": "success"}
 
-    # process data and add to database
+    data, column_names = thumbtack_lead_json_to_list(request.json)
+    db_obj.insert_row_from_list("thumbtack", "leads", data, column_names)
 
     return data, 200
 
@@ -50,10 +59,12 @@ def receive_lead():
 @app.route("/thumbtack_messages", methods=["POST"])
 @auth.login_required
 def receive_message():
-    print("data ", request.json)
+    if not verify(request.authorization['username'], request.authorization['password']):
+        return {'status': 'bad password'}, 401 
     data = {"status": "success"}
 
-    # process data and add to database
+    data, column_names = thumbtack_message_json_to_list(request.json)
+    db_obj.insert_row_from_list("thumbtack", "messages", data, column_names)
 
     return data, 200
 
