@@ -1,4 +1,4 @@
-from flask import Flask, request, jsonify, Response
+from flask import Flask, request, Response
 from flask_httpauth import HTTPBasicAuth
 from thumbtack_conn import thumbtack_lead_json_to_list, thumbtack_message_json_to_list, create_test_data
 from passlib.hash import sha256_crypt
@@ -8,6 +8,7 @@ import pandas as pd
 import db
 import helper
 import uuid
+import analytics
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -17,11 +18,14 @@ app.config.from_pyfile('config.py')
 database_url = app.config['DATABASE_URL']
 db_obj = db.Database(database_url)
 
+analytics_obj = analytics.Analytics(database_url)
+
 
 @auth.verify_password
 def verify_password(username, password):
-    user = json.loads(db_obj.get_data(db_schema='talking_potato', table_name='users', filter_data={'username': username}))
-    if len(user) > 0  and sha256_crypt.verify(password, user[0]['password']):
+    user = json.loads(
+        db_obj.get_data(db_schema='talking_potato', table_name='users', filter_data={'username': username}))
+    if len(user) > 0 and sha256_crypt.verify(password, user[0]['password']):
         return username
 
 
@@ -43,11 +47,12 @@ def create_dummy_data():
 
     return dummy_dict, 200
 
+
 @app.route("/thumbtack_lead", methods=["POST"])
 @auth.login_required
 def receive_lead():
     if not verify(request.authorization['username'], request.authorization['password']):
-        return {'status': 'bad password'}, 401 
+        return {'status': 'bad password'}, 401
     data = {"status": "success"}
 
     data, column_names = thumbtack_lead_json_to_list(request.json)
@@ -60,7 +65,7 @@ def receive_lead():
 @auth.login_required
 def receive_message():
     if not verify(request.authorization['username'], request.authorization['password']):
-        return {'status': 'bad password'}, 401 
+        return {'status': 'bad password'}, 401
     data = {"status": "success"}
 
     data, column_names = thumbtack_message_json_to_list(request.json)
@@ -74,26 +79,26 @@ def register():
     email = request.args.get("email")
     username = request.args.get("username")
     password = request.args.get("password")
-    email_query = json.loads(db_obj.get_data(db_schema='talking_potato', 
-        table_name='users', filter_data={'email': email}))
-    name_query = json.loads(db_obj.get_data(db_schema='talking_potato', 
-        table_name='users', filter_data={'username': username}))
+    email_query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                             table_name='users', filter_data={'email': email}))
+    name_query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                            table_name='users', filter_data={'username': username}))
     if not validators.email(email):
-        return {'status': 'bad email'}, 400 
+        return {'status': 'bad email'}, 400
     if len(username) < 3:
-        return {'status': 'username too short'}, 400 
+        return {'status': 'username too short'}, 400
     if len(password) < 6:
-        return {'status': 'password too short'}, 400 
+        return {'status': 'password too short'}, 400
     if not username.isalnum():
         return {'status': 'username must be alphanumeric'}, 400
     if len(email_query) > 0:
         return {'status': 'email already registered'}, 400
     if len(name_query) > 0:
         return {'status': 'username already registered'}, 400
-        
+
     password_hash = sha256_crypt.encrypt(password)
-    entry = {'user_id': str(uuid.uuid4()), 'username': username, 
-        'password': password_hash, 'email': email}
+    entry = {'user_id': str(uuid.uuid4()), 'username': username,
+             'password': password_hash, 'email': email}
     if request.args.get('phone_number'):
         entry['phone_number'] = request.args.get("phone_number")
     if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_api_key'):
@@ -191,6 +196,82 @@ def get_leads():
             return 'Please enter the date in YYYY-MM-DD format'
         filter_data['date(contacted_time)'] = contacted_date
     result = db_obj.get_data(db_schema='thumbtack', table_name='leads', filter_data=filter_data)
+    return result
+
+
+@app.route("/message_analytics", methods=['GET'])
+def get_message_analytics():
+    filter_data = {}
+    filter_date_range = []
+    from_date = request.args.get('from_date')
+    to_date = request.args.get('to_date')
+    dimension = request.args.get('dimension')
+
+    filter_data['date(contacted_time)'] = 1
+
+    if dimension:
+        if dimension == 'user_source':
+            filter_data['user_source'] = 1
+        else:
+            return 'Accepted value of dimension = user_source'
+
+    if not from_date:
+        from_date = '1900-01-01'
+    else:
+        from_date = from_date.replace("'", "")
+        date_format_check = helper.check_date_format(from_date)
+        if not date_format_check:
+            return 'Please enter the date in YYYY-MM-DD format'
+    filter_date_range.append(from_date)
+
+    if not to_date:
+        to_date = helper.get_todays_date_str()
+    else:
+        to_date = to_date.replace("'", "")
+        date_format_check = helper.check_date_format(to_date)
+        if not date_format_check:
+            return 'Please enter the date in YYYY-MM-DD format'
+    filter_date_range.append(to_date)
+    result = analytics_obj.get_grouped_by_date(db_schema='talking_potato', table_name='messages',
+                                               filter_data=filter_data, filter_date_range=filter_date_range)
+    return result
+
+
+@app.route("/lead_analytics", methods=['GET'])
+def get_lead_analytics():
+    filter_data = {}
+    filter_date_range = []
+    from_date = request.args.get('from_date')
+    to_date = request.args.get('to_date')
+    dimension = request.args.get('dimension')
+
+    filter_data['date(contacted_time)'] = 1
+
+    if dimension:
+        if dimension in ('category', 'state'):
+            filter_data[dimension] = 1
+        else:
+            return 'Accepted values of dimension = category or state'
+
+    if not from_date:
+        from_date = '1900-01-01'
+    else:
+        from_date = from_date.replace("'", "")
+        date_format_check = helper.check_date_format(from_date)
+        if not date_format_check:
+            return 'Please enter the date in YYYY-MM-DD format'
+    filter_date_range.append(from_date)
+
+    if not to_date:
+        to_date = helper.get_todays_date_str()
+    else:
+        to_date = to_date.replace("'", "")
+        date_format_check = helper.check_date_format(to_date)
+        if not date_format_check:
+            return 'Please enter the date in YYYY-MM-DD format'
+    filter_date_range.append(to_date)
+    result = analytics_obj.get_grouped_by_date(db_schema='thumbtack', table_name='leads',
+                                               filter_data=filter_data, filter_date_range=filter_date_range)
     return result
 
 
