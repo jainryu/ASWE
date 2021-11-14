@@ -5,9 +5,7 @@ import validators
 #from thumbtack_conn import thumbtack_json_to_pandas
 import json
 import pandas as pd
-import server.db as db
-import server.helper as helper
-from misc.thumbtack_conn import thumbtack_lead_json_to_pandas
+# from misc.thumbtack_conn import thumbtack_lead_json_to_pandas
 import db
 import helper
 import uuid
