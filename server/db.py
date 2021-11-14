@@ -2,6 +2,7 @@ from sqlalchemy import create_engine
 import pandas as pd
 
 class Database:
+    engine = None
     def __init__(self, database_url):
         self.engine = create_engine(database_url)
 
@@ -26,7 +27,7 @@ class Database:
                 # col_names = [desc[0] for desc in cur.description]
                 # res = cur.fetchall()
                 df = pd.read_sql_query(sql_statement, con=self.engine)
-                res = df.to_json(orient='records')
+                res = df.to_json(orient='records', date_format= 'iso')
 
             connection.close()
         except Exception as e:
