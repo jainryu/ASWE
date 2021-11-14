@@ -34,42 +34,63 @@ def thumbtack_lead_json_to_pandas(json_dict) -> pd.DataFrame:
         else: 
             staging_row.append(json_dict[key])
 
-    print(staging_row)
+    column_names = ["thumbtack_lead_id", "contacted_time", "price", "thumbtack_request_id", "category", "title", "description", "schedule", "city", "state", "zip", "travel_preferences", "thumbtack_customer_id", "customer_name", "thumbtack_business_id", "thumbtack_business_name"]
 
-    return pd.DataFrame([staging_row])
+    return pd.DataFrame([staging_row], columns=column_names)
 
 def thumbtack_message_json_to_pandas(json_dict) -> pd.DataFrame:
-    # TODO
-    return None
+    staging_row = []
+    for key in json_dict:
+        if key == "message":
+            staging_row.append(json_dict[key]["messageID"])
+            staging_row.append(json_dict[key]["createTimestamp"])
+            staging_row.append(json_dict[key]["text"])
+        else:
+            staging_row.append(json_dict[key])
 
+    column_names = ["thumbtack_lead_id", "thumbtack_customer_id", "thumbtack_business_id", "thumbtack_message_id", "contacted_time", "message_text"]
 
+    return pd.DataFrame([staging_row], columns=column_names)
 
 
 if __name__ == "__main__":
-    test_dict = {
-    "leadID": "437282430869512192",
-    "createTimestamp": "1636428031",
-    "price": "More information needed to give an estimate",
-    "request": {
-        "requestID": "437282427823792129",
-        "category": "House Cleaning",
-        "title": "House Cleaning",
-        "description": "I am looking for someone to clean my apartment before I move",
-        "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
-        "location": {
-            "city": "San Francisco",
-            "state": "CA",
-            "zipCode": "94103"
+    test_lead_dict = {
+        "leadID": "437282430869512192",
+        "createTimestamp": "1636428031",
+        "price": "More information needed to give an estimate",
+        "request": {
+            "requestID": "437282427823792129",
+            "category": "House Cleaning",
+            "title": "House Cleaning",
+            "description": "I am looking for someone to clean my apartment before I move",
+            "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+            "location": {
+                "city": "San Francisco",
+                "state": "CA",
+                "zipCode": "94103"
+            },
+            "travelPreferences": "Professional must travel to my address"
         },
-        "travelPreferences": "Professional must travel to my address"
-    },
-    "customer": {
-        "customerID": "437282427635040257",
-        "name": "John Doe"
-    },
-    "business": {
-        "businessID": "437282430088732672",
-        "name": "Mr. Clean's Sparkly Cleaning Service"
+        "customer": {
+            "customerID": "437282427635040257",
+            "name": "John Doe"
+        },
+        "business": {
+            "businessID": "437282430088732672",
+            "name": "Mr. Clean's Sparkly Cleaning Service"
+        }
     }
-}
-    print(thumbtack_json_to_pandas(test_dict))
+
+    test_message_dict = {
+        "leadID": "299614694480093245",
+        "customerID": "331138063184986319",
+        "businessID": "286845156044809661",
+        "message": {
+            "messageID": "8699842694484326245",
+            "createTimestamp": "1498760294",
+            "text": "Do you offer fridge cleaning or is that extra?"
+        }
+    }
+
+    print(thumbtack_lead_json_to_pandas(test_lead_dict))
+    print(thumbtack_message_json_to_pandas(test_message_dict))
