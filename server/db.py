@@ -32,6 +32,3 @@ class Database:
                    " " + vals_clause
         sql_stmt = sql_stmt.format(*args)
         self.engine.execute(sql_stmt)
-
-
-
