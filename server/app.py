@@ -4,6 +4,7 @@ from flask_httpauth import HTTPBasicAuth
 import pandas as pd
 import db
 import helper
+from thumbtack_conn import thumbtack_lead_json_to_pandas
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -129,6 +130,19 @@ def get_messages():
     result = db_obj.get_data(db_schema='talking_potato', table_name='messages', filter_data=filter_data)
     return result
 
+@app.route("/get_leads", methods=['GET'])
+def get_leads():
+    filter_data = {}
+    contacted_date = request.args.get('date')
+
+    if contacted_date:
+        contacted_date = contacted_date.replace("'", "")
+        date_format_check = helper.check_date_format(contacted_date)
+        if not date_format_check:
+            return 'Please enter the date in YYYY-MM-DD format'
+        filter_data['date(contacted_time)'] = contacted_date
+    result = db_obj.get_data(db_schema='thumbtack', table_name='leads', filter_data=filter_data)
+    return result
 
 if __name__ == '__main__':
     app.run(debug=True)
