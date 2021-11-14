@@ -87,12 +87,14 @@ def webhook():
             if is_user_message(msg):
                 text = msg['message']['text']
                 temp = {'text': text}
+                msg['message_id'] = msg['message']['mid']
                 msg['message'] = temp
                 msg['page_id'] = payload['entry'][0]['id']
                 msg['update_time'] = payload['entry'][0]['time']
                 flat_msg = helper.flatten_json(msg)
                 flat_msg['update_time'] = helper.convert_epoch_milliseconds_to_datetime_string(flat_msg['update_time'])
                 flat_msg['timestamp'] = helper.convert_epoch_milliseconds_to_datetime_string(flat_msg['timestamp'])
+
                 db_obj.insert_row('fb','messages',flat_msg)
 
         return Response(status=200)
