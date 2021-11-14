@@ -54,7 +54,7 @@ class Database:
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
                    " " + values_clause
         sql_stmt = sql_stmt.format(*args)
-        self.run_sql(sql_stmt, commit_flag=True)
+        self.engine.execute(sql_stmt)
 
 
     @staticmethod
