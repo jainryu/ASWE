@@ -28,3 +28,6 @@ def check_date_format(date_str):
         return True
     except ValueError:
         return False
+
+def get_todays_date_str():
+    return dt.datetime.today().strftime('%Y-%m-%d')
