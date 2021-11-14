@@ -58,7 +58,6 @@ APP_SECRET='6726e5ccf4113b63275c1d6c86a0af3e'
 FB_API_URL = 'https://graph.facebook.com/v2.6/me/messages'
 VERIFY_TOKEN = APP_SECRET
 
-
 def verify_webhook(req):
     token = req.args.get('hub.verify_token')
     challenge = req.args.get('hub.challenge')
@@ -99,6 +98,15 @@ def webhook():
 
     else:
         return Response(status=200)
+
+
+@app.route("/fb_lead/broadcast", methods=["POST"])
+def broadcast_to_fb(text):
+    result = db_obj.get_fb_leads()
+    # for row in result: send_fb_message(row[0], text)
+    return
+
+
 
 if __name__ == '__main__':
     app.run(debug=True)

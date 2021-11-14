@@ -33,5 +33,10 @@ class Database:
         sql_stmt = sql_stmt.format(*args)
         self.engine.execute(sql_stmt)
 
-
-
+    def get_fb_leads(self):
+        text = "***Promotion***"
+        # assuming that there is a separate lead table for fb
+        result = self.engine.execute(
+            '''select user_id from fb_leads'''
+        )
+        return result
