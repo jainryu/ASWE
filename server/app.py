@@ -2,9 +2,9 @@ from flask import Flask, request, jsonify, Response
 from flask_httpauth import HTTPBasicAuth
 # from thumbtack_conn import thumbtack_json_to_pandas
 import pandas as pd
-import db
-import helper
-from thumbtack_conn import thumbtack_lead_json_to_pandas
+import server.db as db
+import server.helper as helper
+from misc.thumbtack_conn import thumbtack_lead_json_to_pandas
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
