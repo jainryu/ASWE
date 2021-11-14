@@ -20,3 +20,11 @@ def flatten_json(y):
 
 def convert_epoch_milliseconds_to_datetime_string(time_in_millis):
     return dt.datetime.fromtimestamp(time_in_millis / 1000.0).strftime("%Y-%m-%d %H:%M:%S")
+
+def check_date_format(date_str):
+    date_format = "%Y-%m-%d"
+    try:
+        dt.datetime.strptime(date_str, date_format)
+        return True
+    except ValueError:
+        return False
