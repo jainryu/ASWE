@@ -117,4 +117,7 @@ class Database:
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
 
+    def clear_test_table(self):
+        self.run_sql('DELETE * FROM TEST')
+        print('Table TEST cleared')
 

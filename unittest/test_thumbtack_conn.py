@@ -1,7 +1,7 @@
 import unittest
 from misc.thumbtack_conn import create_test_data, thumbtack_lead_json_to_list, thumbtack_message_json_to_list, test_thumbtack_send_message
 
-class Test_TestDatabase(unittest.TestCase):
+class Test_TestThumbtack(unittest.TestCase):
 
     global test_lead_dict = {
         "leadID": "437282430869512192",
@@ -60,5 +60,5 @@ class Test_TestDatabase(unittest.TestCase):
         self.assertEqual(correct_column_list, column_list)
 
     def test_thumbtack_send_message(self):
-        self.assertEqaul(test_thumbtack_send_message("286845156044809661", "299614694480093245", "Hello John, how can I help you?"), 200)
+        self.assertEqual(test_thumbtack_send_message("286845156044809661", "299614694480093245", "Hello John, how can I help you?"), 200)
         
