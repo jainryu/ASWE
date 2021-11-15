@@ -19,18 +19,6 @@ class Database:
         """
         self.engine = create_engine(database_url)
 
-    def get_all_leads(self):
-        """
-        get all thumbtack leads from database
-
-        :return list result: result of sql query
-        """
-        result = self.engine.execute(
-            '''select * from thumbtack.test;'''
-        )
-
-        return result
-
     def get_thumbtack_auth(self, business_id):
         """
         get thumbtack authentication
@@ -208,9 +196,6 @@ class Database:
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
 
-    def clear_test_table(self):
-        """
-        sql delete statement
-        """
-        self.run_sql('DELETE * FROM TEST')
-        print('Table TEST cleared')
+
+
+
