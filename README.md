@@ -1,26 +1,71 @@
 # Talking Potatoes
 
-###How to Test Our Service
-- BASE_URL = https://tp-leads-app.herokuapp.com
-- You can access our service using the paths along with the requested params as described in the following API documentation
+A unified lead service built using Flask. The service is hosted at https://tp-leads-app.herokuapp.com .
 
-****
+The API documentation and endpoints are available at this link - insert link here
 
-###API Documentation
-**Registration** 
-- POST {{BASE_URL}}/register
-    - Query params: 
-      - [required]  email(varchar)
-      - [required] username(varchar)
-      - [required] password(varchar)
+## Third Party APIs
 
-**Message Analytics** <br/> - GET {{BASE_URL}}/message_analytics
-
-
-****
-
-###Third Party APIs
 1. [Thumbtack](https://pro-api.thumbtack.com/docs/#introduction)
-   1. misc/fb/thumbtack_conn.py : used to send messages to the leads
+2. [Facebook](https://developers.facebook.com/docs/messenger-platform/)
 
-2. Facebook
+
+## Build and running the service
+Steps to Start the flask server
+
+#### i. Create config.py file in server directory to store configuration
+
+The file config.py contains the database url and other flask related config parameters which are used by the service.
+Sample file looks like below:
+```
+DATABASE_URL = 'insert database url'
+TESTING = True
+DEBUG = True
+FLASK_ENV = 'development'
+```
+#### ii. Virtual Environment activation and installing dependencies
+```
+$ cd server
+$ python3 -m virtualenv tp_env        # create the virtual environment
+$ source tp_env/bin/activate          # activate the virtual environment
+$ pip install -r requirements.txt   # install all dependencies
+```
+#### iii. Run the server
+Flask server is started by running
+```
+$ python -m flask run
+```
+## Testing the service
+
+### i. Unit Tests
+
+To run unit tests:
+```
+$ (tp_env) ./run_unit_tests.sh unit
+```
+The unit test reports are created in the `./reports/tests/` directory . Each file has the timestamp to maintain report history.
+### ii. Integration Tests - Todo
+
+
+
+### iii. Style checker
+
+To run pylint style checker:
+```
+$ (tp_env) ./run_style_checker.sh 
+```
+
+Style checker reports are created in `./reports/style_bug_checker/` directory . Each file has the timestamp to maintain report history.
+
+## Deploy service to Heroku
+
+```
+$ heroku login
+$ heroku create <app_name>
+$ git init
+$ heroku git:remote -a <app_name>
+$ git add .
+$ git commit -m "Talking potatoes service initial commit"
+$ git push heroku main
+```
+The service will be available at https://<app_name>.herokuapp.com
