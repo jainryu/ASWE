@@ -2,9 +2,8 @@
 analytics service
 """
 
-import json
-import pandas as pd
 from db import Database
+
 
 class Analytics(Database):
     """
@@ -17,33 +16,6 @@ class Analytics(Database):
         :param string database_url: database url to create engine
         """
         Database.__init__(self, database_url=database_url)
-
-    def get_data_df(self, db_schema, table_name, filter_data=None):
-        """
-        get data by template, and process to dataframe
-
-        :param string db_schema: schema name
-        :param string table_name: table name
-        :param dictionary filter_data: {column name: column value}
-        :return: None
-        """
-        data = self.get_data(db_schema, table_name, filter_data)
-        json_data = json.loads(str(data))
-        dataframe = pd.DataFrame(json_data)
-        return dataframe
-
-    def group_by_df(self, db_schema, table_name, filter_data=None, col_list=None):
-        """
-        get data by template, and process to dataframe
-
-        :param string db_schema: schema name
-        :param string table_name: table name
-        :param dictionary filter_data: {column name: column value}
-        :param list col_list: a list of columns in the df to analyze
-        :return: None
-        """
-        dataframe = self.get_data_df(db_schema, table_name, filter_data)
-        print(dataframe.groupby(by=col_list).count())
 
     @staticmethod
     def get_select_clause_cols(filter_data=None):
@@ -102,7 +74,7 @@ class Analytics(Database):
 
         :param string db_schema: schema name
         :param string table_name: table name
-        :param dictionary filer_user_date_range: user_id and date range
+        :param dictionary filter_user_date_range: user_id and date range
         :param dictionary filter_data: {column_name: column_value}.
             Note: having column_name means add this column to select clause in select statement.
             filter_data keys: required date(contacted_time), optional user_source
