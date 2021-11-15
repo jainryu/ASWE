@@ -8,7 +8,7 @@ from pandas._testing import assert_frame_equal
 analytics = Analytics('database_url')
 
 
-def test_get_data_df(self):
+def test_get_data_df():
     analytics.clear_test_table()
     analytics.insert_row('unittest', 'test', {'name': 'test'})
     test_df = pd.DataFrame({'test': '1000'})

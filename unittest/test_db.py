@@ -5,7 +5,7 @@ Unit Test for Database Class
 import pytest
 from server.db import Database
 
-db = Database('database_url')
+db = Database('postgresql+psycopg2://postgres:postgres@35.238.149.103/tp')
 
 
 def test_get_all_leads(self):
@@ -26,6 +26,15 @@ def test_get_thumbtack_auth(self):
     assert row[1] == test_user_pw
 
 
+def test_run_sql(self):
+    db.clear_test_table()
+    val = '1000'
+    db.engine.execute("INSERT INTO unittest.test VALUES('1000');")
+    query = "SELECT * FROM unittest.test LIMIT 1;".fetchone()
+    res = db.run_sql(query)
+    assert val == res
+
+
 def test_insert_row(self):
     db.clear_test_table()
     test_data = {'test': '1000'}
@@ -41,6 +50,13 @@ def test_insert_row_from_list(self):
     db.insert_row_from_list('unittest', 'test', test_data, columns)
     row = db.engine.execute("SELECT * FROM unittest.test LIMIT 1;").fetchone()
     assert row == test_data
+
+
+def test_get_data():
+    db.clear_test_table()
+    db.engine.execute("INSERT INTO unittest.test VALUES('1000');")
+    res = db.get_data(db_schema='unittest', table_name='test')
+    assert '1000' == res
 
 
 def test_clear_test_table(self):

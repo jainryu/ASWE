@@ -1,8 +1,8 @@
 #!/bin/sh
 
 run_type_d = "all"
-test_dir_d = "./unittest"
-report_dir_d = "./test_reports"
+test_dir_d = "../unittest"
+report_dir_d = "../test_reports"
 
 usage() {
     echo "Usage: $0 [-h | --help] [run_type] [test_dir] [report_dir]"
