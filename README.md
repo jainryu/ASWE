@@ -1,6 +1,26 @@
-# ASE
-Write a README.md that describes in simple terms how to build, run and test your initial service. 
+# Talking Potatoes
 
-The README.md should also describe all the operational entry points to your service.  As noted above, this might be a subset of your proposed entry points.  This is your "API documentation".  If certain entry points must be called in certain orders or never called in certain orders, make sure to say so.
+###How to Test Our Service
+- BASE_URL = https://tp-leads-app.herokuapp.com
+- You can access our service using the paths along with the requested params as described in the following API documentation
 
-If any third-party code is included in your codebase, also document exactly which code this is, where it resides in your codebase, and where you got it from (e.g., download url). 
+****
+
+###API Documentation
+**Registration** 
+- POST {{BASE_URL}}/register
+    - Query params: 
+      - [required]  email(varchar)
+      - [required] username(varchar)
+      - [required] password(varchar)
+
+**Message Analytics** <br/> - GET {{BASE_URL}}/message_analytics
+
+
+****
+
+###Third Party APIs
+1. [Thumbtack](https://pro-api.thumbtack.com/docs/#introduction)
+   1. misc/fb/thumbtack_conn.py : used to send messages to the leads
+
+2. Facebook

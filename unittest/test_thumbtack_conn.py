@@ -1,45 +1,46 @@
 import unittest
 from misc.thumbtack_conn import create_test_data, thumbtack_lead_json_to_list, thumbtack_message_json_to_list, test_thumbtack_send_message
 
+test_lead_dict = {
+    "leadID": "437282430869512192",
+    "createTimestamp": "1636428031",
+    "price": "More information needed to give an estimate",
+    "request": {
+        "requestID": "437282427823792129",
+        "category": "House Cleaning",
+        "title": "House Cleaning",
+        "description": "I am looking for someone to clean my apartment before I move",
+        "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+        "location": {
+            "city": "San Francisco",
+            "state": "CA",
+            "zipCode": "94103"
+        },
+        "travelPreferences": "Professional must travel to my address"
+    },
+    "customer": {
+        "customerID": "437282427635040257",
+        "name": "John Doe"
+    },
+    "business": {
+        "businessID": "437282430088732672",
+        "name": "Mr. Clean's Sparkly Cleaning Service"
+    }
+}
+
+test_message_dict = {
+    "leadID": "299614694480093245",
+    "customerID": "331138063184986319",
+    "businessID": "286845156044809661",
+    "message": {
+        "messageID": "8699842694484326245",
+        "createTimestamp": "1498760294",
+        "text": "Do you offer fridge cleaning or is that extra?"
+    }
+}
+
+
 class Test_TestThumbtack(unittest.TestCase):
-
-    global test_lead_dict = {
-        "leadID": "437282430869512192",
-        "createTimestamp": "1636428031",
-        "price": "More information needed to give an estimate",
-        "request": {
-            "requestID": "437282427823792129",
-            "category": "House Cleaning",
-            "title": "House Cleaning",
-            "description": "I am looking for someone to clean my apartment before I move",
-            "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
-            "location": {
-                "city": "San Francisco",
-                "state": "CA",
-                "zipCode": "94103"
-            },
-            "travelPreferences": "Professional must travel to my address"
-        },
-        "customer": {
-            "customerID": "437282427635040257",
-            "name": "John Doe"
-        },
-        "business": {
-            "businessID": "437282430088732672",
-            "name": "Mr. Clean's Sparkly Cleaning Service"
-        }
-    }
-
-    global test_message_dict = {
-        "leadID": "299614694480093245",
-        "customerID": "331138063184986319",
-        "businessID": "286845156044809661",
-        "message": {
-            "messageID": "8699842694484326245",
-            "createTimestamp": "1498760294",
-            "text": "Do you offer fridge cleaning or is that extra?"
-        }
-    }
 
     def test_create_test_data(self):
         return_dict = create_test_data()
