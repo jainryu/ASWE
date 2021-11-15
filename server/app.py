@@ -51,8 +51,6 @@ def create_dummy_data():
 @app.route("/thumbtack_lead", methods=["POST"])
 @auth.login_required
 def receive_lead():
-    if not verify(request.authorization['username'], request.authorization['password']):
-        return {'status': 'bad password'}, 401
     data = {"status": "success"}
 
     data, column_names = thumbtack_lead_json_to_list(request.json)
@@ -64,8 +62,6 @@ def receive_lead():
 @app.route("/thumbtack_messages", methods=["POST"])
 @auth.login_required
 def receive_message():
-    if not verify(request.authorization['username'], request.authorization['password']):
-        return {'status': 'bad password'}, 401
     data = {"status": "success"}
 
     data, column_names = thumbtack_message_json_to_list(request.json)
@@ -113,16 +109,19 @@ def register():
     return {'status': 'success'}, 200
 
 
-APP_SECRET = '6726e5ccf4113b63275c1d6c86a0af3e'
+# APP_SECRET = '6726e5ccf4113b63275c1d6c86a0af3e'
 
-FB_API_URL = 'https://graph.facebook.com/v2.6/me/messages'
-VERIFY_TOKEN = APP_SECRET
+# FB_API_URL = 'https://graph.facebook.com/v2.6/me/messages'
+# VERIFY_TOKEN = APP_SECRET
 
 
-def verify_webhook(req):
+def verify_webhook(req, username):
+    query = json.loads(db_obj.get_data(db_schema='talking_potato', 
+        table_name='users', filter_data={'username': username}))
+    verify_token = query[0]['fb_app_secret_key']
     token = req.args.get('hub.verify_token')
     challenge = req.args.get('hub.challenge')
-    if token == VERIFY_TOKEN:
+    if token == verify_token:
         print('verified')
         return str(challenge)
     return '400'
@@ -136,10 +135,11 @@ def is_user_message(message):
 
 
 @app.route("/fb_lead", methods=['GET', 'POST'])
+@auth.login_required
 def webhook():
     print('ok')
     if request.method == 'GET':
-        return verify_webhook(request)
+        return verify_webhook(request, auth.current_user())
 
     elif request.method == 'POST':
         payload = request.json
@@ -166,11 +166,13 @@ def webhook():
 
 
 @app.route("/get_messages", methods=['GET'])
+@auth.login_required
 def get_messages():
+    username = auth.current_user()
     filter_data = {}
     source = request.args.get('source')
     contacted_date = request.args.get('date')
-
+    #TODO: filter on the user
     if source:
         source = source.replace("'", "")
         filter_data['user_source'] = source
@@ -185,8 +187,13 @@ def get_messages():
 
 
 @app.route("/get_leads", methods=['GET'])
+@auth.login_required
 def get_leads():
+    username = auth.current_user()
+    query = json.loads(db_obj.get_data(db_schema='talking_potato', 
+        table_name='users', filter_data={'username': username}))
     filter_data = {}
+    filter_data['thumbtack_business_id'] = query[0]['thumbtack_business_id']
     contacted_date = request.args.get('date')
 
     if contacted_date:
