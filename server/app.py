@@ -8,7 +8,6 @@ import validators
 from passlib.hash import sha256_crypt
 from flask import Flask, request, Response
 from flask_httpauth import HTTPBasicAuth
-import pandas as pd
 import thumbtack_conn
 import db
 import analytics
@@ -48,9 +47,11 @@ def hello_world():
 
     :return json x: all leads.
     """
-    result = db_obj.get_all_leads()
-    df_thumbtack = pd.DataFrame(list(result.fetchall()))
-    return df_thumbtack.to_json(orient="records")
+    # result = db_obj.get_all_leads()
+    # df_thumbtack = pd.DataFrame(list(result.fetchall()))
+    # return df_thumbtack.to_json(orient="records")
+    return "Hello from Talking Potatoes!!!"
+
 
 # TODO: initialize with the right business credentials/api keys
 
@@ -148,10 +149,23 @@ def register():
     return {'status': 'success'}, 200
 
 
-# APP_SECRET = '6726e5ccf4113b63275c1d6c86a0af3e'
+def verify_webhook(req, username):
+    """webhook verification required by facebook
 
-# FB_API_URL = 'https://graph.facebook.com/v2.6/me/messages'
-# VERIFY_TOKEN = APP_SECRET
+    :param flask.Request req: the flask request object
+    :param username: the username
+    :return string: either the challenge received by facebook, or http status 400
+    """
+    query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                       table_name='users', filter_data={'username': username}))
+    verify_token = query[0]['fb_app_secret_key']
+    token = req.args.get('hub.verify_token')
+    challenge = req.args.get('hub.challenge')
+    if token == verify_token:
+        print('verified')
+        return str(challenge)
+    return '400'
+
 
 @app.route("/fb_lead", methods=['GET', 'POST'])
 @auth.login_required
@@ -163,7 +177,7 @@ def webhook():
         int: response status code
     """
     if request.method == 'GET':
-        return fb_helper.verify_webhook(request, auth.current_user())
+        return verify_webhook(request, auth.current_user())
 
     elif request.method == 'POST':
         payload = request.json
@@ -179,9 +193,9 @@ def webhook():
                 msg['update_time'] = payload['entry'][0]['time']
                 flat_msg = helper.flatten_json(msg)
                 flat_msg['update_time'] = helper.convert_epoch_milliseconds_to_datetime_string(
-                                                            flat_msg['update_time'])
+                    flat_msg['update_time'])
                 flat_msg['timestamp'] = helper.convert_epoch_milliseconds_to_datetime_string(
-                                                            flat_msg['timestamp'])
+                    flat_msg['timestamp'])
 
                 db_obj.insert_row('fb', 'messages', flat_msg)
 
@@ -202,10 +216,12 @@ def get_messages():
     :return list result: a list of json messages
     """
     username = auth.current_user()
-    filter_data = {}
+    query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                       table_name='users', filter_data={'username': username}))
+    filter_data = {'user_id': query[0]['user_id']}
     source = request.args.get('source')
     contacted_date = request.args.get('date')
-    #TODO: filter on the user
+
     if source:
         source = source.replace("'", "")
         filter_data['user_source'] = source
@@ -232,9 +248,8 @@ def get_leads():
     """
     username = auth.current_user()
     query = json.loads(db_obj.get_data(db_schema='talking_potato',
-        table_name='users', filter_data={'username': username}))
-    filter_data = {}
-    filter_data['thumbtack_business_id'] = query[0]['thumbtack_business_id']
+                                       table_name='users', filter_data={'username': username}))
+    filter_data = {'thumbtack_business_id': query[0]['thumbtack_business_id']}
     contacted_date = request.args.get('date')
 
     if contacted_date:
@@ -248,6 +263,7 @@ def get_leads():
 
 
 @app.route("/message_analytics", methods=['GET'])
+@auth.login_required
 def get_message_analytics():
     """return a count of messages for a date range and lead source(s).
 
@@ -257,13 +273,16 @@ def get_message_analytics():
 
     :return list result: a list of dicts with keys: date, count, optional user_source
     """
-    filter_data = {}
-    filter_date_range = []
+    username = auth.current_user()
+    query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                       table_name='users', filter_data={'username': username}))
+
+    filter_user_date_range = {'user_id': query[0]['user_id']}
     from_date = request.args.get('from_date')
     to_date = request.args.get('to_date')
     dimension = request.args.get('dimension')
 
-    filter_data['date(contacted_time)'] = 1
+    filter_data = {'date(contacted_time)': 1}
 
     if dimension:
         if dimension == 'user_source':
@@ -278,7 +297,7 @@ def get_message_analytics():
         date_format_check = helper.check_date_format(from_date)
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
-    filter_date_range.append(from_date)
+    filter_user_date_range['from_date'] = from_date
 
     if not to_date:
         to_date = helper.get_todays_date_str()
@@ -287,15 +306,16 @@ def get_message_analytics():
         date_format_check = helper.check_date_format(to_date)
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
-    filter_date_range.append(to_date)
+    filter_user_date_range['to_date'] = to_date
     result = analytics_obj.get_grouped_by_date(db_schema='talking_potato',
                                                table_name='messages',
                                                filter_data=filter_data,
-                                               filter_date_range=filter_date_range)
+                                               filter_user_date_range=filter_user_date_range)
     return result
 
 
 @app.route("/lead_analytics", methods=['GET'])
+@auth.login_required
 def get_lead_analytics():
     """return a count of leads for a date range and lead source(s). (currently on thumbtack)
 
@@ -303,15 +323,19 @@ def get_lead_analytics():
     :query param to_date: ending date to filter by. Optional.
     :query param dimension: dimension to filter data by. (currently only state and count)
 
-    :return list result: a list of dicts with keys: date, optional categrory, optinal state, count.
+    :return list result: a list of dicts with keys: date, optional category, optimal state, count.
     """
-    filter_data = {}
-    filter_date_range = []
+    username = auth.current_user()
+    query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                       table_name='users', filter_data={'username': username}))
+
+    filter_user_date_range = {'thumbtack_business_id': query[0]['thumbtack_business_id']}
+
     from_date = request.args.get('from_date')
     to_date = request.args.get('to_date')
     dimension = request.args.get('dimension')
 
-    filter_data['date(contacted_time)'] = 1
+    filter_data = {'date(contacted_time)': 1}
 
     if dimension:
         if dimension in ('category', 'state'):
@@ -326,7 +350,7 @@ def get_lead_analytics():
         date_format_check = helper.check_date_format(from_date)
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
-    filter_date_range.append(from_date)
+    filter_user_date_range['from_date'] = from_date
 
     if not to_date:
         to_date = helper.get_todays_date_str()
@@ -335,11 +359,11 @@ def get_lead_analytics():
         date_format_check = helper.check_date_format(to_date)
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
-    filter_date_range.append(to_date)
+    filter_user_date_range['to_date'] = to_date
     result = analytics_obj.get_grouped_by_date(db_schema='thumbtack',
                                                table_name='leads',
                                                filter_data=filter_data,
-                                               filter_date_range=filter_date_range)
+                                               filter_user_date_range=filter_user_date_range)
     return result
 
 
