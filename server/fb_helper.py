@@ -1,3 +1,6 @@
+"""
+facebook helper method
+"""
 
 def is_user_message(message):
     """verify that the message received is text (not image, etc)

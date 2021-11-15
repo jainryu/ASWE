@@ -1,13 +1,30 @@
+"""
+database service
+"""
+
+import datetime
 from sqlalchemy import create_engine
 import pandas as pd
-import datetime
 
 class Database:
+    """
+    instantiate the database service
+    contains sql commands
+    """
     engine = None
     def __init__(self, database_url):
+        """
+        creates sql engine
+        :param string database_url: database url to create engine
+        """
         self.engine = create_engine(database_url)
 
     def get_all_leads(self):
+        """
+        get all thumbtack leads from database
+
+        :return list result: result of sql query
+        """
         result = self.engine.execute(
             '''select * from thumbtack.test;'''
         )
@@ -15,18 +32,31 @@ class Database:
         return result
 
     def get_thumbtack_auth(self, business_id):
+        """
+        get thumbtack authentication
+
+        :param string business_id: talking_potato.users.business_id
+        :return list result: result of sql query
+        """
         if business_id[0] != "\"":
             business_id = "'" + business_id + "'"
-        result = self.engine.execute(
-            ''' select thumbtack_user_id, thumbtack_password
+        result = self.engine.execute(f"""select thumbtack_user_id, thumbtack_password
                 from talking_potato.users
-                where thumbtack_business_id = {} 
-            '''.format(business_id)
+                where thumbtack_business_id = {business_id}"""
         ).fetchall()
 
         return result
 
     def run_sql(self, sql_statement, fetch_flag=False, commit_flag=False):
+        """
+        run any sql statement
+
+        :param string sql_statement: the sql statement
+        :param list args: list of args that matches the '%s' in sql_statement
+        :param bool fetch_flag: if fetching from db
+        :param bool commit_flag: whether to commit to sql server
+        :return list res: query
+        """
         connection = None
         res = None
         try:
@@ -39,28 +69,36 @@ class Database:
             if fetch_flag:
                 # col_names = [desc[0] for desc in cur.description]
                 # res = cur.fetchall()
-                df = pd.read_sql_query(sql_statement, con=self.engine)
-                res = df.to_json(orient='records', date_format= 'iso')
+                dataframe = pd.read_sql_query(sql_statement, con=self.engine)
+                res = dataframe.to_json(orient='records', date_format= 'iso')
 
             connection.close()
-        except Exception as e:
+        except Exception as exception:
             connection.close()
-            raise e
+            raise exception
 
         return res
 
     def insert_row(self, db_schema, table_name, create_data):
+        """
+        create new record
+
+        :param string db_schema: schema name
+        :param string table_name: table name
+        :param dictionary create_data: {column_name: value}
+        :return: None
+        """
         cols = []
         values = []
         args = []
 
-        for k, v in create_data.items():
-            cols.append(k)
+        for key, val in create_data.items():
+            cols.append(key)
             values.append('{}')
-            if type(v) == str:
-                args.append("'" + v + "'")
+            if isinstance(val, str):
+                args.append("'" + val + "'")
             else:
-                args.append(v)
+                args.append(val)
 
         cols_clause = "(" + ",".join(cols) + ")"
         values_clause = "values (" + ",".join(values) + ")"
@@ -71,22 +109,41 @@ class Database:
         self.engine.execute(sql_stmt)
 
     def insert_row_from_list(self, db_schema, table_name, data_list, columns):
-        for i in range(len(data_list)):
+        """
+        insert row from list
+
+        :param string db_schema: schema name
+        :param string table_name: table name
+        :param list data_list: the thumbtack lead or message data
+        :param list columns: column names that correspond to the data_list valus
+        :return: None
+        """
+        data_list_len = len(data_list)
+        for i in range(data_list_len):
             data_list[i] = data_list[i].replace('\'', '\'\'')
             if i == 1:
-                data_list[i] = datetime.datetime.fromtimestamp(int(data_list[i])).strftime('%Y-%m-%d %H:%M:%S')
-            if type(data_list[i]) == str:
+                data_list[i] = datetime.datetime.fromtimestamp(
+                    int(data_list[i])).strftime('%Y-%m-%d %H:%M:%S')
+            if isinstance(data_list[i], str):
                 data_list[i] = "'" + data_list[i] + "'"
 
         values_clause = "values (" + ",".join(data_list) + ")"
         cols_clause = "(" + ",".join(columns) + ")"
-        
+
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
             " " + values_clause
-        self.engine.execute(sql_stmt)        
+        self.engine.execute(sql_stmt)
 
     @staticmethod
     def get_where_clause_arg(filter_data=None):
+        """
+         formats the 'get where' clause in an sql statement
+
+            :param dictionary filter_data: {column name: column value}
+            :return tuple: a tuple containing
+                -string clause: " where {key_1}=%s AND {key_2}=%s ... AND {key_n}=%s"
+                -list args: [{val_1}, ..., {val_n}]
+        """
         if filter_data is None:
             filter_data = {}
         terms = []
@@ -96,18 +153,26 @@ class Database:
             clause = ""
             args = None
         else:
-            for k, v in filter_data.items():
-                terms.append(k + "={}")
-                if type(v) == str:
-                    args.append("'" + v + "'")
+            for key, val in filter_data.items():
+                terms.append(key + "={}")
+                if isinstance(val, str):
+                    args.append("'" + val + "'")
                 else:
-                    args.append(v)
+                    args.append(val)
 
             clause = "where " + " AND ".join(terms)
 
         return clause, args
 
     def get_data(self, db_schema, table_name, filter_data=None):
+        """
+        select statement with 0 to multiple where clause
+
+        :param string db_schema: schema
+        :param string table_name: table name
+        :param filter_data: where clause in sql
+        :return list result: result of sql select statment
+        """
         where_clause, args = self.get_where_clause_arg(filter_data)
         sql_stmt = "select * from " + db_schema + "." + table_name + " " + where_clause
 
@@ -118,6 +183,8 @@ class Database:
         return result
 
     def clear_test_table(self):
+        """
+        sql delete statement
+        """
         self.run_sql('DELETE * FROM TEST')
         print('Table TEST cleared')
-

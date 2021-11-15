@@ -1,24 +1,58 @@
-from db import Database
-import pandas as pd
-import json
+"""
+analytics service
+"""
 
+import json
+import pandas as pd
+from db import Database
 
 class Analytics(Database):
+    """
+    instantiate the analytics service
+    """
     def __init__(self, database_url):
+        """
+        instantiate database object
+
+        :param string database_url: database url to create engine
+        """
         Database.__init__(self, database_url=database_url)
 
     def get_data_df(self, db_schema, table_name, filter_data=None):
+        """
+        get data by template, and process to dataframe
+
+        :param string db_schema: schema name
+        :param string table_name: table name
+        :param dictionary filter_data: {column name: column value}
+        :return: None
+        """
         data = self.get_data(db_schema, table_name, filter_data)
         json_data = json.loads(str(data))
-        df = pd.DataFrame(json_data)
-        return df
+        dataframe = pd.DataFrame(json_data)
+        return dataframe
 
     def group_by_df(self, db_schema, table_name, filter_data=None, col_list=None):
-        df = self.get_data_df(db_schema, table_name, filter_data)
-        print(df.groupby(by=col_list).count())
+        """
+        get data by template, and process to dataframe
+
+        :param string db_schema: schema name
+        :param string table_name: table name
+        :param dictionary filter_data: {column name: column value}
+        :param list col_list: a list of columns in the df to analyze
+        :return: None
+        """
+        dataframe = self.get_data_df(db_schema, table_name, filter_data)
+        print(dataframe.groupby(by=col_list).count())
 
     @staticmethod
     def get_select_clause_cols(filter_data=None):
+        """
+        create the select clause in sql select statement
+
+        :param dictionary filter_data: {column name: column value}
+        :return string clause: the select clause in sql select statement
+        """
         if filter_data is None:
             filter_data = {}
         cols = []
@@ -34,6 +68,14 @@ class Analytics(Database):
 
     @staticmethod
     def get_user_and_date_between_clause(filter_data=None):
+        """
+        create where clauses for user_id and time in between
+
+        :param dictionary filter_data: {column name: column value}
+            (curently with keys: optional user_id, optional
+             thumbtack_business_id, from_date, to_date)
+        :return string clause: the where clause
+        """
         if filter_data is None:
             return None
 
@@ -47,12 +89,25 @@ class Analytics(Database):
             user_clause = 'thumbtack_business_id'
         from_date = filter_data['from_date']
         to_date = filter_data['to_date']
-        clause = "where " + user_clause + "='" + user_id + "' AND date(contacted_time) between '" + from_date + \
-                 "' AND '" + to_date + "' "
+        clause = "where " + user_clause + "='" + user_id + \
+                 "' AND date(contacted_time) between '" \
+                 + from_date + "' AND '" + to_date + "' "
 
         return clause
 
-    def get_grouped_by_date(self, db_schema, table_name, filter_user_date_range=None, filter_data=None):
+    def get_grouped_by_date(self, db_schema, table_name,
+                            filter_user_date_range=None, filter_data=None):
+        """
+        rul sql statement that filters based on user_id and time
+
+        :param string db_schema: schema name
+        :param string table_name: table name
+        :param dictionary filer_user_date_range: user_id and date range
+        :param dictionary filter_data: {column_name: column_value}.
+            Note: having column_name means add this column to select clause in select statement.
+            filter_data keys: required date(contacted_time), optional user_source
+        :return list result: the result of the sql select statement
+        """
         select_clause = self.get_select_clause_cols(filter_data)
         where_date_clause = ''
         if filter_user_date_range:

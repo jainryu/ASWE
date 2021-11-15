@@ -45,7 +45,7 @@ def hello_world():
     """
     a health check
 
-    :return json x: all leads.
+    :return "string health check"
     """
     # result = db_obj.get_all_leads()
     # df_thumbtack = pd.DataFrame(list(result.fetchall()))
