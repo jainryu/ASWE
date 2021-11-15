@@ -6,12 +6,14 @@ import datetime
 from sqlalchemy import create_engine
 import pandas as pd
 
+
 class Database:
     """
     instantiate the database service
     contains sql commands
     """
     engine = None
+
     def __init__(self, database_url):
         """
         creates sql engine
@@ -31,7 +33,7 @@ class Database:
         result = self.engine.execute(f"""select thumbtack_user_id, thumbtack_password
                 from talking_potato.users
                 where thumbtack_business_id = {business_id}"""
-        ).fetchall()
+                                     ).fetchall()
 
         return result
 
@@ -40,7 +42,6 @@ class Database:
         run any sql statement
 
         :param string sql_statement: the sql statement
-        :param list args: list of args that matches the '%s' in sql_statement
         :param bool fetch_flag: if fetching from db
         :param bool commit_flag: whether to commit to sql server
         :return list res: query
@@ -58,7 +59,7 @@ class Database:
                 # col_names = [desc[0] for desc in cur.description]
                 # res = cur.fetchall()
                 dataframe = pd.read_sql_query(sql_statement, con=self.engine)
-                res = dataframe.to_json(orient='records', date_format= 'iso')
+                res = dataframe.to_json(orient='records', date_format='iso')
 
             connection.close()
         except Exception as exception:
@@ -103,7 +104,7 @@ class Database:
         :param string db_schema: schema name
         :param string table_name: table name
         :param list data_list: the thumbtack lead data
-        :param list columns: column names that correspond to the data_list valus
+        :param list columns: column names that correspond to the data_list values
         :return: None
         """
         data_list_len = len(data_list)
@@ -119,7 +120,7 @@ class Database:
         cols_clause = "(" + ",".join(columns) + ")"
 
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
-            " " + values_clause
+                   " " + values_clause
         self.engine.execute(sql_stmt)
 
     def insert_row_from_message_list(self, db_schema, table_name, data_list, columns):
@@ -129,7 +130,7 @@ class Database:
         :param string db_schema: schema name
         :param string table_name: table name
         :param list data_list: the thumbtack message data
-        :param list columns: column names that correspond to the data_list valus
+        :param list columns: column names that correspond to the data_list values
         :return: None
         """
         len_data_list = len(data_list)
@@ -145,7 +146,7 @@ class Database:
         cols_clause = "(" + ",".join(columns) + ")"
 
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
-            " " + values_clause
+                   " " + values_clause
         self.engine.execute(sql_stmt)
 
     @staticmethod
@@ -185,7 +186,7 @@ class Database:
         :param string db_schema: schema
         :param string table_name: table name
         :param filter_data: where clause in sql
-        :return list result: result of sql select statment
+        :return list result: result of sql select statement
         """
         where_clause, args = self.get_where_clause_arg(filter_data)
         sql_stmt = "select * from " + db_schema + "." + table_name + " " + where_clause
@@ -195,7 +196,3 @@ class Database:
 
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
-
-
-
-
