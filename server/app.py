@@ -1,3 +1,7 @@
+'''
+Flask app
+'''
+
 import uuid
 import json
 import validators
@@ -31,7 +35,8 @@ def verify_password(username, password):
     :return string username: user username
     """
     user = json.loads(
-        db_obj.get_data(db_schema='talking_potato', table_name='users', filter_data={'username': username}))
+        db_obj.get_data(db_schema='talking_potato', table_name='users',
+                        filter_data={'username': username}))
     if len(user) > 0 and sha256_crypt.verify(password, user[0]['password']):
         return username
 
@@ -40,14 +45,12 @@ def verify_password(username, password):
 def hello_world():
     """
     a health check
-    
+
     :return json x: all leads.
     """
     result = db_obj.get_all_leads()
-    df = pd.DataFrame(list(result.fetchall()))
-    x = (df.to_json(orient="records"))
-    return x
-
+    df_thumbtack = pd.DataFrame(list(result.fetchall()))
+    return df_thumbtack.to_json(orient="records")
 
 # TODO: initialize with the right business credentials/api keys
 
@@ -175,8 +178,10 @@ def webhook():
                 msg['page_id'] = payload['entry'][0]['id']
                 msg['update_time'] = payload['entry'][0]['time']
                 flat_msg = helper.flatten_json(msg)
-                flat_msg['update_time'] = helper.convert_epoch_milliseconds_to_datetime_string(flat_msg['update_time'])
-                flat_msg['timestamp'] = helper.convert_epoch_milliseconds_to_datetime_string(flat_msg['timestamp'])
+                flat_msg['update_time'] = helper.convert_epoch_milliseconds_to_datetime_string(
+                                                            flat_msg['update_time'])
+                flat_msg['timestamp'] = helper.convert_epoch_milliseconds_to_datetime_string(
+                                                            flat_msg['timestamp'])
 
                 db_obj.insert_row('fb', 'messages', flat_msg)
 
@@ -190,7 +195,7 @@ def webhook():
 @auth.login_required
 def get_messages():
     """return the messages for a date range and lead source(s).
-    
+
     :query param source: lead source to filter by. If none, queries all lead sources.
     :query param date: contacted date to query.
 
@@ -210,7 +215,8 @@ def get_messages():
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
         filter_data['date(contacted_time)'] = contacted_date
-    result = db_obj.get_data(db_schema='talking_potato', table_name='messages', filter_data=filter_data)
+    result = db_obj.get_data(db_schema='talking_potato', table_name='messages',
+                             filter_data=filter_data)
     return result
 
 
@@ -218,14 +224,14 @@ def get_messages():
 @auth.login_required
 def get_leads():
     """return the leads for a date range and lead source(s).
-    
+
     :query param source: lead source to filter by. If none, queries all lead sources.
     :query param date: contacted date to query.
 
     :return list result: a list of json leads
     """
     username = auth.current_user()
-    query = json.loads(db_obj.get_data(db_schema='talking_potato', 
+    query = json.loads(db_obj.get_data(db_schema='talking_potato',
         table_name='users', filter_data={'username': username}))
     filter_data = {}
     filter_data['thumbtack_business_id'] = query[0]['thumbtack_business_id']
@@ -245,7 +251,6 @@ def get_leads():
 def get_message_analytics():
     """return a count of messages for a date range and lead source(s).
 
-    
     :query param from_date: beginning date to filter by. Optional.
     :query param to_date: ending date to filter by. Optional.
     :query param dimension: dimension to filter data by. Optional. (currently only lead source)
@@ -283,8 +288,10 @@ def get_message_analytics():
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
     filter_date_range.append(to_date)
-    result = analytics_obj.get_grouped_by_date(db_schema='talking_potato', table_name='messages',
-                                               filter_data=filter_data, filter_date_range=filter_date_range)
+    result = analytics_obj.get_grouped_by_date(db_schema='talking_potato',
+                                               table_name='messages',
+                                               filter_data=filter_data,
+                                               filter_date_range=filter_date_range)
     return result
 
 
@@ -329,8 +336,10 @@ def get_lead_analytics():
         if not date_format_check:
             return 'Please enter the date in YYYY-MM-DD format'
     filter_date_range.append(to_date)
-    result = analytics_obj.get_grouped_by_date(db_schema='thumbtack', table_name='leads',
-                                               filter_data=filter_data, filter_date_range=filter_date_range)
+    result = analytics_obj.get_grouped_by_date(db_schema='thumbtack',
+                                               table_name='leads',
+                                               filter_data=filter_data,
+                                               filter_date_range=filter_date_range)
     return result
 
 
