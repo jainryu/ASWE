@@ -1,14 +1,14 @@
+import uuid
+import json
+import validators
+from passlib.hash import sha256_crypt
 from flask import Flask, request, Response
 from flask_httpauth import HTTPBasicAuth
-from thumbtack_conn import thumbtack_lead_json_to_list, thumbtack_message_json_to_list, create_test_data
-from passlib.hash import sha256_crypt
-import validators
-import json
 import pandas as pd
+import thumbtack_conn
 import db
-import helper
-import uuid
 import analytics
+import helper
 
 app = Flask(__name__)
 auth = HTTPBasicAuth()
@@ -23,6 +23,12 @@ analytics_obj = analytics.Analytics(database_url)
 
 @auth.verify_password
 def verify_password(username, password):
+    """Password verification for users of our service
+
+    :param string username: user username
+    :param string password: user password
+    :return string username: user username
+    """
     user = json.loads(
         db_obj.get_data(db_schema='talking_potato', table_name='users', filter_data={'username': username}))
     if len(user) > 0 and sha256_crypt.verify(password, user[0]['password']):
@@ -31,6 +37,11 @@ def verify_password(username, password):
 
 @app.route("/")
 def hello_world():
+    """
+    a health check
+    
+    :return json x: all leads.
+    """
     result = db_obj.get_all_leads()
     df = pd.DataFrame(list(result.fetchall()))
     x = (df.to_json(orient="records"))
@@ -41,8 +52,14 @@ def hello_world():
 
 @app.route("/dummy_thumbtack_lead", methods=["GET"])
 def create_dummy_data():
-    dummy_dict = create_test_data()
-    data, column_names = thumbtack_lead_json_to_list(dummy_dict)
+    """Create dummy data
+
+    :return tuple: a tuple containing
+        dict dummy_dict: a thumbtack example lead
+        int: response status code
+    """
+    dummy_dict = thumbtack_conn.create_test_data()
+    data, column_names = thumbtack_conn.thumbtack_lead_json_to_list(dummy_dict)
     db_obj.insert_row_from_list("thumbtack", "leads", data, column_names)
 
     return dummy_dict, 200
@@ -51,9 +68,15 @@ def create_dummy_data():
 @app.route("/thumbtack_lead", methods=["POST"])
 @auth.login_required
 def receive_lead():
+    """receive a thumbtack lead and insert into db
+
+    :return tuple: a tuple containing
+        dict data: the thumbtack lead data that was received
+        int: response status code
+    """
     data = {"status": "success"}
 
-    data, column_names = thumbtack_lead_json_to_list(request.json)
+    data, column_names = thumbtack_conn.thumbtack_lead_json_to_list(request.json)
     db_obj.insert_row_from_list("thumbtack", "leads", data, column_names)
 
     return data, 200
@@ -62,9 +85,15 @@ def receive_lead():
 @app.route("/thumbtack_messages", methods=["POST"])
 @auth.login_required
 def receive_message():
+    """receive a thumbtack message and insert into db
+
+    :return tuple: a tuple containing
+        dict data: the thumbtack message data that was received
+        int: response status code
+    """
     data = {"status": "success"}
 
-    data, column_names = thumbtack_message_json_to_list(request.json)
+    data, column_names = thumbtack_conn.thumbtack_message_json_to_list(request.json)
     db_obj.insert_row_from_list("thumbtack", "messages", data, column_names)
 
     return data, 200
@@ -72,6 +101,12 @@ def receive_message():
 
 @app.route("/register", methods=["POST"])
 def register():
+    """register a new user of our service
+
+    :return tuple: a tuple containing
+        dict: status description
+        int: response status code
+    """
     email = request.args.get("email")
     username = request.args.get("username")
     password = request.args.get("password")
@@ -116,6 +151,11 @@ def register():
 
 
 def verify_webhook(req, username):
+    """webhook verification required by facebook
+
+    :param flask.Request req: the flask request object 
+    :return string: either the challenge received by facebook, or http status 400
+    """
     query = json.loads(db_obj.get_data(db_schema='talking_potato', 
         table_name='users', filter_data={'username': username}))
     verify_token = query[0]['fb_app_secret_key']
@@ -128,7 +168,12 @@ def verify_webhook(req, username):
 
 
 def is_user_message(message):
-    """Check if the message is a message from the user"""
+    """verify that the message received is text (not image, etc)
+
+    :return tuple: a tuple containing
+        dict data: the thumbtack message data that was received
+        int: response status code
+    """
     return (message.get('message') and
             message['message'].get('text') and
             not message['message'].get("is_echo"))
@@ -137,7 +182,12 @@ def is_user_message(message):
 @app.route("/fb_lead", methods=['GET', 'POST'])
 @auth.login_required
 def webhook():
-    print('ok')
+    """receive a fb message and insert it into db
+
+    :return tuple: a tuple containing
+        dict data: the fb message data that was received
+        int: response status code
+    """
     if request.method == 'GET':
         return verify_webhook(request, auth.current_user())
 
@@ -168,6 +218,13 @@ def webhook():
 @app.route("/get_messages", methods=['GET'])
 @auth.login_required
 def get_messages():
+    """return the messages for a date range and lead source(s).
+    
+    :query param source: lead source to filter by. If none, queries all lead sources.
+    :query param date: contacted date to query.
+
+    :return list result: a list of json messages
+    """
     username = auth.current_user()
     filter_data = {}
     source = request.args.get('source')
@@ -189,6 +246,13 @@ def get_messages():
 @app.route("/get_leads", methods=['GET'])
 @auth.login_required
 def get_leads():
+    """return the leads for a date range and lead source(s).
+    
+    :query param source: lead source to filter by. If none, queries all lead sources.
+    :query param date: contacted date to query.
+
+    :return list result: a list of json leads
+    """
     username = auth.current_user()
     query = json.loads(db_obj.get_data(db_schema='talking_potato', 
         table_name='users', filter_data={'username': username}))
@@ -208,6 +272,15 @@ def get_leads():
 
 @app.route("/message_analytics", methods=['GET'])
 def get_message_analytics():
+    """return a count of messages for a date range and lead source(s).
+
+    
+    :query param from_date: beginning date to filter by. Optional.
+    :query param to_date: ending date to filter by. Optional.
+    :query param dimension: dimension to filter data by. Optional. (currently only lead source)
+
+    :return list result: a list of dicts with keys: date, count, optional user_source
+    """
     filter_data = {}
     filter_date_range = []
     from_date = request.args.get('from_date')
@@ -246,6 +319,14 @@ def get_message_analytics():
 
 @app.route("/lead_analytics", methods=['GET'])
 def get_lead_analytics():
+    """return a count of leads for a date range and lead source(s). (currently on thumbtack)
+
+    :query param from_date: beginning date to filter by. Optional.
+    :query param to_date: ending date to filter by. Optional.
+    :query param dimension: dimension to filter data by. (currently only state and count)
+
+    :return list result: a list of dicts with keys: date, optional categrory, optinal state, count.
+    """
     filter_data = {}
     filter_date_range = []
     from_date = request.args.get('from_date')
