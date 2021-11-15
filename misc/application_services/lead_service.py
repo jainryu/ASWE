@@ -1,5 +1,5 @@
 from base_application_resource import BaseRDBApplicationService
-from database_service.rdb_service import RDBService
+from misc.database_service.rdb_service import RDBService
 
 
 class LeadService(BaseRDBApplicationService):
