@@ -24,6 +24,7 @@ CREATE TABLE talking_potato.users (
 	phone_number varchar NULL,
 	thumbtack_user_id varchar NULL,
 	facebook_user_id varchar NULL,
+	thumbtack_password varchar NULL,
 	thumbtack_api_key varchar NULL,
 	fb_app_secret_key varchar NULL,
 	fb_page_access_token varchar NULL,
