@@ -2,8 +2,10 @@ from sqlalchemy import create_engine
 import pandas as pd
 import datetime
 
+
 class Database:
     engine = None
+
     def __init__(self, database_url):
         self.engine = create_engine(database_url)
 
@@ -11,7 +13,6 @@ class Database:
         result = self.engine.execute(
             '''select * from thumbtack.test;'''
         )
-
         return result
 
     def get_thumbtack_auth(self, business_id):
