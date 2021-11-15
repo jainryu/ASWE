@@ -1,6 +1,7 @@
 # Talking Potatoes
 
 ###How to Test Our Service
+- Download all modules included in server/requirements.txt
 - BASE_URL = https://tp-leads-app.herokuapp.com
 - You can access our service using the paths along with the requested params as described in the following API documentation
 

@@ -51,7 +51,7 @@ def create_dummy_data():
 @app.route("/thumbtack_lead", methods=["POST"])
 @auth.login_required
 def receive_lead():
-    if not verify(request.authorization['username'], request.authorization['password']):
+    if not verify_password(request.authorization['username'], request.authorization['password']):
         return {'status': 'bad password'}, 401
     data = {"status": "success"}
 
@@ -64,7 +64,7 @@ def receive_lead():
 @app.route("/thumbtack_messages", methods=["POST"])
 @auth.login_required
 def receive_message():
-    if not verify(request.authorization['username'], request.authorization['password']):
+    if not verify_password(request.authorization['username'], request.authorization['password']):
         return {'status': 'bad password'}, 401
     data = {"status": "success"}
 
