@@ -16,3 +16,4 @@ validators==0.18.2
 Werkzeug==2.0.2
 flask-httpauth==4.5.0
 requests==2.26.0
+pylint==2.11.1
