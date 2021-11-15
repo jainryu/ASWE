@@ -33,41 +33,32 @@ class Analytics(Database):
         return clause
 
     @staticmethod
-    def get_date_between_clause(filter_data=None):
+    def get_user_and_date_between_clause(filter_data=None):
         if filter_data is None:
             return None
 
-        clause = "where date(contacted_time) between '" + "' AND '".join(filter_data) + "'"
+        user_clause = None
+        user_id = None
+        if 'user_id' in filter_data:
+            user_id = filter_data['user_id']
+            user_clause = 'user_id'
+        if 'thumbtack_business_id' in filter_data:
+            user_id = filter_data['thumbtack_business_id']
+            user_clause = 'thumbtack_business_id'
+        from_date = filter_data['from_date']
+        to_date = filter_data['to_date']
+        clause = "where " + user_clause + "='" + user_id + "' AND date(contacted_time) between '" + from_date + \
+                 "' AND '" + to_date + "' "
 
         return clause
 
-    def get_grouped_by_date(self, db_schema, table_name, filter_date_range=None, filter_data=None):
+    def get_grouped_by_date(self, db_schema, table_name, filter_user_date_range=None, filter_data=None):
         select_clause = self.get_select_clause_cols(filter_data)
         where_date_clause = ''
-        if filter_date_range:
-            where_date_clause = self.get_date_between_clause(filter_date_range)
+        if filter_user_date_range:
+            where_date_clause = self.get_user_and_date_between_clause(filter_user_date_range)
         sql_stmt = "select " + select_clause + ",count(*) from " + db_schema + "." + table_name \
                    + " " + where_date_clause + " group by " + select_clause + " order by 1 desc;"
-
+        print(sql_stmt)
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
-
-
-
-# a = Analytics('postgresql+psycopg2://postgres:postgres@35.238.149.103/tp')
-# print (a.group_by_df(db_schema = 'talking_potato', table_name = 'messages', col_list=['user_source']))
-# x = a.get_grouped_by_date(db_schema='talking_potato', table_name='messages',
-#                           filter_date_range=['2021-11-05', '2021-11-13'],
-#                           filter_data={'date(contacted_time)': 1, 'user_source': 1})
-
-# x = a.get_grouped_by_date(db_schema='thumbtack', table_name='leads',
-#                           filter_date_range=['2021-10-09', '2021-11-15'],
-#                           filter_data={'date(contacted_time)': 1})
-
-# x = a.get_grouped_by_date(db_schema='thumbtack', table_name='leads',
-#                       filter_data={'date(contacted_time)': '2021-11-05'})
-# print(x)
-
-# {'user_source': 'thumbtack', 'date(contacted_time)': '2021-11-05'}
-# clause = a.get_select_clause_cols(filter_data={'user_source': 'thumbtack', 'date(contacted_time)': '2021-11-05'})
-# print (clause)
