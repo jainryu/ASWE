@@ -1,14 +1,20 @@
+"""
+thumbtack connection
+"""
 import requests
 import db
 from requests.structures import CaseInsensitiveDict
-from base64 import b64encode
 from flask import Flask
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
-database_url = app.config['DATABASE_URL']
 
 def create_test_data() -> dict:
+    """
+    create thumbtack text data
+
+    :return dict data: thumbtack test data
+    """
     url = "https://staging-pro-api.thumbtack.com/v1/test/create-lead"
 
     headers = CaseInsensitiveDict()
@@ -19,27 +25,39 @@ def create_test_data() -> dict:
 
     resp = requests.post(url, headers=headers, data=data)
     data = resp.json()
-    return data 
+    return data
 
 def thumbtack_send_message(business_id, lead_id, message) -> int:
+    """
+    send message
+
+    :return dict data: thumbtack test data
+    """
     database_url = app.config['DATABASE_URL']
     db_obj = db.Database(database_url)
     username = str(db_obj.get_thumbtack_auth(business_id)[0][0])
     password = str(db_obj.get_thumbtack_auth(business_id)[0][1])
 
-    url = "https://staging-pro-api.thumbtack.com/v1/business/{}/lead/{}/message".format(business_id, lead_id)
+    url = f"https://staging-pro-api.thumbtack.com/v1/business/{business_id}/lead/{lead_id}/message"
     # this url is only staging
 
     headers = CaseInsensitiveDict()
     headers["Content-Type"] = "application/json"
 
-    data = '{"text": "{message}"}'
-    
+    data = {"text": f"{message}"}
+
     resp = requests.post(url, headers=headers, data=data, auth=(username, password))
 
     return resp.status_code
 
 def thumbtack_lead_json_to_list(json_dict) -> list:
+    """
+    format thumbtack lead data from json to list
+
+    :return tuple: tuple containing
+        - list staging_row: lead data values
+        - list column_names: lead data keys
+    """
     staging_row = []
     for key in json_dict:
         if key == "request":
@@ -55,14 +73,25 @@ def thumbtack_lead_json_to_list(json_dict) -> list:
         elif key == "business":
             staging_row.append(json_dict[key]["businessID"])
             staging_row.append(json_dict[key]["name"])
-        else: 
+        else:
             staging_row.append(json_dict[key])
 
-    column_names = ["thumbtack_lead_id", "contacted_time", "price", "thumbtack_request_id", "category", "title", "description", "schedule", "city", "state", "zip", "travel_preferences", "thumbtack_customer_id", "customer_name", "thumbtack_business_id", "thumbtack_business_name"]
+    column_names = ["thumbtack_lead_id", "contacted_time", "price",
+        "thumbtack_request_id","category", "title", "description",
+        "schedule", "city", "state", "zip", "travel_preferences",
+        "thumbtack_customer_id", "customer_name",
+        "thumbtack_business_id", "thumbtack_business_name"]
 
     return staging_row, column_names
 
 def thumbtack_message_json_to_list(json_dict) -> list:
+    """
+    format thumbtack message data from json to list
+
+    :return tuple: tuple containing
+        - list staging_row: message data values
+        - list column_names: lead data keys
+    """
     staging_row = []
     for key in json_dict:
         if key == "message":
@@ -72,8 +101,8 @@ def thumbtack_message_json_to_list(json_dict) -> list:
         else:
             staging_row.append(json_dict[key])
 
-    column_names = ["thumbtack_lead_id", "thumbtack_customer_id", "thumbtack_business_id", "thumbtack_message_id", "contacted_time", "message_text"]
+    column_names = ["thumbtack_lead_id", "thumbtack_customer_id",
+        "thumbtack_business_id", "thumbtack_message_id",
+        "contacted_time", "message_text"]
 
     return staging_row, column_names
-
-

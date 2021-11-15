@@ -6,7 +6,7 @@ import uuid
 import json
 import validators
 from passlib.hash import sha256_crypt
-from flask import Flask, request, Response
+from flask import Flask, request
 from flask_httpauth import HTTPBasicAuth
 import thumbtack_conn
 import db
@@ -38,6 +38,7 @@ def verify_password(username, password):
                         filter_data={'username': username}))
     if len(user) > 0 and sha256_crypt.verify(password, user[0]['password']):
         return username
+    return None
 
 
 @app.route("/")
@@ -53,11 +54,9 @@ def hello_world():
     return "Hello from Talking Potatoes!!!"
 
 
-# TODO: initialize with the right business credentials/api keys
-
 @app.route("/dummy_thumbtack_lead", methods=["GET"])
 def create_dummy_data():
-    """Create dummy data
+    """Create thumbtack lead dummy data
 
     :return tuple: a tuple containing
         dict dummy_dict: a thumbtack example lead
@@ -65,7 +64,7 @@ def create_dummy_data():
     """
     dummy_dict = thumbtack_conn.create_test_data()
     data, column_names = thumbtack_conn.thumbtack_lead_json_to_list(dummy_dict)
-    db_obj.insert_row_from_list("thumbtack", "leads", data, column_names)
+    db_obj.insert_row_from_lead_list("thumbtack", "leads", data, column_names)
 
     return dummy_dict, 200
 
@@ -83,8 +82,7 @@ def receive_lead():
         data, column_names = thumbtack_conn.thumbtack_lead_json_to_list(request.json)
         db_obj.insert_row_from_lead_list("thumbtack", "leads", data, column_names)
         return {"status": "success"}, 200
-    else:
-        return {"status": "fail", "details": "empty json"}, 400
+    return {"status": "fail", "details": "empty json"}, 400
 
 
 @app.route("/thumbtack_messages", methods=["POST"])
@@ -101,8 +99,7 @@ def receive_message():
         data, column_names = thumbtack_conn.thumbtack_message_json_to_list(request.json)
         db_obj.insert_row_from_message_list("thumbtack", "messages", data, column_names)
         return {"status": "success"}, 200
-    else:
-        return {"status": "fail", "details": "empty json"}, 400
+    return {"status": "fail", "details": "empty json"}, 400
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -120,17 +117,19 @@ def register():
     name_query = json.loads(db_obj.get_data(db_schema='talking_potato',
                                             table_name='users', filter_data={'username': username}))
     if not validators.email(email):
-        return {'status': 'bad email'}, 400
-    if len(username) < 3:
-        return {'status': 'username too short'}, 400
-    if len(password) < 6:
-        return {'status': 'password too short'}, 400
-    if not username.isalnum():
-        return {'status': 'username must be alphanumeric'}, 400
-    if len(email_query) > 0:
-        return {'status': 'email already registered'}, 400
-    if len(name_query) > 0:
-        return {'status': 'username already registered'}, 400
+        status = {'status': 'bad email'}, 400
+    elif len(username) < 3:
+        status = {'status': 'username too short'}, 400
+    elif len(password) < 6:
+        status = {'status': 'password too short'}, 400
+    elif not username.isalnum():
+        status = {'status': 'username must be alphanumeric'}, 400
+    elif len(email_query) > 0:
+        status = {'status': 'email already registered'}, 400
+    elif len(name_query) > 0:
+        status = {'status': 'username already registered'}, 400
+    if status:
+        return status
 
     password_hash = sha256_crypt.encrypt(password)
     entry = {'user_id': str(uuid.uuid4()), 'username': username,
@@ -177,7 +176,7 @@ def webhook():
         int: response status code
     """
     if request.method == 'GET':
-        return verify_webhook(request, auth.current_user())
+        status = verify_webhook(request, auth.current_user())
 
     elif request.method == 'POST':
         payload = request.json
@@ -198,11 +197,12 @@ def webhook():
                     flat_msg['timestamp'])
 
                 db_obj.insert_row('fb', 'messages', flat_msg)
-
-        return Response(status=200)
+        status = 200
 
     else:
-        return Response(status=200)
+        status = 200
+
+    return status
 
 
 @app.route("/get_messages", methods=['GET'])

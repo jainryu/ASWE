@@ -133,7 +133,7 @@ class Database:
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
             " " + values_clause
         self.engine.execute(sql_stmt)
-    
+
     def insert_row_from_message_list(self, db_schema, table_name, data_list, columns):
         """
         insert row from thumbtack messsage list
@@ -144,11 +144,13 @@ class Database:
         :param list columns: column names that correspond to the data_list valus
         :return: None
         """
-        for i in range(len(data_list)):
+        len_data_list = len(data_list)
+        for i in range(len_data_list):
             data_list[i] = data_list[i].replace('\'', '\'\'')
             if i == 4:
-                data_list[i] = datetime.datetime.fromtimestamp(int(data_list[i])).strftime('%Y-%m-%d %H:%M:%S')
-            if type(data_list[i]) == str:
+                data_list[i] = datetime.datetime.fromtimestamp(
+                    int(data_list[i])).strftime('%Y-%m-%d %H:%M:%S')
+            if isinstance(data_list[i], str):
                 data_list[i] = "'" + data_list[i] + "'"
 
         values_clause = "values (" + ",".join(data_list) + ")"
@@ -156,7 +158,7 @@ class Database:
 
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
             " " + values_clause
-        self.engine.execute(sql_stmt)    
+        self.engine.execute(sql_stmt)
 
     @staticmethod
     def get_where_clause_arg(filter_data=None):
