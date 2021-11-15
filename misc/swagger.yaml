@@ -1,0 +1,336 @@
+swagger: "2.0"
+info:
+  description: "Team Talking Potatoes Swag"
+  version: "1.0.0"
+  title: "Lead Aggregator and Analytics Service"
+
+tags:
+- name: "user"
+  description: "Operations about user"
+- name: "thumbtack"
+  description: "thumbtack_related routes"
+- name: "facebook"
+  description: "facebook_related routes"
+- name: "analytics"
+  description: "analytics for one or both lead sources"
+
+schemes:
+- "https"
+- "http"
+
+paths:
+  /register:
+    post:
+      tags:
+      - "user"
+      summary: "regiser user"
+      description: ""
+      operationId: "register"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "{'status': 'success'}, 200"
+      parameters:
+      - name: "user_info"
+        in: "body"
+        required: true
+        schema: 
+          $ref: "#/definitions/users"
+      responses:
+        200:
+          description: sucessful register
+        400:
+          description: failed register
+  
+  /thumbtack_lead:
+    post:
+      tags:
+      - "thumbtack"
+      summary: "add lead data from thumbtack to database"
+      operationId: "receive_lead"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "data received (list), 200"
+      - "{'status': 'bad password'}, 401"
+      parameters:
+      - in: "body"
+        name: "lead"
+        description: "lead data that gets added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/thumbtack.leads"
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+      security:
+      - user_auth: []
+
+  /thumbtack_messages:
+    post:
+      tags:
+      - "thumbtack"
+      summary: "add message data from thumbtack to database"
+      description: ""
+      operationId: "receive_message"
+      consumes:
+      - "application/json"
+      produces:
+      - "application/json"
+      - "data received (list), 200"
+      - "{'status': 'bad password'}, 401"
+      parameters:
+      - in: "body"
+        name: "message"
+        description: "message data that gets added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/thumbtack.messages"
+      responses:
+        201:
+            description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+      security:
+      - user_auth: []
+
+  /fb_lead:
+    post:
+      tags:
+      - "facebook"
+      summary: "add lead and message data from facebook to database"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "body"
+        name: "lead"
+        description: "lead and message data that gets added to the database"
+        required: true
+        schema:
+          $ref: "#/definitions/facebook.messages"
+      responses:
+        201:
+          description: item created
+        400:
+          description: invalid input, object invalid
+        409:
+          description: an existing item already exists
+      security:
+      - user_auth: []
+  
+  /get_leads:
+    get:
+      tags:
+      - "analytics"
+      summary: "get leads for specified lead source(s)"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "lead filters"
+        description: "keys: source, date. If none, get all"
+        required: false
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/definitions/thumbtack.leads'
+        400:
+          description: bad input parameter
+      security:
+      - user_auth: []
+  
+  /get_messages:
+    get:
+      tags:
+      - "analytics"
+      summary: "get messages for specified lead source(s)"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "message filters"
+        description: "keys: source, date. If none, get all"
+        required: false
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/definitions/thumbtack.messages'
+                - $ref: '#/definitions/facebook.messages'
+        400:
+          description: bad input parameter
+      security:
+      - user_auth: []
+  
+  /lead_analytics:
+    get:
+      tags:
+      - "analytics"
+      summary: "get a count of messages for specified lead source(s)"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "message filters"
+        description: "keys: from_date, to_date, dimension, "
+        required: false
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/definitions/thumbtack.leads'
+        400:
+          description: bad input parameter
+      security:
+      - user_auth: []
+  
+  /message_analytics:
+    get:
+      tags:
+      - "analytics"
+      summary: "get a count of messages for specified lead source(s)"
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "message filters"
+        description: "keys: from_date, to_date, dimension, "
+        required: false
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/definitions/thumbtack.messages'
+                - $ref: '#/definitions/facebook.messages'
+        400:
+          description: bad input parameter
+      security:
+      - user_auth: []
+    
+
+securityDefinitions:
+  user_auth:
+    type: "basic"
+
+definitions:
+  users:
+    type: "object"
+    properties:
+      user_id:
+        type: "integer"
+        format: "int64"
+      username:
+        type: "string"
+      password:
+        type: "string"
+      email:
+        type: "string"
+
+  thumbtack.leads:
+    type: "object"
+    properties:
+      thumbtack_lead_id:
+        type: "string"
+      contacted_time:
+        type: "string"
+        format: "timestamp"
+      price:
+        type: "string"
+      thumbtack_request_id:
+        type: "string"
+      category:
+        type: "string"
+      title:
+        type: "string"
+      description:
+        type: "string"
+      schedule:
+        type: "string"
+      city:
+        type: "string"
+      state:
+        type: "string"
+      zip:
+        type: "string"
+      travel_preferences:
+        type: "string"
+      thumbtack_customer_id:
+        type: "string"
+      customer_name:
+        type: "string"
+      thumbtack_business_id:
+        type: "string"
+      thumbtack_business_name:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "timestamp"
+    
+  thumbtack.messages:
+    type: "object"
+    properties:
+      thumbtack_lead_id:
+        type: "string"
+      thumbtack_customer_id:
+        type: "string"
+      thumbtack_business_id:
+        type: "string"
+      thumbtack_message_id:
+        type: "string"
+      contacted_time:
+        type: "string"
+        format: "timestamp"
+      message_text:
+        type: "string"
+      created_at:
+        type: "string"
+        format: "timestamp"
+
+  
+  facebook.messages:
+    type: "object"
+    properties:
+      sender_id:
+        type: "string"
+      recipient_id:
+        type: "string"
+      timestamp:
+        type: "string"
+        format: "timestamp"
+      message_text:
+        type: "string"
+      page_id:
+        type: "string"
+      update_time:
+        type: "string"
+        format: "timestamp"
+      created_at:
+        type: "string"
+        format: "timestamptz"
+      message_id:
+        type: "string"
