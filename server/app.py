@@ -79,12 +79,12 @@ def receive_lead():
         dict data: the thumbtack lead data that was received
         int: response status code
     """
-    data = {"status": "success"}
-
-    data, column_names = thumbtack_conn.thumbtack_lead_json_to_list(request.json)
-    db_obj.insert_row_from_list("thumbtack", "leads", data, column_names)
-
-    return data, 200
+    if request.json is not None:
+        data, column_names = thumbtack_conn.thumbtack_lead_json_to_list(request.json)
+        db_obj.insert_row_from_lead_list("thumbtack", "leads", data, column_names)
+        return {"status": "success"}, 200
+    else:
+        return {"status": "fail", "details": "empty json"}, 400
 
 
 @app.route("/thumbtack_messages", methods=["POST"])
@@ -96,13 +96,13 @@ def receive_message():
         dict data: the thumbtack message data that was received
         int: response status code
     """
-    data = {"status": "success"}
 
-    data, column_names = thumbtack_conn.thumbtack_message_json_to_list(request.json)
-    db_obj.insert_row_from_list("thumbtack", "messages", data, column_names)
-
-    return data, 200
-
+    if request.json is not None:
+        data, column_names = thumbtack_conn.thumbtack_message_json_to_list(request.json)
+        db_obj.insert_row_from_message_list("thumbtack", "messages", data, column_names)
+        return {"status": "success"}, 200
+    else:
+        return {"status": "fail", "details": "empty json"}, 400
 
 @app.route("/register", methods=["POST"])
 def register():
@@ -137,9 +137,9 @@ def register():
              'password': password_hash, 'email': email}
     if request.args.get('phone_number'):
         entry['phone_number'] = request.args.get("phone_number")
-    if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_api_key'):
+    if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_password'):
         entry['thumbtack_user_id'] = request.args.get('thumbtack_user_id')
-        entry['thumbtack_api_key'] = request.args.get('thumbtack_api_key')
+        entry['thumbtack_password'] = request.args.get('thumbtack_password')
     if request.args.get('facebook_user_id') and request.args.get('fb_app_secret_key') \
             and request.args.get('fb_page_access_token'):
         entry['facebook_user_id'] = request.args.get('facebook_user_id')
