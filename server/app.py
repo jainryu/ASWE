@@ -76,7 +76,7 @@ def receive_lead():
     """receive a thumbtack lead and insert into db
 
     :return tuple: a tuple containing
-        dict data: the thumbtack lead data that was received
+        dict: the response status details
         int: response status code
     """
     if request.json is not None:
@@ -93,7 +93,7 @@ def receive_message():
     """receive a thumbtack message and insert into db
 
     :return tuple: a tuple containing
-        dict data: the thumbtack message data that was received
+        dict: the response status details
         int: response status code
     """
 

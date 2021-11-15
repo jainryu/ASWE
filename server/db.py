@@ -108,13 +108,13 @@ class Database:
         sql_stmt = sql_stmt.format(*args)
         self.engine.execute(sql_stmt)
 
-    def insert_row_from_list(self, db_schema, table_name, data_list, columns):
+    def insert_row_from_lead_list(self, db_schema, table_name, data_list, columns):
         """
-        insert row from list
+        insert row from thumbtack lead list
 
         :param string db_schema: schema name
         :param string table_name: table name
-        :param list data_list: the thumbtack lead or message data
+        :param list data_list: the thumbtack lead data
         :param list columns: column names that correspond to the data_list valus
         :return: None
         """
@@ -133,6 +133,30 @@ class Database:
         sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
             " " + values_clause
         self.engine.execute(sql_stmt)
+    
+    def insert_row_from_message_list(self, db_schema, table_name, data_list, columns):
+        """
+        insert row from thumbtack messsage list
+
+        :param string db_schema: schema name
+        :param string table_name: table name
+        :param list data_list: the thumbtack message data
+        :param list columns: column names that correspond to the data_list valus
+        :return: None
+        """
+        for i in range(len(data_list)):
+            data_list[i] = data_list[i].replace('\'', '\'\'')
+            if i == 4:
+                data_list[i] = datetime.datetime.fromtimestamp(int(data_list[i])).strftime('%Y-%m-%d %H:%M:%S')
+            if type(data_list[i]) == str:
+                data_list[i] = "'" + data_list[i] + "'"
+
+        values_clause = "values (" + ",".join(data_list) + ")"
+        cols_clause = "(" + ",".join(columns) + ")"
+
+        sql_stmt = "insert into " + db_schema + "." + table_name + " " + cols_clause + \
+            " " + values_clause
+        self.engine.execute(sql_stmt)    
 
     @staticmethod
     def get_where_clause_arg(filter_data=None):
