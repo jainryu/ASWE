@@ -1,0 +1,38 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.7, pytest-6.2.5, py-1.11.0, pluggy-1.0.0 -- /Users/animeshbhasin/miniforge3/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/animeshbhasin/Desktop/Projects/Columbia/ASE/Final_Project/ASE
+plugins: anyio-3.3.4
+collecting ... collected 9 items
+
+server/test_db.py::Test_TestDatabase::test_get_data FAILED               [ 11%]
+server/test_db.py::Test_TestDatabase::test_get_thumbtack_auth PASSED     [ 22%]
+server/test_db.py::Test_TestDatabase::test_get_where_clause_arg PASSED   [ 33%]
+server/test_db.py::Test_TestDatabase::test_insert_row PASSED             [ 44%]
+server/test_db.py::Test_TestDatabase::test_run_sql PASSED                [ 55%]
+server/test_helper.py::Test_TestHelper::test_check_date_format PASSED    [ 66%]
+server/test_helper.py::Test_TestHelper::test_convert_epoch_milliseconds_to_datetime_string PASSED [ 77%]
+server/test_helper.py::Test_TestHelper::test_flatten_json PASSED         [ 88%]
+server/test_helper.py::Test_TestHelper::test_get_todays_date_str PASSED  [100%]
+
+=================================== FAILURES ===================================
+_______________________ Test_TestDatabase.test_get_data ________________________
+
+self = <test_db.Test_TestDatabase testMethod=test_get_data>
+
+    def test_get_data(self):
+        expected_result = '''[{"id":"test","name":"animeshbhasin"}]'''
+        actual_result = self.db.get_data(self.db_schema, self.table_name, filter_data = {
+            'id': 'test',
+            'name': 'animeshbhasin'
+        })
+    
+>       self.assertEqual(expected_result, actual_result)
+E       AssertionError: '[{"id":"test","name":"animeshbhasin"}]' != '[]'
+E       - [{"id":"test","name":"animeshbhasin"}]
+E       + []
+
+server/test_db.py:65: AssertionError
+=========================== short test summary info ============================
+FAILED server/test_db.py::Test_TestDatabase::test_get_data - AssertionError: ...
+========================= 1 failed, 8 passed in 5.12s ==========================

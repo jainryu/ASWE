@@ -1,0 +1,14 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.7, pytest-6.2.5, py-1.11.0, pluggy-1.0.0 -- /Users/animeshbhasin/miniforge3/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/animeshbhasin/Desktop/Projects/Columbia/ASE/Final_Project/ASE
+plugins: anyio-3.3.4
+collecting ... collected 5 items
+
+server/test_db.py::Test_TestDatabase::test_get_thumbtack_auth PASSED     [ 20%]
+server/test_helper.py::Test_TestHelper::test_check_date_format PASSED    [ 40%]
+server/test_helper.py::Test_TestHelper::test_convert_epoch_milliseconds_to_datetime_string PASSED [ 60%]
+server/test_helper.py::Test_TestHelper::test_flatten_json PASSED         [ 80%]
+server/test_helper.py::Test_TestHelper::test_get_todays_date_str PASSED  [100%]
+
+============================== 5 passed in 1.66s ===============================
