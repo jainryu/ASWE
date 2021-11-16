@@ -2,9 +2,9 @@
 thumbtack connection
 """
 import requests
-import db
-from requests.structures import CaseInsensitiveDict
 from flask import Flask
+from requests.structures import CaseInsensitiveDict
+import db
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -77,10 +77,10 @@ def thumbtack_lead_json_to_list(json_dict) -> list:
             staging_row.append(json_dict[key])
 
     column_names = ["thumbtack_lead_id", "contacted_time", "price",
-        "thumbtack_request_id","category", "title", "description",
-        "schedule", "city", "state", "zip", "travel_preferences",
-        "thumbtack_customer_id", "customer_name",
-        "thumbtack_business_id", "thumbtack_business_name"]
+                    "thumbtack_request_id", "category", "title", "description",
+                    "schedule", "city", "state", "zip", "travel_preferences",
+                    "thumbtack_customer_id", "customer_name",
+                    "thumbtack_business_id", "thumbtack_business_name"]
 
     return staging_row, column_names
 
@@ -102,7 +102,7 @@ def thumbtack_message_json_to_list(json_dict) -> list:
             staging_row.append(json_dict[key])
 
     column_names = ["thumbtack_lead_id", "thumbtack_customer_id",
-        "thumbtack_business_id", "thumbtack_message_id",
-        "contacted_time", "message_text"]
+                    "thumbtack_business_id", "thumbtack_message_id",
+                    "contacted_time", "message_text"]
 
     return staging_row, column_names

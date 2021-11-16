@@ -15,6 +15,9 @@ import helper
 import fb_helper
 
 def create_app(config):
+    """
+    wrapper function that instantiates Flask app
+    """
     app = Flask(__name__)
     auth = HTTPBasicAuth()
 
@@ -95,7 +98,6 @@ def create_app(config):
             dict: the response status details
             int: response status code
         """
-    
         if request.json is not None:
             data, column_names = thumbtack_conn.thumbtack_message_json_to_list(request.json)
             db_obj.insert_row_from_message_list("thumbtack", "messages", data, column_names)
@@ -115,9 +117,10 @@ def create_app(config):
         username = request.args.get("username")
         password = request.args.get("password")
         email_query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                                table_name='users', filter_data={'email': email}))
+                                                 table_name='users', filter_data={'email': email}))
         name_query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                                table_name='users', filter_data={'username': username}))
+                                                table_name='users',
+                                                filter_data={'username': username}))
         if not validators.email(email):
             status = {'status': 'bad email'}, 400
         elif len(username) < 3:
@@ -135,10 +138,11 @@ def create_app(config):
 
         password_hash = sha256_crypt.encrypt(password)
         entry = {'user_id': str(uuid.uuid4()), 'username': username,
-                'password': password_hash, 'email': email}
+                 'password': password_hash, 'email': email}
         if request.args.get('phone_number'):
             entry['phone_number'] = request.args.get("phone_number")
-        if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_password') and request.args.get('thumbtack_business_id'):
+        if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_password') \
+            and request.args.get('thumbtack_business_id'):
             entry['thumbtack_user_id'] = request.args.get('thumbtack_user_id')
             entry['thumbtack_password'] = request.args.get('thumbtack_password')
             entry['thumbtack_business_id'] = request.args.get('thumbtack_business_id')
@@ -159,7 +163,7 @@ def create_app(config):
         :return string: either the challenge received by facebook, or http status 400
         """
         query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                        table_name='users', filter_data={'username': username}))
+                                           table_name='users', filter_data={'username': username}))
         verify_token = query[0]['fb_app_secret_key']
         token = req.args.get('hub.verify_token')
         challenge = req.args.get('hub.challenge')
@@ -220,7 +224,7 @@ def create_app(config):
         """
         username = auth.current_user()
         query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                        table_name='users', filter_data={'username': username}))
+                                           table_name='users', filter_data={'username': username}))
         filter_data = {'user_id': query[0]['user_id']}
         source = request.args.get('source')
         contacted_date = request.args.get('date')
@@ -235,7 +239,7 @@ def create_app(config):
                 return 'Please enter the date in YYYY-MM-DD format'
             filter_data['date(contacted_time)'] = contacted_date
         result = db_obj.get_data(db_schema='talking_potato', table_name='messages',
-                                filter_data=filter_data)
+                                 filter_data=filter_data)
         return result
 
 
@@ -251,7 +255,7 @@ def create_app(config):
         """
         username = auth.current_user()
         query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                        table_name='users', filter_data={'username': username}))
+                                           table_name='users', filter_data={'username': username}))
         filter_data = {'thumbtack_business_id': query[0]['thumbtack_business_id']}
         contacted_date = request.args.get('date')
 
@@ -278,7 +282,7 @@ def create_app(config):
         """
         username = auth.current_user()
         query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                        table_name='users', filter_data={'username': username}))
+                                           table_name='users', filter_data={'username': username}))
 
         filter_user_date_range = {'user_id': query[0]['user_id']}
         from_date = request.args.get('from_date')
@@ -311,9 +315,9 @@ def create_app(config):
                 return 'Please enter the date in YYYY-MM-DD format'
         filter_user_date_range['to_date'] = to_date
         result = analytics_obj.get_grouped_by_date(db_schema='talking_potato',
-                                                table_name='messages',
-                                                filter_data=filter_data,
-                                                filter_user_date_range=filter_user_date_range)
+                                                   table_name='messages',
+                                                   filter_data=filter_data,
+                                                   filter_user_date_range=filter_user_date_range)
         return result
 
 
@@ -326,11 +330,11 @@ def create_app(config):
         :query param to_date: ending date to filter by. Optional.
         :query param dimension: dimension to filter data by. (currently only state and count)
 
-        :return list result: a list of dicts with keys: date, optional category, optimal state, count.
+        :return result: a list of dicts with keys: date, optional category, optimal state, count.
         """
         username = auth.current_user()
         query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                        table_name='users', filter_data={'username': username}))
+                                           table_name='users', filter_data={'username': username}))
 
         filter_user_date_range = {'thumbtack_business_id': query[0]['thumbtack_business_id']}
 
@@ -364,11 +368,11 @@ def create_app(config):
                 return 'Please enter the date in YYYY-MM-DD format'
         filter_user_date_range['to_date'] = to_date
         result = analytics_obj.get_grouped_by_date(db_schema='thumbtack',
-                                                table_name='leads',
-                                                filter_data=filter_data,
-                                                filter_user_date_range=filter_user_date_range)
+                                                   table_name='leads',
+                                                   filter_data=filter_data,
+                                                   filter_user_date_range=filter_user_date_range)
         return result
-    
+
     return app
 
 

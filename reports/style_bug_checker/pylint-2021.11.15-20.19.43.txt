@@ -1,0 +1,162 @@
+************* Module server.thumbtack_conn
+server/thumbtack_conn.py:80:0: C0330: Wrong continued indentation (add 12 spaces).
+        "thumbtack_request_id","category", "title", "description",
+        ^           | (bad-continuation)
+server/thumbtack_conn.py:80:30: C0326: Exactly one space required after comma
+        "thumbtack_request_id","category", "title", "description",
+                              ^ (bad-whitespace)
+server/thumbtack_conn.py:81:0: C0330: Wrong continued indentation (add 12 spaces).
+        "schedule", "city", "state", "zip", "travel_preferences",
+        ^           | (bad-continuation)
+server/thumbtack_conn.py:82:0: C0330: Wrong continued indentation (add 12 spaces).
+        "thumbtack_customer_id", "customer_name",
+        ^           | (bad-continuation)
+server/thumbtack_conn.py:83:0: C0330: Wrong continued indentation (add 12 spaces).
+        "thumbtack_business_id", "thumbtack_business_name"]
+        ^           | (bad-continuation)
+server/thumbtack_conn.py:105:0: C0330: Wrong continued indentation (add 12 spaces).
+        "thumbtack_business_id", "thumbtack_message_id",
+        ^           | (bad-continuation)
+server/thumbtack_conn.py:106:0: C0330: Wrong continued indentation (add 12 spaces).
+        "contacted_time", "message_text"]
+        ^           | (bad-continuation)
+server/thumbtack_conn.py:6:0: C0411: third party import "from requests.structures import CaseInsensitiveDict" should be placed before "import db" (wrong-import-order)
+server/thumbtack_conn.py:7:0: C0411: third party import "from flask import Flask" should be placed before "import db" (wrong-import-order)
+************* Module server.app
+server/app.py:98:0: C0303: Trailing whitespace (trailing-whitespace)
+server/app.py:118:0: C0330: Wrong continued indentation (add 1 space).
+                                                table_name='users', filter_data={'email': email}))
+                                                ^| (bad-continuation)
+server/app.py:120:0: C0301: Line too long (104/100) (line-too-long)
+server/app.py:138:0: C0330: Wrong continued indentation (add 1 space).
+                'password': password_hash, 'email': email}
+                ^| (bad-continuation)
+server/app.py:141:0: C0301: Line too long (138/100) (line-too-long)
+server/app.py:162:0: C0330: Wrong continued indentation (add 3 spaces).
+                                        table_name='users', filter_data={'username': username}))
+                                        ^  | (bad-continuation)
+server/app.py:223:0: C0330: Wrong continued indentation (add 3 spaces).
+                                        table_name='users', filter_data={'username': username}))
+                                        ^  | (bad-continuation)
+server/app.py:238:0: C0330: Wrong continued indentation (add 1 space).
+                                filter_data=filter_data)
+                                ^| (bad-continuation)
+server/app.py:254:0: C0330: Wrong continued indentation (add 3 spaces).
+                                        table_name='users', filter_data={'username': username}))
+                                        ^  | (bad-continuation)
+server/app.py:281:0: C0330: Wrong continued indentation (add 3 spaces).
+                                        table_name='users', filter_data={'username': username}))
+                                        ^  | (bad-continuation)
+server/app.py:314:0: C0330: Wrong continued indentation (add 3 spaces).
+                                                table_name='messages',
+                                                ^  | (bad-continuation)
+server/app.py:315:0: C0330: Wrong continued indentation (add 3 spaces).
+                                                filter_data=filter_data,
+                                                ^  | (bad-continuation)
+server/app.py:316:0: C0330: Wrong continued indentation (add 3 spaces).
+                                                filter_user_date_range=filter_user_date_range)
+                                                ^  | (bad-continuation)
+server/app.py:329:0: C0301: Line too long (102/100) (line-too-long)
+server/app.py:333:0: C0330: Wrong continued indentation (add 3 spaces).
+                                        table_name='users', filter_data={'username': username}))
+                                        ^  | (bad-continuation)
+server/app.py:367:0: C0330: Wrong continued indentation (add 3 spaces).
+                                                table_name='leads',
+                                                ^  | (bad-continuation)
+server/app.py:368:0: C0330: Wrong continued indentation (add 3 spaces).
+                                                filter_data=filter_data,
+                                                ^  | (bad-continuation)
+server/app.py:369:0: C0330: Wrong continued indentation (add 3 spaces).
+                                                filter_user_date_range=filter_user_date_range)
+                                                ^  | (bad-continuation)
+server/app.py:371:0: C0303: Trailing whitespace (trailing-whitespace)
+server/app.py:18:4: W0621: Redefining name 'app' from outer scope (line 376) (redefined-outer-name)
+server/app.py:17:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/app.py:17:0: R0914: Too many local variables (18/15) (too-many-locals)
+server/app.py:30:4: W0612: Unused variable 'verify_password' (unused-variable)
+server/app.py:46:4: W0612: Unused variable 'hello_world' (unused-variable)
+server/app.py:59:4: W0612: Unused variable 'create_dummy_data' (unused-variable)
+server/app.py:75:4: W0612: Unused variable 'receive_lead' (unused-variable)
+server/app.py:91:4: W0612: Unused variable 'receive_message' (unused-variable)
+server/app.py:106:4: W0612: Unused variable 'register' (unused-variable)
+server/app.py:174:4: W0612: Unused variable 'webhook' (unused-variable)
+server/app.py:213:4: W0612: Unused variable 'get_messages' (unused-variable)
+server/app.py:244:4: W0612: Unused variable 'get_leads' (unused-variable)
+server/app.py:270:4: W0612: Unused variable 'get_message_analytics' (unused-variable)
+server/app.py:322:4: W0612: Unused variable 'get_lead_analytics' (unused-variable)
+server/app.py:17:0: R0915: Too many statements (151/50) (too-many-statements)
+************* Module server.test_integration
+server/test_integration.py:12:18: C0326: Exactly one space required around assignment
+        api_string+=key
+                  ^^ (bad-whitespace)
+server/test_integration.py:13:18: C0326: Exactly one space required around assignment
+        api_string+='='
+                  ^^ (bad-whitespace)
+server/test_integration.py:14:18: C0326: Exactly one space required around assignment
+        api_string+=data[key]
+                  ^^ (bad-whitespace)
+server/test_integration.py:15:18: C0326: Exactly one space required around assignment
+        api_string+='&'
+                  ^^ (bad-whitespace)
+server/test_integration.py:43:8: C0326: Exactly one space required around assignment
+    data={
+        ^ (bad-whitespace)
+server/test_integration.py:52:61: C0303: Trailing whitespace (trailing-whitespace)
+server/test_integration.py:58:0: C0301: Line too long (140/100) (line-too-long)
+server/test_integration.py:65:0: C0301: Line too long (134/100) (line-too-long)
+server/test_integration.py:71:0: C0301: Line too long (108/100) (line-too-long)
+server/test_integration.py:71:93: C0326: Exactly one space required after comma
+    response = client.get('/get_leads', headers={"Authorization": _basic_auth_str('integtest','integtest')})
+                                                                                             ^ (bad-whitespace)
+server/test_integration.py:78:0: C0301: Line too long (111/100) (line-too-long)
+server/test_integration.py:78:96: C0326: Exactly one space required after comma
+    response = client.get('/get_messages', headers={"Authorization": _basic_auth_str('integtest','integtest')})
+                                                                                                ^ (bad-whitespace)
+server/test_integration.py:90:0: C0330: Wrong continued indentation (remove 2 spaces).
+                            headers={"Authorization": _basic_auth_str('integtest','integtest')})
+                          | ^ (bad-continuation)
+server/test_integration.py:90:81: C0326: Exactly one space required after comma
+                            headers={"Authorization": _basic_auth_str('integtest','integtest')})
+                                                                                 ^ (bad-whitespace)
+server/test_integration.py:103:0: C0330: Wrong continued indentation (remove 2 spaces).
+                            headers={"Authorization": _basic_auth_str('integtest','integtest')})
+                          | ^ (bad-continuation)
+server/test_integration.py:103:81: C0326: Exactly one space required after comma
+                            headers={"Authorization": _basic_auth_str('integtest','integtest')})
+                                                                                 ^ (bad-whitespace)
+server/test_integration.py:105:0: C0304: Final newline missing (missing-final-newline)
+server/test_integration.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+server/test_integration.py:9:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:22:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:33:30: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:31:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:37:18: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:37:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:42:18: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:42:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:56:26: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:56:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:56:26: W0613: Unused argument 'client' (unused-argument)
+server/test_integration.py:63:23: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:63:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:63:23: W0613: Unused argument 'client' (unused-argument)
+server/test_integration.py:70:23: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:70:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:77:26: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:77:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:83:28: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:84:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:83:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:96:32: W0621: Redefining name 'client' from outer scope (line 31) (redefined-outer-name)
+server/test_integration.py:97:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:96:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:1:0: W0611: Unused Flask imported from flask (unused-import)
+server/test_integration.py:5:0: W0611: Unused import json (unused-import)
+server/test_integration.py:5:0: C0411: standard import "import json" should be placed before "from flask import Flask" (wrong-import-order)
+************* Module server.integ_test_config
+server/integ_test_config.py:4:0: C0304: Final newline missing (missing-final-newline)
+server/integ_test_config.py:1:0: C0114: Missing module docstring (missing-module-docstring)
+
+-----------------------------------
+Your code has been rated at 8.41/10
+

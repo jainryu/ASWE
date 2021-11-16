@@ -1,0 +1,43 @@
+************* Module server.app
+server/app.py:21:4: W0621: Redefining name 'app' from outer scope (line 380) (redefined-outer-name)
+server/app.py:17:0: R0914: Too many local variables (18/15) (too-many-locals)
+server/app.py:33:4: W0612: Unused variable 'verify_password' (unused-variable)
+server/app.py:49:4: W0612: Unused variable 'hello_world' (unused-variable)
+server/app.py:62:4: W0612: Unused variable 'create_dummy_data' (unused-variable)
+server/app.py:78:4: W0612: Unused variable 'receive_lead' (unused-variable)
+server/app.py:94:4: W0612: Unused variable 'receive_message' (unused-variable)
+server/app.py:108:4: W0612: Unused variable 'register' (unused-variable)
+server/app.py:178:4: W0612: Unused variable 'webhook' (unused-variable)
+server/app.py:217:4: W0612: Unused variable 'get_messages' (unused-variable)
+server/app.py:248:4: W0612: Unused variable 'get_leads' (unused-variable)
+server/app.py:274:4: W0612: Unused variable 'get_message_analytics' (unused-variable)
+server/app.py:326:4: W0612: Unused variable 'get_lead_analytics' (unused-variable)
+server/app.py:17:0: R0915: Too many statements (151/50) (too-many-statements)
+************* Module server.test_integration
+server/test_integration.py:96:0: C0330: Wrong hanging indentation (remove 1 space).
+         "Authorization": _basic_auth_str('integtest', 'integtest')})
+        |^ (bad-continuation)
+server/test_integration.py:107:0: C0330: Wrong hanging indentation (remove 1 space).
+         "Authorization": _basic_auth_str('integtest', 'integtest')})
+        |^ (bad-continuation)
+server/test_integration.py:40:30: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:38:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:44:18: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:52:18: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:69:26: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:77:4: W0107: Unnecessary pass statement (unnecessary-pass)
+server/test_integration.py:69:26: W0613: Unused argument 'client' (unused-argument)
+server/test_integration.py:80:23: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:88:4: W0107: Unnecessary pass statement (unnecessary-pass)
+server/test_integration.py:80:23: W0613: Unused argument 'client' (unused-argument)
+server/test_integration.py:91:23: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:102:26: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:112:28: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:116:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:128:32: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:132:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:4:0: W0611: Unused import json (unused-import)
+
+------------------------------------------------------------------
+Your code has been rated at 9.42/10 (previous run: 8.41/10, +1.01)
+
