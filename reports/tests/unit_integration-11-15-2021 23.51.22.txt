@@ -1,0 +1,137 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.7, pytest-6.2.5, py-1.11.0, pluggy-1.0.0 -- /Users/animeshbhasin/miniforge3/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/animeshbhasin/Desktop/Projects/Columbia/ASE/Final_Project/ASE
+plugins: anyio-3.3.4
+collecting ... collected 24 items
+
+server/test_analytics.py::TestTestAnalytics::test_get_grouped_by_date PASSED [  4%]
+server/test_analytics.py::TestTestAnalytics::test_get_select_clause_cols PASSED [  8%]
+server/test_analytics.py::TestTestAnalytics::test_get_user_and_date_between_clause PASSED [ 12%]
+server/test_db.py::TestTestDatabase::test_get_data PASSED                [ 16%]
+server/test_db.py::TestTestDatabase::test_get_thumbtack_auth PASSED      [ 20%]
+server/test_db.py::TestTestDatabase::test_get_where_clause_arg PASSED    [ 25%]
+server/test_db.py::TestTestDatabase::test_insert_row PASSED              [ 29%]
+server/test_db.py::TestTestDatabase::test_run_sql PASSED                 [ 33%]
+server/test_helper.py::TestTestHelper::test_check_date_format PASSED     [ 37%]
+server/test_helper.py::TestTestHelper::test_convert_epoch_milliseconds_to_datetime_string PASSED [ 41%]
+server/test_helper.py::TestTestHelper::test_flatten_json PASSED          [ 45%]
+server/test_helper.py::TestTestHelper::test_get_todays_date_str PASSED   [ 50%]
+server/test_integration.py::test_home_url PASSED                         [ 54%]
+server/test_integration.py::test_register PASSED                         [ 58%]
+server/test_integration.py::test_receive_messages FAILED                 [ 62%]
+server/test_integration.py::test_receive_leads FAILED                    [ 66%]
+server/test_integration.py::test_get_all_leads PASSED                    [ 70%]
+server/test_integration.py::test_get_all_messages PASSED                 [ 75%]
+server/test_integration.py::test_get_lead_analytics PASSED               [ 79%]
+server/test_integration.py::test_get_messages_analytics PASSED           [ 83%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_create_test_data PASSED [ 87%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_lead_json_to_list PASSED [ 91%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_message_json_to_list PASSED [ 95%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_send_message PASSED [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_receive_messages _____________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_receive_messages(client):
+        """
+        Tests thumbtack_message endpoint with valid message
+        """
+        sample_message = {
+            "leadID": "299614694480093245",
+            "customerID": "331138063184986319",
+            "businessID": "286845156044809661",
+            "message": {
+                "messageID": "8699842694484326245",
+                "createTimestamp": "1498760294",
+                "text": "Do you offer fridge cleaning or is that extra?"
+            }
+        }
+    
+        response = client.post('/thumbtack_message', headers={
+        "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_message)
+    
+>       assert response.status_code == 200
+E       assert 404 == 200
+E         +404
+E         -200
+
+server/test_integration.py:87: AssertionError
+______________________________ test_receive_leads ______________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_receive_leads(client):
+        """
+        Tests thumbtack_lead endpoint with valid lead
+        """
+        sample_lead = {
+            "leadID": "299614694480093245",
+            "createTimestamp": "1498760294",
+            "request": {
+                "requestID": "2999842694480093245",
+                "category": "Interior Painting",
+                "title": "Interior Painting",
+                "description": "There is a stain on the door that needs to be touched up.",
+                "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+                "location": {
+                "city": "San Jose",
+                "state": "CA",
+                "zipCode": "95125"
+                },
+                "travelPreferences": "Professional must travel to my address.",
+                "details": [
+                {
+                    "question": "Type of property",
+                    "answer": "Home"
+                },
+                {
+                    "question": "Number of rooms",
+                    "answer": "4 rooms"
+                }
+                ]
+            },
+            "customer": {
+                "customerID": "331138063184986319",
+                "name": "John Davis",
+                "phone": "1234567890"
+            },
+            "business": {
+                "businessID": "286845156044809661",
+                "name": "Tim's Painting Business"
+            }
+        }
+    
+        response = client.post('/thumbtack_lead', headers={
+        "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_lead)
+    
+>       assert response.status_code == 200
+E       assert 400 == 200
+E         +400
+E         -200
+
+server/test_integration.py:133: AssertionError
+=============================== warnings summary ===============================
+server/test_integration.py::test_register
+  /Users/animeshbhasin/Desktop/Projects/Columbia/ASE/Final_Project/ASE/server/app.py:139: DeprecationWarning: the method passlib.handlers.sha2_crypt.sha256_crypt.encrypt() is deprecated as of Passlib 1.7, and will be removed in Passlib 2.0, use .hash() instead.
+    password_hash = sha256_crypt.encrypt(password)
+
+server/test_integration.py::test_receive_leads
+server/test_integration.py::test_get_all_leads
+server/test_integration.py::test_get_all_leads
+server/test_integration.py::test_get_all_messages
+server/test_integration.py::test_get_all_messages
+server/test_integration.py::test_get_lead_analytics
+server/test_integration.py::test_get_lead_analytics
+server/test_integration.py::test_get_messages_analytics
+server/test_integration.py::test_get_messages_analytics
+  /Users/animeshbhasin/miniforge3/lib/python3.9/site-packages/pandas/io/json/_json.py:147: DeprecationWarning: an integer is required (got type float).  Implicit conversion to integers using __int__ is deprecated, and may be removed in a future version of Python.
+    return dumps(
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+=========================== short test summary info ============================
+FAILED server/test_integration.py::test_receive_messages - assert 404 == 200
+FAILED server/test_integration.py::test_receive_leads - assert 400 == 200
+================== 2 failed, 22 passed, 10 warnings in 23.85s ==================
