@@ -1,0 +1,46 @@
+============================= test session starts ==============================
+platform darwin -- Python 3.9.7, pytest-6.2.5, py-1.11.0, pluggy-1.0.0 -- /Users/animeshbhasin/miniforge3/bin/python
+cachedir: .pytest_cache
+rootdir: /Users/animeshbhasin/Desktop/Projects/Columbia/ASE/Final_Project/ASE
+plugins: anyio-3.3.4
+collecting ... collected 20 items
+
+server/test_analytics.py::TestTestAnalytics::test_get_grouped_by_date PASSED [  5%]
+server/test_analytics.py::TestTestAnalytics::test_get_select_clause_cols PASSED [ 10%]
+server/test_analytics.py::TestTestAnalytics::test_get_user_and_date_between_clause PASSED [ 15%]
+server/test_db.py::TestTestDatabase::test_get_data PASSED                [ 20%]
+server/test_db.py::TestTestDatabase::test_get_thumbtack_auth PASSED      [ 25%]
+server/test_db.py::TestTestDatabase::test_get_where_clause_arg PASSED    [ 30%]
+server/test_db.py::TestTestDatabase::test_insert_row PASSED              [ 35%]
+server/test_db.py::TestTestDatabase::test_run_sql PASSED                 [ 40%]
+server/test_helper.py::TestTestHelper::test_check_date_format PASSED     [ 45%]
+server/test_helper.py::TestTestHelper::test_convert_epoch_milliseconds_to_datetime_string PASSED [ 50%]
+server/test_helper.py::TestTestHelper::test_flatten_json PASSED          [ 55%]
+server/test_helper.py::TestTestHelper::test_get_todays_date_str PASSED   [ 60%]
+server/test_integration.py::test_home_url PASSED                         [ 65%]
+server/test_integration.py::test_register PASSED                         [ 70%]
+server/test_integration.py::test_receive_messages PASSED                 [ 75%]
+server/test_integration.py::test_receive_leads PASSED                    [ 80%]
+server/test_integration.py::test_get_all_leads PASSED                    [ 85%]
+server/test_integration.py::test_get_all_messages PASSED                 [ 90%]
+server/test_integration.py::test_get_lead_analytics PASSED               [ 95%]
+server/test_integration.py::test_get_messages_analytics PASSED           [100%]
+
+=============================== warnings summary ===============================
+server/test_integration.py::test_register
+  /Users/animeshbhasin/Desktop/Projects/Columbia/ASE/Final_Project/ASE/server/app.py:136: DeprecationWarning: the method passlib.handlers.sha2_crypt.sha256_crypt.encrypt() is deprecated as of Passlib 1.7, and will be removed in Passlib 2.0, use .hash() instead.
+    password_hash = sha256_crypt.encrypt(password)
+
+server/test_integration.py::test_get_all_leads
+server/test_integration.py::test_get_all_leads
+server/test_integration.py::test_get_all_messages
+server/test_integration.py::test_get_all_messages
+server/test_integration.py::test_get_lead_analytics
+server/test_integration.py::test_get_lead_analytics
+server/test_integration.py::test_get_messages_analytics
+server/test_integration.py::test_get_messages_analytics
+  /Users/animeshbhasin/miniforge3/lib/python3.9/site-packages/pandas/io/json/_json.py:147: DeprecationWarning: an integer is required (got type float).  Implicit conversion to integers using __int__ is deprecated, and may be removed in a future version of Python.
+    return dumps(
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+======================= 20 passed, 9 warnings in 17.43s ========================

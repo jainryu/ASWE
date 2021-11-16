@@ -1,6 +1,6 @@
 #!/bin/sh
 
-run_type_d="unit"
+run_type_d="unit_integration"
 test_dir_d="./server"
 report_dir_d="./reports/tests"
 
