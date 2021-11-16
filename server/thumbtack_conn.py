@@ -5,6 +5,7 @@ import requests
 from flask import Flask
 from requests.structures import CaseInsensitiveDict
 import db
+from base64 import b64encode
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')
@@ -44,7 +45,7 @@ def thumbtack_send_message(business_id, lead_id, message) -> int:
     headers = CaseInsensitiveDict()
     headers["Content-Type"] = "application/json"
 
-    data = {"text": f"{message}"}
+    data = '{"text": "' + message + "\"}"
 
     resp = requests.post(url, headers=headers, data=data, auth=(username, password))
 

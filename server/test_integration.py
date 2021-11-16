@@ -70,23 +70,67 @@ def test_receive_messages(client):
     """
     Tests thumbtack_message endpoint with valid message
     """
-    # sample_message = {}
-    # response = client.post('/thumbtack_message', headers={
-    # "Authorization": _basic_auth_str('integtest', 'integtest')}, json=sample_message)
-    # print(response)
-    pass
+    sample_message = {
+        "leadID": "299614694480093245",
+        "customerID": "331138063184986319",
+        "businessID": "286845156044809661",
+        "message": {
+            "messageID": "8699842694484326245",
+            "createTimestamp": "1498760294",
+            "text": "Do you offer fridge cleaning or is that extra?"
+        }
+    }
 
+    response = client.post('/thumbtack_message', headers={
+    "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_message)
+
+    assert response.status_code == 200
 
 def test_receive_leads(client):
     """
     Tests thumbtack_lead endpoint with valid lead
     """
-    # sample_lead = {}
-    # response = client.post('/thumbtack_lead', headers={
-    # "Authorization": _basic_auth_str('integtest', 'integtest')}, json=sample_lead)
-    # print(response)
-    pass
+    sample_lead = {
+        "leadID": "299614694480093245",
+        "createTimestamp": "1498760294",
+        "request": {
+            "requestID": "2999842694480093245",
+            "category": "Interior Painting",
+            "title": "Interior Painting",
+            "description": "There is a stain on the door that needs to be touched up.",
+            "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+            "location": {
+            "city": "San Jose",
+            "state": "CA",
+            "zipCode": "95125"
+            },
+            "travelPreferences": "Professional must travel to my address.",
+            "details": [
+            {
+                "question": "Type of property",
+                "answer": "Home"
+            },
+            {
+                "question": "Number of rooms",
+                "answer": "4 rooms"
+            }
+            ]
+        },
+        "customer": {
+            "customerID": "331138063184986319",
+            "name": "John Davis",
+            "phone": "1234567890"
+        },
+        "business": {
+            "businessID": "286845156044809661",
+            "name": "Tim's Painting Business"
+        }
+    }
 
+    response = client.post('/thumbtack_lead', headers={
+    "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_lead)
+
+    assert response.status_code == 200
 
 def test_get_all_leads(client):
     """
