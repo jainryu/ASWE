@@ -13,12 +13,23 @@ tags:
   description: "facebook_related routes"
 - name: "analytics"
   description: "analytics for one or both lead sources"
-
+- name: "other"
+  description: "other"
 schemes:
 - "https"
 - "http"
 
 paths:
+  /:
+      get:
+        tags:
+        - "other"
+        summary: "a health check"
+        produces:
+        - "string"
+        responses:
+          200: 
+            description: "Hello from Talking Potatoes!!!"
   /register:
     post:
       tags:
@@ -42,6 +53,17 @@ paths:
           description: sucessful register
         400:
           description: failed register
+  
+  /dummy_thumbtack_lead:
+    get:
+      tags:
+      - "thumbtack"
+      summary: "get thumbtack lead dummy data"
+      produces:
+      - "application/json"
+      responses:
+        200:
+          description: thumbtack lead dummy data
   
   /thumbtack_lead:
     post:
@@ -130,7 +152,8 @@ paths:
     get:
       tags:
       - "analytics"
-      summary: "get leads for specified lead source(s)"
+      summary: "get leads"
+      description: "May filter by lead source and contacted date."
       produces:
       - "application/json"
       parameters:
@@ -156,7 +179,8 @@ paths:
     get:
       tags:
       - "analytics"
-      summary: "get messages for specified lead source(s)"
+      summary: "get messages"
+      description: "May filter by lead source and contacted date."
       produces:
       - "application/json"
       parameters:
@@ -183,7 +207,8 @@ paths:
     get:
       tags:
       - "analytics"
-      summary: "get a count of messages for specified lead source(s)"
+      summary: "get a count of leads"
+      description: "May filter by date range. May add dimensions. Currently, only gets thumbtack leads. Dimensions currently only category and state."
       produces:
       - "application/json"
       parameters:
@@ -209,13 +234,14 @@ paths:
     get:
       tags:
       - "analytics"
-      summary: "get a count of messages for specified lead source(s)"
+      summary: "get a count of messages."
+      description: "May filter by a date range. May add dimensions. Dimensions currently only lead source."
       produces:
       - "application/json"
       parameters:
       - in: "query"
         name: "message filters"
-        description: "keys: from_date, to_date, dimension, "
+        description: "keys: from_date, to_date, dimension (enum: user_source)"
         required: false
         type: string
       responses:
