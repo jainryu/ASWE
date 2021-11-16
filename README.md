@@ -37,18 +37,17 @@ $ python -m flask run
 ```
 ## Testing the service
 
-### i. Unit Tests
+### i. Unit and System Tests
 
-To run unit tests:
+We have used pytest to run our unit and system tests.
+
+To run unit and system/integration tests:
 ```
-$ (tp_env) ./run_unit_tests.sh unit
+$ (tp_env) ./run_unit_integration_tests.sh 
 ```
-The unit test reports are created in the `./reports/tests/` directory . Each file has the timestamp to maintain report history.
-### ii. Integration Tests - Todo
+The unit and system/integration test reports are created in the `./reports/tests/` directory . Each file has the timestamp to maintain report history.
 
-
-
-### iii. Style checker
+### ii. Style checker
 
 To run pylint style checker:
 ```
