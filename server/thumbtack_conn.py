@@ -5,7 +5,6 @@ import requests
 from flask import Flask
 from requests.structures import CaseInsensitiveDict
 import db
-from base64 import b64encode
 
 app = Flask(__name__)
 app.config.from_pyfile('config.py')

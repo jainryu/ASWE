@@ -2,15 +2,14 @@
 test thumbtack methods
 """
 import unittest
-from thumbtack_conn import create_test_data, thumbtack_lead_json_to_list, thumbtack_message_json_to_list, thumbtack_send_message
+from thumbtack_conn import create_test_data, thumbtack_lead_json_to_list, thumbtack_message_json_to_list, thumbtack_send_message # pylint: disable=line-too-long
 
-class Test_Thumbtack(unittest.TestCase):
+# pylint: disable=line-too-long, invalid-name
+class TestTestThumbtack(unittest.TestCase):
     """
     unit test class for thumbtack_conn.py
     """
     maxDiff = None
-
-
 
     def setUp(self) -> None:
         """

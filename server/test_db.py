@@ -5,6 +5,7 @@ import unittest
 from db import Database
 
 
+# pylint: disable=invalid-name
 class TestTestDatabase(unittest.TestCase):
     """
     unit test class for db.py
