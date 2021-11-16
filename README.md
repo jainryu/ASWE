@@ -2,7 +2,7 @@
 
 A unified lead service built using Flask. The service is hosted at https://tp-leads-app.herokuapp.com .
 
-The API documentation and endpoints are available at this link - insert link here
+The API documentation and endpoints are available at this [link](https://app.swaggerhub.com/apis/tojo/lead-aggregator_and_analytics_service/1.0.0)
 
 ## Third Party APIs
 
