@@ -151,11 +151,12 @@ def create_app(config):
                 entry['thumbtack_user_id'] = request.args.get('thumbtack_user_id')
                 entry['thumbtack_password'] = request.args.get('thumbtack_password')
                 entry['thumbtack_business_id'] = request.args.get('thumbtack_business_id')
-            if request.args.get('facebook_user_id') and request.args.get('fb_app_secret_key') \
-                    and request.args.get('fb_page_access_token'):
-                entry['facebook_user_id'] = request.args.get('facebook_user_id')
-                entry['fb_app_secret_key'] = request.args.get('fb_app_secret_key')
+            if request.args.get('fb_app_id') and request.args.get('fb_page_id') \
+               and request.args.get('fb_page_access_token') and request.args.get('fb_secret_key'):
+                entry['fb_app_id'] = request.args.get('fb_app_id')
+                entry['fb_page_id'] = request.args.get('fb_page_id')
                 entry['fb_page_access_token'] = request.args.get('fb_page_access_token')
+                entry['fb_secret_key'] = request.args.get('fb_secret_key')
             db_obj.insert_row('talking_potato', 'users', entry)
 
         else:
@@ -414,9 +415,53 @@ def create_app(config):
                                                    filter_user_date_range=filter_user_date_range)
         return result
 
-    return app
+    @app.route("/message_analytics/trends", methods=['GET'])
+    @auth.login_required
+    def get_lead_analytics_trends():
+        """
+        request args:
+        reset: drop the current view and create a new one if user is looking for new data
+        frquency: days, weeks, months, years
+        from_date: from date
+        to_date: to date
+        lead source: facebook or thumbtack. for both, none
+        dimension: dimension to filter by, if lead source is not none
 
+        """
+        username = auth.current_user()
+        user = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                           table_name='users', filter_data={'username': username}))
+
+        frequency = request.args.get('frequency')
+        lead_source = request.args.get('lead_souce')
+        dimension = request.args.get('dimension')
+        from_date, to_date = analytics_obj.create_dates(request.args.get('from_date'),
+                                                        request.args.get('to_date'))
+        if from_date is None and to_date is None:
+            return 'Please enter the date in YYYY-MM-DD format'
+
+        from_year = int(from_date.split("-")[0])
+        to_year = int(to_date.split("-")[0])
+
+        if not frequency:
+            frequency = "months"
+        if frequency == "years":
+            counts = analytics_obj.get_message_counts_per_year(user[0], lead_source, dimension,
+                                                               from_year, to_year)
+        elif frequency == "months":
+            from_month = int(from_date.split("-")[1])
+            to_month = int(to_date.split("-")[1])
+            counts = analytics_obj.get_message_counts_per_month(user[0], lead_source, dimension,
+                                                                from_year, to_year,
+                                                                from_month, to_month)
+        return counts
+
+    return app
 
 # if __name__ == '__main__':
 app = create_app('config.py')
 # app.run(debug=True)
+
+if __name__ == '__main__':
+    print(helper.get_todays_date_str())
+    app.run(host="0.0.0.0", port=5000)

@@ -4,7 +4,6 @@ database service
 
 import datetime
 from sqlalchemy import create_engine
-from sqlalchemy.sql.expression import table
 import pandas as pd
 
 
