@@ -4,6 +4,7 @@ database service
 
 import datetime
 from sqlalchemy import create_engine
+from sqlalchemy.sql.expression import table
 import pandas as pd
 
 
@@ -196,3 +197,33 @@ class Database:
 
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
+
+    def update(self, db_schema, table_name, update_data, where_filter):
+        '''
+            update record
+
+            :param string db_schema: schema
+            :param string table_name: table name
+            :param dictionary update_data: {column_name: value}
+            :return query
+        '''
+        where_filter_val = update_data[where_filter]
+        update_data.pop(where_filter)
+
+        updated_cols = []
+        updated_args = []
+
+        for key, val in update_data.items():
+            updated_cols.append(key + "={}")
+            if isinstance(val, str):
+                updated_args.append("'" + val + "'")
+            else:
+                updated_args.append(val)
+
+        update = ",".join(updated_cols)
+
+        sql_stmt =f"""update {db_schema}.{table_name}
+                      set {update}
+                      where {where_filter} = '{where_filter_val}'"""
+        sql_stmt = sql_stmt.format(*updated_args)
+        self.engine.execute(sql_stmt)

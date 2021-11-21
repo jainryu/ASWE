@@ -104,7 +104,7 @@ def create_app(config):
             return {"status": "success"}, 200
         return {"status": "fail", "details": "empty json"}, 400
 
-    @app.route("/register", methods=["POST"])
+    @app.route("/register", methods=["POST", "PUT", "DELETE"])
     def register():
         """register a new user of our service
 
@@ -116,42 +116,75 @@ def create_app(config):
         email = request.args.get("email")
         username = request.args.get("username")
         password = request.args.get("password")
-        email_query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                                 table_name='users', filter_data={'email': email}))
-        name_query = json.loads(db_obj.get_data(db_schema='talking_potato',
-                                                table_name='users',
-                                                filter_data={'username': username}))
-        if not validators.email(email):
-            status = {'status': 'bad email'}, 400
-        elif len(username) < 3:
-            status = {'status': 'username too short'}, 400
-        elif len(password) < 6:
-            status = {'status': 'password too short'}, 400
-        elif not username.isalnum():
-            status = {'status': 'username must be alphanumeric'}, 400
-        elif len(email_query) > 0:
-            status = {'status': 'email already registered'}, 400
-        elif len(name_query) > 0:
-            status = {'status': 'username already registered'}, 400
-        if status:
-            return status
+        if request.method == "POST":
+            email_query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                                    table_name='users',
+                                                    filter_data={'email': email}))
+            name_query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                                    table_name='users',
+                                                    filter_data={'username': username}))
 
-        password_hash = sha256_crypt.encrypt(password)
-        entry = {'user_id': str(uuid.uuid4()), 'username': username,
-                 'password': password_hash, 'email': email}
-        if request.args.get('phone_number'):
-            entry['phone_number'] = request.args.get("phone_number")
-        if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_password') \
-            and request.args.get('thumbtack_business_id'):
-            entry['thumbtack_user_id'] = request.args.get('thumbtack_user_id')
-            entry['thumbtack_password'] = request.args.get('thumbtack_password')
-            entry['thumbtack_business_id'] = request.args.get('thumbtack_business_id')
-        if request.args.get('facebook_user_id') and request.args.get('fb_app_secret_key') \
-                and request.args.get('fb_page_access_token'):
-            entry['facebook_user_id'] = request.args.get('facebook_user_id')
-            entry['fb_app_secret_key'] = request.args.get('fb_app_secret_key')
-            entry['fb_page_access_token'] = request.args.get('fb_page_access_token')
-        db_obj.insert_row('talking_potato', 'users', entry)
+            if not validators.email(email):
+                status = {'status': 'bad email'}, 400
+            elif len(username) < 3:
+                status = {'status': 'username too short'}, 400
+            elif not password:
+                status = {'status': 'password must be entered'}, 400
+            elif len(password) < 6:
+                status = {'status': 'password too short'}, 400
+            elif not username.isalnum():
+                status = {'status': 'username must be alphanumeric'}, 400
+            elif len(email_query) > 0:
+                status = {'status': 'email already registered'}, 400
+            elif len(name_query) > 0:
+                status = {'status': 'username already registered'}, 400
+            if status:
+                return status
+
+            password_hash = sha256_crypt.encrypt(password)
+            entry = {'user_id': str(uuid.uuid4()), 'username': username,
+                    'password': password_hash, 'email': email}
+            if request.args.get('phone_number'):
+                entry['phone_number'] = request.args.get("phone_number")
+            if request.args.get('thumbtack_user_id') and request.args.get('thumbtack_password') \
+                and request.args.get('thumbtack_business_id'):
+                entry['thumbtack_user_id'] = request.args.get('thumbtack_user_id')
+                entry['thumbtack_password'] = request.args.get('thumbtack_password')
+                entry['thumbtack_business_id'] = request.args.get('thumbtack_business_id')
+            if request.args.get('facebook_user_id') and request.args.get('fb_app_secret_key') \
+                    and request.args.get('fb_page_access_token'):
+                entry['facebook_user_id'] = request.args.get('facebook_user_id')
+                entry['fb_app_secret_key'] = request.args.get('fb_app_secret_key')
+                entry['fb_page_access_token'] = request.args.get('fb_page_access_token')
+            db_obj.insert_row('talking_potato', 'users', entry)
+
+        elif request.method == "PUT":
+            if not password:
+                return {'status': 'fail', "details": "must enter password"}, 400
+            if email:
+                email_query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                                         table_name='users',
+                                                         filter_data={'email': email}))
+                if sha256_crypt.verify(password, email_query[0]["password"]):
+                    values_to_update = request.args.to_dict()
+                    values_to_update.pop("password")
+                    db_obj.update("talking_potato", "users", values_to_update, "email")
+                else:
+                    return {'status': 'fail',
+                            "details": "password does not match registered user"}, 400
+            elif username:
+                name_query = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                                    table_name='users',
+                                                    filter_data={'username': username}))
+                if sha256_crypt.verify(password, name_query[0]["password"]):
+                    values_to_update = request.args.to_dict()
+                    values_to_update.pop("password")
+                    db_obj.update("talking_potato", "users", values_to_update, "username")
+                else:
+                    return {'status': 'fail',
+                            "details": "password does not match registered user"}, 400
+            else:
+                return {'status': 'fail', "details": "must enter email or username"}, 400
         return {'status': 'success'}, 200
 
 
