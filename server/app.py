@@ -158,7 +158,7 @@ def create_app(config):
                 entry['fb_page_access_token'] = request.args.get('fb_page_access_token')
             db_obj.insert_row('talking_potato', 'users', entry)
 
-        elif request.method == "PUT":
+        else:
             if not password:
                 return {'status': 'fail', "details": "must enter password"}, 400
             if email:
@@ -166,9 +166,13 @@ def create_app(config):
                                                          table_name='users',
                                                          filter_data={'email': email}))
                 if sha256_crypt.verify(password, email_query[0]["password"]):
-                    values_to_update = request.args.to_dict()
-                    values_to_update.pop("password")
-                    db_obj.update("talking_potato", "users", values_to_update, "email")
+                    if request.method == "PUT":
+                        values_to_update = request.args.to_dict()
+                        values_to_update.pop("password")
+                        db_obj.update("talking_potato", "users", values_to_update, "email")
+                    elif request.method == "DELETE":
+                        entry = {"email": email}
+                        db_obj.delete_by_template("talking_potato", "users", entry)
                 else:
                     return {'status': 'fail',
                             "details": "password does not match registered user"}, 400
@@ -177,9 +181,13 @@ def create_app(config):
                                                     table_name='users',
                                                     filter_data={'username': username}))
                 if sha256_crypt.verify(password, name_query[0]["password"]):
-                    values_to_update = request.args.to_dict()
-                    values_to_update.pop("password")
-                    db_obj.update("talking_potato", "users", values_to_update, "username")
+                    if request.method == "PUT":
+                        values_to_update = request.args.to_dict()
+                        values_to_update.pop("password")
+                        db_obj.update("talking_potato", "users", values_to_update, "username")
+                    elif request.method == "DELETE":
+                        entry = {"username": username}
+                        db_obj.delete_by_template("talking_potato", "users", entry)
                 else:
                     return {'status': 'fail',
                             "details": "password does not match registered user"}, 400

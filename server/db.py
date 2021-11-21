@@ -227,3 +227,18 @@ class Database:
                       where {where_filter} = '{where_filter_val}'"""
         sql_stmt = sql_stmt.format(*updated_args)
         self.engine.execute(sql_stmt)
+
+    def delete_by_template(self, db_schema, table_name, template):
+        '''
+            delete with 0 to multiple where clause
+
+            :param string db_schema: schema
+            :param string table_name: table_name
+            :param dictionary template: where clause in sql
+            :return query
+        '''
+
+        where_clause, args = self.get_where_clause_arg(template)
+        sql_stmt = f"delete from {db_schema}.{table_name} {where_clause}"
+        sql_stmt = sql_stmt.format(*args)
+        self.engine.execute(sql_stmt)
