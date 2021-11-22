@@ -315,8 +315,8 @@ class Analytics(Database):
                                       group by {tt_select_and_group_by_clause}
                                       order by year desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
-            result = ast.literal_eval(result)
-            if graph:
+            result = {f"{lead_source}": ast.literal_eval(result)}
+            if graph and graph == 'yes':
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
             return result
 
@@ -333,7 +333,7 @@ class Analytics(Database):
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
             tt_result = ast.literal_eval(tt_result)
-            if graph:
+            if graph and graph == 'yes':
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
                 return result
@@ -397,6 +397,7 @@ class Analytics(Database):
                                       order by year desc, month desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
+            result = {lead_source: result}
             if graph:
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,

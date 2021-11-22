@@ -445,7 +445,7 @@ def create_app(config):
 
         if graph:
             if dimension is not None:
-                return "dimension should be None"
+                return {"status": "fail", "details": "if graph, dimension should be None"}, 400
 
         if from_date is None and to_date is None:
             return 'Please enter the date in YYYY-MM-DD format'
