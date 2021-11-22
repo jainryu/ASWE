@@ -209,8 +209,6 @@ class Analytics(Database):
         '''
 
         final = {}
-        print("facebook: ", fb_sql_result)
-        print("thumbtack: ", tt_sql_result)
         for year_month_counts in fb_sql_result:
             year = int(year_month_counts["year"])
             month = int(year_month_counts["month"])
@@ -230,13 +228,10 @@ class Analytics(Database):
                     final[f"{str(year)}_{str(month)}"] = {"facebook": count,
                                                           "thumbtack": 0,
                                                           "total": count}
-        print("debug less go: ", final)
-        print(from_year, to_year, from_month, to_month)
         for year_month_counts in tt_sql_result:
             year = int(year_month_counts["year"])
             month = int(year_month_counts["month"])
             count = year_month_counts["count"]
-            print("debug2: ", year, month, count)
 
             if from_year == to_year:
                 if (year == from_year) and (month >= from_month) and (month <= to_month):
