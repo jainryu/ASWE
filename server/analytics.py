@@ -3,9 +3,11 @@ analytics service
 """
 
 import ast
+
+from matplotlib.pyplot import xlabel
 from db import Database
 import helper
-
+import visualizer
 
 class Analytics(Database):
     """
@@ -318,7 +320,12 @@ class Analytics(Database):
             result = ast.literal_eval(result)
             if graph and graph == 'yes':
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
-                return result
+                title = "Message Counts Per Year for {lead_source}"
+                x_label = "Year"
+                y_label = "Counts"
+                x = visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                return x
+                #return result
             else:
                 result = {f"{lead_source}": result}
                 return result
@@ -339,7 +346,11 @@ class Analytics(Database):
             if graph and graph == 'yes':
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
-                return result
+                title = "Message Counts Per Year"
+                x_label = "Year"
+                y_label = "Counts"
+                return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                #return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
 
@@ -404,7 +415,11 @@ class Analytics(Database):
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,
                                                                    from_month, to_month)
-                return result
+                title = "Message Counts Per Month for {lead_source}"
+                x_label = "Month"
+                y_label = "Counts"
+                return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                #return result
             else:
                 result = {f"{lead_source}": result}
                 return result
@@ -430,6 +445,10 @@ class Analytics(Database):
                 result = self.both_source_month_count_aggregator(fb_result, tt_result,
                                                                  from_year, to_year,
                                                                  from_month, to_month)
-                return result
+                title = "Message Counts Per Year"
+                x_label = "Year"
+                y_label = "Counts"
+                return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                #return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
