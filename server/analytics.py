@@ -94,7 +94,13 @@ class Analytics(Database):
     @staticmethod
     def create_dates(from_date, to_date):
         """
-        extract or create from date and to date
+        extract or create from_date and to_date for analytics
+
+        :param string/None from_date: from date
+        :param string/None to_date: to date
+        :return tuple: a tuple containing
+            string from_date: from date
+            string to_date: to date
         """
         if not from_date:
             from_date = '2015-01-01'
@@ -114,7 +120,10 @@ class Analytics(Database):
 
     def single_source_year_count_aggregator(self, sql_result, from_year, to_year):
         '''
-        :param list of dict sql_result: e.g. [{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
+        reformat sql to show a count vs year relationship
+
+        :param list of dict sql_result: e.g. [{"year": 2021.0, count": 2},
+                                              {"year": 2017.0, "count": 8}]
         :param int from_year: from year
         :param int to_year: to year
 
@@ -132,6 +141,7 @@ class Analytics(Database):
                                              from_year, to_year,
                                              from_month, to_month):
         '''
+        reformat sql to show a count vs year_month relationship
 
         :param list of dict sql_result: e.g. [{"year":2021.0, "month": 0, "count": 2}]
         :param int from_year: from year
@@ -158,6 +168,8 @@ class Analytics(Database):
 
     def both_source_year_count_aggregator(self, fb_sql_result, tt_sql_result, from_year, to_year):
         '''
+        reformat sql to show a (fb count, tt count, and total count) vs year relationship
+
         :param list of dict fb_sql_result: e.g. [{"year":2021.0,"count":24}]
         :param list of dict tt_sql_result: e.g.[{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
         :param int from_year: from year
@@ -186,6 +198,8 @@ class Analytics(Database):
     def both_source_month_count_aggregator(self, fb_sql_result, tt_sql_result,
                                            from_year, to_year, from_month, to_month):
         '''
+        reformat sql to show a (fb count, tt count, and total count) vs year_month relationship
+
         :param list of dict fb_sql_result: e.g. [{"year":2021.0", "month": 0, count":24}]
         :param list of dict tt_sql_result: e.g.[{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
         :param int from_year: from year
@@ -255,6 +269,17 @@ class Analytics(Database):
     def get_message_counts_per_year(self, user, lead_source, dimension, from_year, to_year, graph):
         """
         get a count of messages per year
+
+        :param dict user: user credentials
+        :param string lead_source: an optional lead source specifier
+        :param string dimension: optional dimensions to group counts by (along with year)
+        :param string from_year: starting year to get message counts
+        :param string to_year: ending year to get message counts
+        :param string graph: (optional) reformat return for easy graphing
+        :return dict:
+            if graph is None: e.g. {"facebook": [{"count": 24, "year": 2021}],
+                                    "thumbtack" [{"count": 24, "year": 2021}]}
+            else: e.g. {"2021": {"facebook": 24, "thumbtack": 2, "total": 26}}
         """
         fb_where_dict = {"page_id": user["fb_page_id"]}
         fb_where_clause, fb_args = self.get_where_clause_arg(fb_where_dict)
@@ -320,6 +345,19 @@ class Analytics(Database):
                                      from_year, to_year, from_month, to_month, graph):
         """
         get message counts per month
+
+        get a count of messages per year
+
+        :param dict user: user credentials
+        :param string lead_source: an optional lead source specifier
+        :param string dimension: optional dimensions to group counts by (along with year)
+        :param string from_year: starting year to get message counts
+        :param string to_year: ending year to get message counts
+        :param string graph: (optional) reformat return for easy graphing
+        :return dict:
+            if graph is None: e.g. {"facebook": [{"count": 24, "month": 11, "year": 2021}, ...],
+                                    "thumbtack" [{"count": 2, "month": 11, "year": 2021}, ...]}
+            else: e.g. {"2021_11": {"facebook": 24, "thumbtack": 2, "total": 26}, ...}
         """
         fb_where_dict = {"page_id": user["fb_page_id"]}
         fb_where_clause, fb_args = self.get_where_clause_arg(fb_where_dict)

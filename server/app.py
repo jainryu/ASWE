@@ -417,15 +417,19 @@ def create_app(config):
 
     @app.route("/message_analytics/trends", methods=['GET'])
     @auth.login_required
-    def get_lead_analytics_trends():
+    def get_message_analytics_trends():
         """
-        request args:
-            frquency: days, weeks, months, years
-            from_date: from date
-            to_date: to date
-            lead_source: facebook or thumbtack. for both, none
-            dimension: dimension to filter by, if lead source is not none
-            graph: if dimensionless, return graph format
+        message analytics: trends
+
+        :query param frquency: days, weeks, months, years
+            TODO: days, weeks
+        :query param from_date: starting date to get message counts
+        :query param to_date: ending date to get message counts
+        :query param lead_source: facebook or thumbtack. for both, none
+        :query param dimension: dimension to filter by, if lead source is not none
+        :query param graph: return graph format. must be dimensionless
+
+        :return counts: a dictionary that will show counts of messages for time ranges
 
         """
         username = auth.current_user()
