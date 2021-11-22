@@ -315,10 +315,13 @@ class Analytics(Database):
                                       group by {tt_select_and_group_by_clause}
                                       order by year desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
-            result = {f"{lead_source}": ast.literal_eval(result)}
+            result = ast.literal_eval(result)
             if graph and graph == 'yes':
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
-            return result
+                return result
+            else:
+                result = {f"{lead_source}": result}
+                return result
 
         else:
             fb_select_stmt = f"""select {fb_select_and_group_by_clause} as year, count(*)
@@ -397,12 +400,14 @@ class Analytics(Database):
                                       order by year desc, month desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
-            result = {lead_source: result}
             if graph:
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,
                                                                    from_month, to_month)
-            return result
+                return result
+            else:
+                result = {f"{lead_source}": result}
+                return result
 
         else:
             fb_select_stmt = f"""select extract (year from timestamp) as year,
