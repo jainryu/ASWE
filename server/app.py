@@ -420,12 +420,12 @@ def create_app(config):
     def get_lead_analytics_trends():
         """
         request args:
-        reset: drop the current view and create a new one if user is looking for new data
-        frquency: days, weeks, months, years
-        from_date: from date
-        to_date: to date
-        lead source: facebook or thumbtack. for both, none
-        dimension: dimension to filter by, if lead source is not none
+            frquency: days, weeks, months, years
+            from_date: from date
+            to_date: to date
+            lead_source: facebook or thumbtack. for both, none
+            dimension: dimension to filter by, if lead source is not none
+            graph: if dimensionless, return graph format
 
         """
         username = auth.current_user()
@@ -433,10 +433,16 @@ def create_app(config):
                                            table_name='users', filter_data={'username': username}))
 
         frequency = request.args.get('frequency')
-        lead_source = request.args.get('lead_souce')
+        lead_source = request.args.get('lead_source')
         dimension = request.args.get('dimension')
         from_date, to_date = analytics_obj.create_dates(request.args.get('from_date'),
                                                         request.args.get('to_date'))
+        graph = request.args.get('graph')
+    
+        if graph:
+            if dimension is not None:
+                return "dimension should be None"
+
         if from_date is None and to_date is None:
             return 'Please enter the date in YYYY-MM-DD format'
 
@@ -444,16 +450,17 @@ def create_app(config):
         to_year = int(to_date.split("-")[0])
 
         if not frequency:
-            frequency = "months"
+            frequency = "years"
+
         if frequency == "years":
             counts = analytics_obj.get_message_counts_per_year(user[0], lead_source, dimension,
-                                                               from_year, to_year)
+                                                               from_year, to_year, graph)
         elif frequency == "months":
             from_month = int(from_date.split("-")[1])
             to_month = int(to_date.split("-")[1])
             counts = analytics_obj.get_message_counts_per_month(user[0], lead_source, dimension,
                                                                 from_year, to_year,
-                                                                from_month, to_month)
+                                                                from_month, to_month, graph)
         return counts
 
     return app
@@ -461,7 +468,3 @@ def create_app(config):
 # if __name__ == '__main__':
 app = create_app('config.py')
 # app.run(debug=True)
-
-if __name__ == '__main__':
-    print(helper.get_todays_date_str())
-    app.run(host="0.0.0.0", port=5000)
