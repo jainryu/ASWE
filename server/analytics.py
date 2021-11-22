@@ -128,9 +128,12 @@ class Analytics(Database):
                 final[year] = count
         return final
 
-    def single_source_month_count_aggregator(self, sql_result, from_year, to_year, from_month, to_month):
+    def single_source_month_count_aggregator(self, sql_result,
+                                             from_year, to_year,
+                                             from_month, to_month):
         '''
-        :param list of dict sql_result: e.g. [{"year":2021.0, "month": 0, "count": 2},{"year": 2017.0, "month": 1, "count": 8}]
+
+        :param list of dict sql_result: e.g. [{"year":2021.0, "month": 0, "count": 2}]
         :param int from_year: from year
         :param int to_year: to year
 
@@ -156,7 +159,7 @@ class Analytics(Database):
     def both_source_year_count_aggregator(self, fb_sql_result, tt_sql_result, from_year, to_year):
         '''
         :param list of dict fb_sql_result: e.g. [{"year":2021.0,"count":24}]
-        :param list of dict tt_sql_result: e.g. [{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
+        :param list of dict tt_sql_result: e.g.[{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
         :param int from_year: from year
         :param int to_year: to year
 
@@ -180,10 +183,11 @@ class Analytics(Database):
                     final[year] = {"facebook": 0, "thumbtack": count, "total": count}
         return final
 
-    def both_source_month_count_aggregator(self, fb_sql_result, tt_sql_result, from_year, to_year, from_month, to_month):
+    def both_source_month_count_aggregator(self, fb_sql_result, tt_sql_result,
+                                           from_year, to_year, from_month, to_month):
         '''
         :param list of dict fb_sql_result: e.g. [{"year":2021.0", "month": 0, count":24}]
-        :param list of dict tt_sql_result: e.g. [{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
+        :param list of dict tt_sql_result: e.g.[{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
         :param int from_year: from year
         :param int to_year: to year
 
@@ -198,12 +202,18 @@ class Analytics(Database):
 
             if from_year == to_year:
                 if (year == from_year) and (month >= from_month) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"] = {"facebook": count, "thumbtack": 0, "total": count}
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": count,
+                                                          "thumbtack": 0,
+                                                          "total": count}
             else:
                 if (year == from_year) and (month >= from_month):
-                    final[f"{str(year)}_{str(month)}"] = {"facebook": count, "thumbtack": 0, "total": count}
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": count,
+                                                          "thumbtack": 0,
+                                                          "total": count}
                 elif (year == to_year) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"] = {"facebook": count, "thumbtack": 0, "total": count}
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": count,
+                                                          "thumbtack": 0,
+                                                          "total": count}
 
         for year_month_counts in tt_sql_result:
             year = int(year_month_counts["year"])
@@ -214,22 +224,31 @@ class Analytics(Database):
                 if (year == from_year) and (month >= from_month) and (month <= to_month):
                     if year in final:
                         final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                        final[f"{str(year)}_{str(month)}"]["total"] = final[f"{str(year)}_{str(month)}"]["total"] + count
+                        final[f"{str(year)}_{str(month)}"]["total"] = \
+                            final[f"{str(year)}_{str(month)}"]["total"] + count
                     else:
-                        final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": count, "total": count}
+                        final[f"{str(year)}_{str(month)}"] = {"facebook": 0,
+                                                              "thumbtack": count,
+                                                              "total": count}
                 else:
                     if (year == from_year) and (month >= from_month):
                         if year in final:
                             final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                            final[f"{str(year)}_{str(month)}"]["total"] = final[f"{str(year)}_{str(month)}"]["total"] + count
+                            final[f"{str(year)}_{str(month)}"]["total"] = \
+                                final[f"{str(year)}_{str(month)}"]["total"] + count
                         else:
-                            final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": count, "total": count}
+                            final[f"{str(year)}_{str(month)}"] = {"facebook": 0,
+                                                                  "thumbtack": count,
+                                                                  "total": count}
                     elif (year == to_year) and (month <= to_month):
                         if year in final:
                             final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                            final[f"{str(year)}_{str(month)}"]["total"] = final[f"{str(year)}_{str(month)}"]["total"] + count
+                            final[f"{str(year)}_{str(month)}"]["total"] = \
+                                final[f"{str(year)}_{str(month)}"]["total"] + count
                         else:
-                            final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": count, "total": count}
+                            final[f"{str(year)}_{str(month)}"] = {"facebook": 0,
+                                                                  "thumbtack": count,
+                                                                  "total": count}
 
         return final
 
@@ -249,14 +268,28 @@ class Analytics(Database):
         if lead_source:
             if lead_source == "facebook":
                 if dimension:
-                    select_stmt = f"select {fb_select_and_group_by_clause} as year, {dimension}, count(*) from fb.messages {fb_where_clause} group by {fb_select_and_group_by_clause}, {dimension} order by year desc".format(*fb_args)
+                    select_stmt = f"""select {fb_select_and_group_by_clause} as year,
+                                        {dimension}, count(*)
+                                      from fb.messages {fb_where_clause}
+                                      group by {fb_select_and_group_by_clause}, {dimension}
+                                      order by year desc""".format(*fb_args)
                 else:
-                    select_stmt = f"select {fb_select_and_group_by_clause} as year, count(*) from fb.messages {fb_where_clause} group by {fb_select_and_group_by_clause} order by year desc".format(*fb_args)
+                    select_stmt = f"""select {fb_select_and_group_by_clause} as year, count(*)
+                                      from fb.messages {fb_where_clause}
+                                      group by {fb_select_and_group_by_clause}
+                                      order by year desc""".format(*fb_args)
             elif lead_source == "thumbtack":
                 if dimension:
-                    select_stmt = f"select {tt_select_and_group_by_clause} as year, {dimension}, count(*) from thumbtack.messages {tt_where_clause} group by {tt_select_and_group_by_clause}, {dimension} order by year desc".format(*tt_args)
+                    select_stmt = f"""select {tt_select_and_group_by_clause} as year,
+                                        {dimension}, count(*)
+                                      from thumbtack.messages {tt_where_clause}
+                                      group by {tt_select_and_group_by_clause}, {dimension}
+                                      order by year desc""".format(*tt_args)
                 else:
-                    select_stmt = f"select {tt_select_and_group_by_clause} as year, count(*) from thumbtack.messages {tt_where_clause} group by {tt_select_and_group_by_clause} order by year desc".format(*tt_args)
+                    select_stmt = f"""select {tt_select_and_group_by_clause} as year, count(*)
+                                      from thumbtack.messages {tt_where_clause}
+                                      group by {tt_select_and_group_by_clause}
+                                      order by year desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
             if graph:
@@ -264,14 +297,21 @@ class Analytics(Database):
             return result
 
         else:
-            fb_select_stmt = f"select {fb_select_and_group_by_clause} as year, count(*) from fb.messages {fb_where_clause} group by {fb_select_and_group_by_clause} order by year desc".format(*fb_args)
-            tt_select_stmt = f"select {tt_select_and_group_by_clause} as year, count(*) from thumbtack.messages {tt_where_clause} group by {tt_select_and_group_by_clause} order by year desc".format(*tt_args)
+            fb_select_stmt = f"""select {fb_select_and_group_by_clause} as year, count(*)
+                                 from fb.messages {fb_where_clause}
+                                 group by {fb_select_and_group_by_clause}
+                                 order by year desc""".format(*fb_args)
+            tt_select_stmt = f"""select {tt_select_and_group_by_clause} as year, count(*)
+                                 from thumbtack.messages {tt_where_clause}
+                                 group by {tt_select_and_group_by_clause}
+                                 order by year desc""".format(*tt_args)
             fb_result = self.run_sql(fb_select_stmt, fetch_flag=True)
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
             tt_result = ast.literal_eval(tt_result)
             if graph:
-                result = self.both_source_year_count_aggregator(fb_result, tt_result, from_year, to_year)
+                result = self.both_source_year_count_aggregator(fb_result, tt_result,
+                                                                from_year, to_year)
                 return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
@@ -290,29 +330,63 @@ class Analytics(Database):
         if lead_source:
             if lead_source == "facebook":
                 if dimension:
-                    select_stmt = f"select extract (year from timestamp) as year, extract (month from timestamp) as month, {dimension}, count(*) from fb.messages {fb_where_clause} group by extract (year from timestamp), extract (month from timestamp), {dimension} order by year desc, month desc".format(*fb_args)
+                    select_stmt = f"""select extract (year from timestamp) as year,
+                                          extract (month from timestamp) as month, {dimension}, count(*)
+                                      from fb.messages {fb_where_clause}
+                                      group by extract (year from timestamp), 
+                                          extract (month from timestamp), {dimension}
+                                      order by year desc, month desc""".format(*fb_args)
                 else:
-                    select_stmt = f"select extract (year from timestamp) as year, extract (month from timestamp) as month, count(*) from fb.messages {fb_where_clause} group by extract (year from timestamp), extract (month from timestamp) order by year desc, month desc".format(*fb_args)
+                    select_stmt = f"""select extract (year from timestamp) as year,
+                                        extract (month from timestamp) as month, count(*)
+                                        from fb.messages {fb_where_clause}
+                                        group by extract (year from timestamp),
+                                            extract (month from timestamp)
+                                        order by year desc, month desc""".format(*fb_args)
             elif lead_source == "thumbtack":
                 if dimension:
-                    select_stmt = f"select extract (year from contacted_time) as year, extract (month from contacted_time) as month, {dimension}, count(*) from thumbtack.messages {tt_where_clause} group by extract (year from contacted_time), extract (month from contacted_time), {dimension} order by year desc, month desc".format(*tt_args)
+                    select_stmt = f"""select extract (year from contacted_time) as year,
+                                          extract (month from contacted_time) as month, {dimension}, count(*)
+                                      from thumbtack.messages {tt_where_clause}
+                                      group by extract (year from contacted_time),
+                                          extract (month from contacted_time), {dimension}
+                                      order by year desc, month desc""".format(*tt_args)
                 else:
-                    select_stmt = f"select extract (year from contacted_time) as year, extract (month from contacted_time) as month, count(*) from thumbtack.messages {tt_where_clause} group by extract (year from contacted_time), extract (month from contacted_time) order by year desc, month desc".format(*tt_args)
+                    select_stmt = f"""select extract (year from contacted_time) as year,
+                                          extract (month from contacted_time) as month, count(*)
+                                      from thumbtack.messages {tt_where_clause}
+                                      group by extract (year from contacted_time),
+                                          extract (month from contacted_time)
+                                      order by year desc, month desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
             if graph:
-                result = self.single_source_month_count_aggregator(result, from_year, to_year, from_month, to_month)
+                result = self.single_source_month_count_aggregator(result,
+                                                                   from_year, to_year,
+                                                                   from_month, to_month)
             return result
 
         else:
-            fb_select_stmt = f"select extract (year from timestamp) as year, extract (month from timestamp) as month, count(*) from fb.messages {fb_where_clause} group by extract (year from timestamp), extract (month from timestamp) order by year desc, month desc".format(*fb_args)
-            tt_select_stmt = f"select extract (year from contacted_time) as year, extract (month from contacted_time) as month, count(*) from thumbtack.messages {tt_where_clause} group by extract (year from contacted_time), extract (month from contacted_time) order by year desc, month desc".format(*tt_args)
+            fb_select_stmt = f"""select extract (year from timestamp) as year,
+                                     extract (month from timestamp) as month, count(*)
+                                 from fb.messages {fb_where_clause}
+                                 group by extract (year from timestamp),
+                                     extract (month from timestamp)
+                                 order by year desc, month desc""".format(*fb_args)
+            tt_select_stmt = f"""select extract (year from contacted_time) as year,
+                                     extract (month from contacted_time) as month, count(*)
+                                 from thumbtack.messages {tt_where_clause}
+                                 group by extract (year from contacted_time),
+                                     extract (month from contacted_time) 
+                                 order by year desc, month desc""".format(*tt_args)
             fb_result = self.run_sql(fb_select_stmt, fetch_flag=True)
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
             tt_result = ast.literal_eval(tt_result)
             if graph:
-                result = self.both_source_month_count_aggregator(fb_result, tt_result, from_year, to_year, from_month, to_month)
+                result = self.both_source_month_count_aggregator(fb_result, tt_result,
+                                                                 from_year, to_year,
+                                                                 from_month, to_month)
                 return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}

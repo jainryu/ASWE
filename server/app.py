@@ -438,7 +438,7 @@ def create_app(config):
         from_date, to_date = analytics_obj.create_dates(request.args.get('from_date'),
                                                         request.args.get('to_date'))
         graph = request.args.get('graph')
-    
+
         if graph:
             if dimension is not None:
                 return "dimension should be None"
@@ -468,3 +468,6 @@ def create_app(config):
 # if __name__ == '__main__':
 app = create_app('config.py')
 # app.run(debug=True)
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000)
