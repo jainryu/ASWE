@@ -318,14 +318,15 @@ class Analytics(Database):
                                       order by year desc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
-            if graph and graph == 'yes':
+            if graph:
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
-                title = "Message Counts Per Year for {lead_source}"
-                x_label = "Year"
-                y_label = "Counts"
-                x = visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
-                return x
-                #return result
+                if graph == 'html':
+                    title = "Message Counts Per Month for {lead_source}"
+                    x_label = "Month"
+                    y_label = "Counts"
+                    return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                elif graph == 'data':
+                    return result
             else:
                 result = {f"{lead_source}": result}
                 return result
@@ -343,14 +344,10 @@ class Analytics(Database):
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
             tt_result = ast.literal_eval(tt_result)
-            if graph and graph == 'yes':
+            if graph:
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
-                title = "Message Counts Per Year"
-                x_label = "Year"
-                y_label = "Counts"
-                return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
-                #return result
+                return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
 
@@ -415,11 +412,13 @@ class Analytics(Database):
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,
                                                                    from_month, to_month)
-                title = "Message Counts Per Month for {lead_source}"
-                x_label = "Month"
-                y_label = "Counts"
-                return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
-                #return result
+                if graph == 'html':
+                    title = "Message Counts Per Month for {lead_source}"
+                    x_label = "Month"
+                    y_label = "Counts"
+                    return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                elif graph == 'data':
+                    return result
             else:
                 result = {f"{lead_source}": result}
                 return result
@@ -445,10 +444,6 @@ class Analytics(Database):
                 result = self.both_source_month_count_aggregator(fb_result, tt_result,
                                                                  from_year, to_year,
                                                                  from_month, to_month)
-                title = "Message Counts Per Year"
-                x_label = "Year"
-                y_label = "Counts"
-                return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
-                #return result
+                return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
