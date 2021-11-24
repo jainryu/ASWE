@@ -51,7 +51,7 @@ def both_plot(result, title=None, x_label=None, y_label=None):
     if y_label:
         axis.set_ylabel(y_label)
     axis.legend(['facebook','thumbtack', 'total'])
-    axis.set_xticks(x[::10])
+    axis.set_xticks(x[::int(len(x)/10) + 1])
     axis.tick_params(labelrotation=30)
 
     output = BytesIO()
