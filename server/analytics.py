@@ -132,6 +132,8 @@ class Analytics(Database):
         :return dict final: e.g. {2021: 2, 2017: 8}
         '''
         final = {}
+        for year in range(from_year, to_year + 1):
+            final[year] = 0
         for year_counts in sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
@@ -153,6 +155,19 @@ class Analytics(Database):
         '''
 
         final = {}
+        for year in range(from_year, to_year + 1):
+            if from_year == to_year:
+                for month in range(from_month, to_month + 1):
+                    final[f"{str(year)}_{str(month)}"] = 0
+            elif year == from_year:
+                for month in range(from_month, 13):
+                    final[f"{str(year)}_{str(month)}"] = 0
+            elif year == to_year:
+                for month in range(1, to_month + 1):
+                    final[f"{str(year)}_{str(month)}"] = 0
+            else:
+                for month in range(1,13):
+                    final[f"{str(year)}_{str(month)}"] = 0
         for year_month_counts in sql_result:
             year = int(year_month_counts["year"])
             month = int(year_month_counts["month"])
@@ -181,6 +196,8 @@ class Analytics(Database):
         '''
 
         final = {}
+        for year in range(from_year, to_year + 1):
+            final[year] = 0
         for year_counts in fb_sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
@@ -211,6 +228,19 @@ class Analytics(Database):
         '''
 
         final = {}
+        for year in range(from_year, to_year + 1):
+            if from_year == to_year:
+                for month in range(from_month, to_month + 1):
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": 0, "total": 0}
+            elif year == from_year:
+                for month in range(from_month, 13):
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": 0, "total": 0}
+            elif year == to_year:
+                for month in range(1, to_month + 1):
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": 0, "total": 0}
+            else:
+                for month in range(1,13):
+                    final[f"{str(year)}_{str(month)}"] = {"facebook": 0, "thumbtack": 0, "total": 0}
         for year_month_counts in fb_sql_result:
             year = int(year_month_counts["year"])
             month = int(year_month_counts["month"])
@@ -298,33 +328,33 @@ class Analytics(Database):
                                         {dimension}, count(*)
                                       from fb.messages {fb_where_clause}
                                       group by {fb_select_and_group_by_clause}, {dimension}
-                                      order by year desc""".format(*fb_args)
+                                      order by year asc""".format(*fb_args)
                 else:
                     select_stmt = f"""select {fb_select_and_group_by_clause} as year, count(*)
                                       from fb.messages {fb_where_clause}
                                       group by {fb_select_and_group_by_clause}
-                                      order by year desc""".format(*fb_args)
+                                      order by year asc""".format(*fb_args)
             elif lead_source == "thumbtack":
                 if dimension:
                     select_stmt = f"""select {tt_select_and_group_by_clause} as year,
                                         {dimension}, count(*)
                                       from thumbtack.messages {tt_where_clause}
                                       group by {tt_select_and_group_by_clause}, {dimension}
-                                      order by year desc""".format(*tt_args)
+                                      order by year asc""".format(*tt_args)
                 else:
                     select_stmt = f"""select {tt_select_and_group_by_clause} as year, count(*)
                                       from thumbtack.messages {tt_where_clause}
                                       group by {tt_select_and_group_by_clause}
-                                      order by year desc""".format(*tt_args)
+                                      order by year asc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
             if graph:
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
                 if graph == 'html':
-                    title = "Message Counts Per Month for {lead_source}"
+                    title = f"Message Counts Per Month for {lead_source}"
                     x_label = "Month"
                     y_label = "Counts"
-                    return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                    return visualizer.single_plot(result, title=title, x_label=x_label, y_label=y_label)
                 elif graph == 'data':
                     return result
             else:
@@ -335,11 +365,11 @@ class Analytics(Database):
             fb_select_stmt = f"""select {fb_select_and_group_by_clause} as year, count(*)
                                  from fb.messages {fb_where_clause}
                                  group by {fb_select_and_group_by_clause}
-                                 order by year desc""".format(*fb_args)
+                                 order by year asc""".format(*fb_args)
             tt_select_stmt = f"""select {tt_select_and_group_by_clause} as year, count(*)
                                  from thumbtack.messages {tt_where_clause}
                                  group by {tt_select_and_group_by_clause}
-                                 order by year desc""".format(*tt_args)
+                                 order by year asc""".format(*tt_args)
             fb_result = self.run_sql(fb_select_stmt, fetch_flag=True)
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
@@ -347,7 +377,13 @@ class Analytics(Database):
             if graph:
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
-                return result
+                if graph == 'html':
+                    title = "Message Counts Per Month"
+                    x_label = "Month"
+                    y_label = "Counts"
+                    return visualizer.both_plot(result, title=title, x_label=x_label, y_label=y_label)
+                elif graph == 'data':
+                    return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
 
@@ -383,14 +419,14 @@ class Analytics(Database):
                                       from fb.messages {fb_where_clause}
                                       group by extract (year from timestamp), 
                                           extract (month from timestamp), {dimension}
-                                      order by year desc, month desc""".format(*fb_args)
+                                      order by year asc, month asc""".format(*fb_args)
                 else:
                     select_stmt = f"""select extract (year from timestamp) as year,
                                         extract (month from timestamp) as month, count(*)
                                         from fb.messages {fb_where_clause}
                                         group by extract (year from timestamp),
                                             extract (month from timestamp)
-                                        order by year desc, month desc""".format(*fb_args)
+                                        order by year asc, month asc""".format(*fb_args)
             elif lead_source == "thumbtack":
                 if dimension:
                     select_stmt = f"""select extract (year from contacted_time) as year,
@@ -398,14 +434,14 @@ class Analytics(Database):
                                       from thumbtack.messages {tt_where_clause}
                                       group by extract (year from contacted_time),
                                           extract (month from contacted_time), {dimension}
-                                      order by year desc, month desc""".format(*tt_args)
+                                      order by year asc, month asc""".format(*tt_args)
                 else:
                     select_stmt = f"""select extract (year from contacted_time) as year,
                                           extract (month from contacted_time) as month, count(*)
                                       from thumbtack.messages {tt_where_clause}
                                       group by extract (year from contacted_time),
                                           extract (month from contacted_time)
-                                      order by year desc, month desc""".format(*tt_args)
+                                      order by year asc, month asc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
             if graph:
@@ -416,7 +452,7 @@ class Analytics(Database):
                     title = "Message Counts Per Month for {lead_source}"
                     x_label = "Month"
                     y_label = "Counts"
-                    return visualizer.single_graph(result, title=title, x_label=x_label, y_label=y_label)
+                    return visualizer.single_plot(result, title=title, x_label=x_label, y_label=y_label)
                 elif graph == 'data':
                     return result
             else:
@@ -429,13 +465,13 @@ class Analytics(Database):
                                  from fb.messages {fb_where_clause}
                                  group by extract (year from timestamp),
                                      extract (month from timestamp)
-                                 order by year desc, month desc""".format(*fb_args)
+                                 order by year asc, month asc""".format(*fb_args)
             tt_select_stmt = f"""select extract (year from contacted_time) as year,
                                      extract (month from contacted_time) as month, count(*)
                                  from thumbtack.messages {tt_where_clause}
                                  group by extract (year from contacted_time),
                                      extract (month from contacted_time) 
-                                 order by year desc, month desc""".format(*tt_args)
+                                 order by year asc, month asc""".format(*tt_args)
             fb_result = self.run_sql(fb_select_stmt, fetch_flag=True)
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
@@ -444,6 +480,12 @@ class Analytics(Database):
                 result = self.both_source_month_count_aggregator(fb_result, tt_result,
                                                                  from_year, to_year,
                                                                  from_month, to_month)
-                return result
+                if graph == 'html':
+                    title = "Message Counts Per Month"
+                    x_label = "Month"
+                    y_label = "Counts"
+                    return visualizer.both_plot(result, title=title, x_label=x_label, y_label=y_label)
+                elif graph == 'data':
+                    return result
             else:
                 return {"facebook": fb_result, "thumbtack": tt_result}
