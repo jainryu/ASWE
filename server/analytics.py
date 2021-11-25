@@ -4,7 +4,6 @@ analytics service
 
 import ast
 
-from matplotlib.pyplot import xlabel
 from db import Database
 import helper
 import visualizer
@@ -381,7 +380,8 @@ class Analytics(Database):
                     title = "Message Counts Per Month"
                     x_label = "Month"
                     y_label = "Counts"
-                    return visualizer.both_plot(result, title=title, x_label=x_label, y_label=y_label)
+                    return visualizer.both_plot(result, title=title,
+                                                x_label=x_label, y_label=y_label)
                 elif graph == 'data':
                     return result
             else:
@@ -452,7 +452,8 @@ class Analytics(Database):
                     title = "Message Counts Per Month for {lead_source}"
                     x_label = "Month"
                     y_label = "Counts"
-                    return visualizer.single_plot(result, title=title, x_label=x_label, y_label=y_label)
+                    return visualizer.single_plot(result, title=title,
+                                                  x_label=x_label, y_label=y_label)
                 elif graph == 'data':
                     return result
             else:
@@ -484,7 +485,8 @@ class Analytics(Database):
                     title = "Message Counts Per Month"
                     x_label = "Month"
                     y_label = "Counts"
-                    return visualizer.both_plot(result, title=title, x_label=x_label, y_label=y_label)
+                    return visualizer.both_plot(result, title=title,
+                                                x_label=x_label, y_label=y_label)
                 elif graph == 'data':
                     return result
             else:
