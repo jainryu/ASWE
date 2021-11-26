@@ -6,7 +6,7 @@ import uuid
 import json
 import validators
 from passlib.hash import sha256_crypt
-from flask import Flask, request
+from flask import Flask, request, render_template
 from flask_httpauth import HTTPBasicAuth
 import thumbtack_conn
 import db
@@ -55,7 +55,8 @@ def create_app(config):
         # result = db_obj.get_all_leads()
         # df_thumbtack = pd.DataFrame(list(result.fetchall()))
         # return df_thumbtack.to_json(orient="records")
-        return "Hello from Talking Potatoes!!!"
+        # return "Hello from Talking Potatoes!!!"
+        return render_template("home.html")
 
 
     @app.route("/dummy_thumbtack_lead", methods=["GET"])
@@ -472,3 +473,6 @@ def create_app(config):
 # if __name__ == '__main__':
 app = create_app('config.py')
 # app.run(debug=True)
+
+if __name__ == '__main__':
+    app.run(host="0.0.0.0", port=5000)
