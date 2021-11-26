@@ -195,8 +195,10 @@ class Analytics(Database):
         '''
 
         final = {}
+
         for year in range(from_year, to_year + 1):
-            final[year] = 0
+            if year not in final:
+                final[year] = {"facebook": 0, "thumbtack": 0, "total": 0}
         for year_counts in fb_sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
@@ -206,11 +208,8 @@ class Analytics(Database):
             year = int(year_counts["year"])
             count = year_counts["count"]
             if year >= from_year and year <= to_year:
-                if year in final:
-                    final[year]["thumbtack"] = count
-                    final[year]["total"] = final[year]["total"] + count
-                else:
-                    final[year] = {"facebook": 0, "thumbtack": count, "total": count}
+                final[year]["thumbtack"] = count
+                final[year]["total"] = final[year]["total"] + count
         return final
 
     def both_source_month_count_aggregator(self, fb_sql_result, tt_sql_result,
@@ -266,33 +265,18 @@ class Analytics(Database):
 
             if from_year == to_year:
                 if (year == from_year) and (month >= from_month) and (month <= to_month):
-                    if f"{str(year)}_{str(month)}" in final:
-                        final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                        final[f"{str(year)}_{str(month)}"]["total"] = \
-                            final[f"{str(year)}_{str(month)}"]["total"] + count
-                    else:
-                        final[f"{str(year)}_{str(month)}"] = {"facebook": 0,
-                                                              "thumbtack": count,
-                                                              "total": count}
+                    final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
+                    final[f"{str(year)}_{str(month)}"]["total"] = \
+                        final[f"{str(year)}_{str(month)}"]["total"] + count
             else:
                 if (year == from_year) and (month >= from_month):
-                    if f"{str(year)}_{str(month)}" in final:
-                        final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                        final[f"{str(year)}_{str(month)}"]["total"] = \
-                            final[f"{str(year)}_{str(month)}"]["total"] + count
-                    else:
-                        final[f"{str(year)}_{str(month)}"] = {"facebook": 0,
-                                                                "thumbtack": count,
-                                                                "total": count}
+                    final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
+                    final[f"{str(year)}_{str(month)}"]["total"] = \
+                        final[f"{str(year)}_{str(month)}"]["total"] + count
                 elif (year == to_year) and (month <= to_month):
-                    if f"{str(year)}_{str(month)}" in final:
-                        final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                        final[f"{str(year)}_{str(month)}"]["total"] = \
-                            final[f"{str(year)}_{str(month)}"]["total"] + count
-                    else:
-                        final[f"{str(year)}_{str(month)}"] = {"facebook": 0,
-                                                                "thumbtack": count,
-                                                                "total": count}
+                    final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
+                    final[f"{str(year)}_{str(month)}"]["total"] = \
+                        final[f"{str(year)}_{str(month)}"]["total"] + count
 
         return final
 
@@ -353,7 +337,8 @@ class Analytics(Database):
                     title = f"Message Counts Per Month for {lead_source}"
                     x_label = "Month"
                     y_label = "Counts"
-                    return visualizer.single_plot(result, title=title, x_label=x_label, y_label=y_label)
+                    return visualizer.single_plot(result, title=title,
+                                                  x_label=x_label, y_label=y_label)
                 elif graph == 'data':
                     return result
             else:

@@ -1,12 +1,10 @@
 '''
 html visualizers for message counts
 '''
-from io import BytesIO
-from matplotlib.backends.backend_agg import FigureCanvasAgg as FigureCanvas
-from matplotlib.figure import Figure
-from flask import Response
 
-def single_plot(result, title=None, x_label=None, y_label=None):
+import plotly.graph_objects as go
+
+def single_plot(result, title, x_label, y_label):
     """
     plot counts per year or month for a single lead source
     """
@@ -16,22 +14,12 @@ def single_plot(result, title=None, x_label=None, y_label=None):
         time.append(year)
         counts.append(count)
 
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    axis.plot(time, counts, '-o')
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=time, y=counts, mode='lines', name='lines'))
+    fig.update_layout(title=title, xaxis_title=x_label, yaxis_title=y_label)
+    return fig.to_html()
 
-    if title:
-        axis.title.set_text(title)
-    if x_label:
-        axis.set_xlabel(x_label)
-    if y_label:
-        axis.set_ylabel(y_label)
-
-    output = BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
-
-def both_plot(result, title=None, x_label=None, y_label=None):
+def both_plot(result, title, x_label, y_label):
     """
     plot counts per year or month for a both lead sources
     """
@@ -45,22 +33,14 @@ def both_plot(result, title=None, x_label=None, y_label=None):
         thumbtack.append(counts["thumbtack"])
         total.append(counts["total"])
 
-    fig = Figure()
-    axis = fig.add_subplot(1, 1, 1)
-    axis.plot(x_values, facebook, '-o')
-    axis.plot(x_values, thumbtack, '-x')
-    axis.plot(x_values, total, '-')
+    fig = go.Figure()
+    fig.add_trace(go.Scatter(x=x_values, y=facebook,
+                             line=dict(color='royalblue', width=4, dash='dot'),
+                             name='facebook'))
+    fig.add_trace(go.Scatter(x=x_values, y=thumbtack,
+                             line = dict(color='firebrick', width=4, dash='dot'),
+                             name='thumbtack'))
+    fig.add_trace(go.Scatter(x=x_values, y=total, mode='lines', name='total'))
 
-    if title:
-        axis.title.set_text(title)
-    if x_label:
-        axis.set_xlabel(x_label)
-    if y_label:
-        axis.set_ylabel(y_label)
-    axis.legend(['facebook','thumbtack', 'total'])
-    axis.set_xticks(x_values[::int(len(x_values)/10) + 1])
-    axis.tick_params(labelrotation=30)
-
-    output = BytesIO()
-    FigureCanvas(fig).print_png(output)
-    return Response(output.getvalue(), mimetype='image/png')
+    fig.update_layout(title=title, xaxis_title=x_label, yaxis_title=y_label)
+    return fig.to_html()
