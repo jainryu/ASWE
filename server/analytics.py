@@ -93,7 +93,7 @@ class Analytics(Database):
         return result
 
     @staticmethod
-    def create_dates(from_date, to_date):
+    def create_dates(analysis_type, from_date, to_date):
         """
         extract or create from_date and to_date for analytics
 
@@ -103,13 +103,21 @@ class Analytics(Database):
             string from_date: from date
             string to_date: to date
         """
-        if not from_date:
-            from_date = '2015-01-01'
-        else:
+
+        if from_date:
             from_date = from_date.replace("'", "")
             date_format_check = helper.check_date_format(from_date)
             if not date_format_check:
                 return None, None
+        else:
+            today_date = helper.get_todays_date_str()
+            today_year = today_date.split("-")[0]
+            today_month_and_day = today_date.split("-")[1] + "-" + today_date.split("-")[2]
+            if analysis_type == "years":
+                from_year = str(int(today_year) - 10)
+            elif analysis_type == "months":
+                from_year = str(int(today_year) - 1)
+            from_date = f"{from_year}-{today_month_and_day}"
         if not to_date:
             to_date = helper.get_todays_date_str()
         else:

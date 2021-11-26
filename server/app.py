@@ -440,7 +440,7 @@ def create_app(config):
         frequency = request.args.get('frequency')
         lead_source = request.args.get('lead_source')
         dimension = request.args.get('dimension')
-        from_date, to_date = analytics_obj.create_dates(request.args.get('from_date'),
+        from_date, to_date = analytics_obj.create_dates(frequency, request.args.get('from_date'),
                                                         request.args.get('to_date'))
         graph = request.args.get('graph')
 
