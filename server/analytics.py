@@ -334,7 +334,8 @@ class Analytics(Database):
             if graph:
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
                 if graph == 'html':
-                    title = f"Message Counts Per Month for {lead_source}"
+                    title = f"Message Counts Per Month for {lead_source.capitalize()}"
+                    print("title: ", title)
                     x_label = "Month"
                     y_label = "Counts"
                     return visualizer.single_plot(result, title=title,
@@ -362,7 +363,7 @@ class Analytics(Database):
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
                 if graph == 'html':
-                    title = "Message Counts Per Month"
+                    title = "Message Counts Per Month for Both Lead Sources"
                     x_label = "Month"
                     y_label = "Counts"
                     return visualizer.both_plot(result, title=title,
@@ -434,7 +435,7 @@ class Analytics(Database):
                                                                    from_year, to_year,
                                                                    from_month, to_month)
                 if graph == 'html':
-                    title = "Message Counts Per Month for {lead_source}"
+                    title = f"Message Counts Per Month for {lead_source.capitalize()}"
                     x_label = "Month"
                     y_label = "Counts"
                     return visualizer.single_plot(result, title=title,
@@ -467,7 +468,7 @@ class Analytics(Database):
                                                                  from_year, to_year,
                                                                  from_month, to_month)
                 if graph == 'html':
-                    title = "Message Counts Per Month"
+                    title = "Message Counts Per Month for Both Lead Sources"
                     x_label = "Month"
                     y_label = "Counts"
                     return visualizer.both_plot(result, title=title,
