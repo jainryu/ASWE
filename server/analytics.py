@@ -110,14 +110,17 @@ class Analytics(Database):
             if not date_format_check:
                 return None, None
         else:
-            today_date = helper.get_todays_date_str()
-            today_year = today_date.split("-")[0]
-            today_month_and_day = today_date.split("-")[1] + "-" + today_date.split("-")[2]
-            if analysis_type == "years":
-                from_year = str(int(today_year) - 10)
-            elif analysis_type == "months":
-                from_year = str(int(today_year) - 1)
-            from_date = f"{from_year}-{today_month_and_day}"
+            if analysis_type == 'all':
+                from_date = '1900-01-01'
+            else:
+                today_date = helper.get_todays_date_str()
+                today_year = today_date.split("-")[0]
+                today_month_and_day = today_date.split("-")[1] + "-" + today_date.split("-")[2]
+                if analysis_type == "years":
+                    from_year = str(int(today_year) - 10)
+                elif analysis_type == "months":
+                    from_year = str(int(today_year) - 1)
+                from_date = f"{from_year}-{today_month_and_day}"
         if not to_date:
             to_date = helper.get_todays_date_str()
         else:

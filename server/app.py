@@ -340,23 +340,11 @@ def create_app(config):
             else:
                 return 'Accepted value of dimension = user_source'
 
-        if not from_date:
-            from_date = '1900-01-01'
-        else:
-            from_date = from_date.replace("'", "")
-            date_format_check = helper.check_date_format(from_date)
-            if not date_format_check:
-                return 'Please enter the date in YYYY-MM-DD format'
+        from_date, to_date = analytics_obj.create_dates('all', request.args.get('from_date'),
+                                                        request.args.get('to_date'))
         filter_user_date_range['from_date'] = from_date
-
-        if not to_date:
-            to_date = helper.get_todays_date_str()
-        else:
-            to_date = to_date.replace("'", "")
-            date_format_check = helper.check_date_format(to_date)
-            if not date_format_check:
-                return 'Please enter the date in YYYY-MM-DD format'
         filter_user_date_range['to_date'] = to_date
+
         result = analytics_obj.get_grouped_by_date(db_schema='talking_potato',
                                                    table_name='messages',
                                                    filter_data=filter_data,
@@ -393,22 +381,9 @@ def create_app(config):
             else:
                 return 'Accepted values of dimension = category or state'
 
-        if not from_date:
-            from_date = '1900-01-01'
-        else:
-            from_date = from_date.replace("'", "")
-            date_format_check = helper.check_date_format(from_date)
-            if not date_format_check:
-                return 'Please enter the date in YYYY-MM-DD format'
+        from_date, to_date = analytics_obj.create_dates('all', request.args.get('from_date'),
+                                                        request.args.get('to_date'))
         filter_user_date_range['from_date'] = from_date
-
-        if not to_date:
-            to_date = helper.get_todays_date_str()
-        else:
-            to_date = to_date.replace("'", "")
-            date_format_check = helper.check_date_format(to_date)
-            if not date_format_check:
-                return 'Please enter the date in YYYY-MM-DD format'
         filter_user_date_range['to_date'] = to_date
         result = analytics_obj.get_grouped_by_date(db_schema='thumbtack',
                                                    table_name='leads',
@@ -445,7 +420,7 @@ def create_app(config):
         format = request.args.get('format')
 
         if format == 'graph':
-            if dimension is not None:
+            if dimension is not None and dimension != '':
                 return {"status": "fail", "details": "if graph format, dimension should be None"}, 400
 
         if from_date is None and to_date is None:
