@@ -428,7 +428,7 @@ def create_app(config):
         :query param to_date: ending date to get message counts
         :query param lead_source: facebook or thumbtack. for both, none
         :query param dimension: dimension to filter by, if lead source is not none
-        :query param graph: return graph format. must be dimensionless
+        :query param format: if graph, must be dimensionless
 
         :return counts: a dictionary that will show counts of messages for time ranges
 
@@ -442,11 +442,11 @@ def create_app(config):
         dimension = request.args.get('dimension')
         from_date, to_date = analytics_obj.create_dates(frequency, request.args.get('from_date'),
                                                         request.args.get('to_date'))
-        graph = request.args.get('graph')
+        format = request.args.get('format')
 
-        if graph:
+        if format == 'graph':
             if dimension is not None:
-                return {"status": "fail", "details": "if graph, dimension should be None"}, 400
+                return {"status": "fail", "details": "if graph format, dimension should be None"}, 400
 
         if from_date is None and to_date is None:
             return 'Please enter the date in YYYY-MM-DD format'
@@ -459,13 +459,13 @@ def create_app(config):
 
         if frequency == "years":
             counts = analytics_obj.get_message_counts_per_year(user[0], lead_source, dimension,
-                                                               from_year, to_year, graph)
+                                                               from_year, to_year, format)
         elif frequency == "months":
             from_month = int(from_date.split("-")[1])
             to_month = int(to_date.split("-")[1])
             counts = analytics_obj.get_message_counts_per_month(user[0], lead_source, dimension,
                                                                 from_year, to_year,
-                                                                from_month, to_month, graph)
+                                                                from_month, to_month, format)
 
         return counts
         #return render_template('home.html', response=counts)
