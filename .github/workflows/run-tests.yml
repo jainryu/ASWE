@@ -29,7 +29,7 @@ jobs:
           fi
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-          git commit -m "tests for latest commit"
+          git commit -m "ci style and unit tests for latest push"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
