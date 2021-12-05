@@ -20,13 +20,13 @@ jobs:
            ./run_style_checker.sh
            chmod +x ./run_unit_integration_tests.sh
            ./run_unit_integration_tests.sh
-      - name: push to github
+      - name: commit tests
         run: |
           git config --global user.name ${GITHUB_ACTOR}
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
           git commit -m "tests for latest commit"
-          git push
-
-
-          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
