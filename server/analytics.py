@@ -291,7 +291,8 @@ class Analytics(Database):
 
         return final
 
-    def get_message_counts_per_year(self, user, lead_source, dimension, from_year, to_year, format):
+    def get_message_counts_per_year(self, user, lead_source, dimension, from_year, to_year,
+                                    data_format):
         """
         get a count of messages per year
 
@@ -300,12 +301,12 @@ class Analytics(Database):
         :param string dimension: optional dimensions to group counts by (along with year)
         :param string from_year: starting year to get message counts
         :param string to_year: ending year to get message counts
-        :param string graph: (optional) format of data to be returned
+        :param string graph: (optional) data_format of data to be returned
         :return dict or graph:
-            if no format is None: e.g. {"facebook": [{"count": 24, "year": 2021}],
+            if no data_format is None: e.g. {"facebook": [{"count": 24, "year": 2021}],
                                     "thumbtack" [{"count": 24, "year": 2021}]}
-            if format=by_year. {"2021": {"facebook": 24, "thumbtack": 2, "total": 26}}
-            if format=graph, return graph in bytes
+            if data_format=by_year. {"2021": {"facebook": 24, "thumbtack": 2, "total": 26}}
+            if data_format=graph, return graph in bytes
         """
         fb_where_dict = {"page_id": user["fb_page_id"]}
         fb_where_clause, fb_args = self.get_where_clause_arg(fb_where_dict)
@@ -343,9 +344,9 @@ class Analytics(Database):
                                       order by year asc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
-            if format:
+            if data_format:
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
-                if format == 'graph':
+                if data_format == 'graph':
                     title = f"Message Counts Per Month for {lead_source.capitalize()}"
                     print("title: ", title)
                     x_label = "Month"
@@ -371,10 +372,10 @@ class Analytics(Database):
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
             tt_result = ast.literal_eval(tt_result)
-            if format:
+            if data_format:
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
-                if format == 'graph':
+                if data_format == 'graph':
                     title = "Message Counts Per Month for Both Lead Sources"
                     x_label = "Month"
                     y_label = "Counts"
@@ -386,7 +387,7 @@ class Analytics(Database):
                 return {"facebook": fb_result, "thumbtack": tt_result}
 
     def get_message_counts_per_month(self, user, lead_source, dimension,
-                                     from_year, to_year, from_month, to_month, format):
+                                     from_year, to_year, from_month, to_month, data_format):
         """
         get message counts per month
 
@@ -397,11 +398,11 @@ class Analytics(Database):
         :param string dimension: optional dimensions to group counts by (along with year)
         :param string from_year: starting year to get message counts
         :param string to_year: ending year to get message counts
-        :param string format: (optional) format of data to be returned
+        :param string data_format: (optional) format of data to be returned
         :return dict or graph:
-            if format is None: e.g. {"facebook": [{"count": 24, "month": 11, "year": 2021}, ...],
-                                    "thumbtack" [{"count": 2, "month": 11, "year": 2021}, ...]}
-            if format=by_year: e.g. {"2021_11": {"facebook": 24, "thumbtack": 2, "total": 26}, ...}
+            if data_format is None: e.g. {"facebook": [{"count": 24, "month": 11, "year": 2021}],
+                                    "thumbtack" [{"count": 2, "month": 11, "year": 2021}]}
+            if data_format=by_year: e.g. {"2021_11": {"facebook": 24, "thumbtack": 2, "total": 26}}
         """
         fb_where_dict = {"page_id": user["fb_page_id"]}
         fb_where_clause, fb_args = self.get_where_clause_arg(fb_where_dict)
@@ -442,11 +443,11 @@ class Analytics(Database):
                                       order by year asc, month asc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
-            if format:
+            if data_format:
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,
                                                                    from_month, to_month)
-                if format == 'graph':
+                if data_format == 'graph':
                     title = f"Message Counts Per Month for {lead_source.capitalize()}"
                     x_label = "Month"
                     y_label = "Counts"
@@ -475,11 +476,11 @@ class Analytics(Database):
             tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
             fb_result = ast.literal_eval(fb_result)
             tt_result = ast.literal_eval(tt_result)
-            if format:
+            if data_format:
                 result = self.both_source_month_count_aggregator(fb_result, tt_result,
                                                                  from_year, to_year,
                                                                  from_month, to_month)
-                if format == 'graph':
+                if data_format == 'graph':
                     title = "Message Counts Per Month for Both Lead Sources"
                     x_label = "Month"
                     y_label = "Counts"
