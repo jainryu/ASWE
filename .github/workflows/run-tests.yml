@@ -20,3 +20,13 @@ jobs:
            ./run_style_checker.sh
            chmod +x ./run_unit_integration_tests.sh
            ./run_unit_integration_tests.sh
+      - name: push to github
+        run: |
+          git config --global user.name ${GITHUB_ACTOR}
+          git add ${GITHUB_WORKSPACE}/reports/tests/*
+          git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
+          git commit "tests for latest commit"
+          git push
+
+
+          
