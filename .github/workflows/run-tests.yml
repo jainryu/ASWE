@@ -25,7 +25,7 @@ jobs:
           git config --global user.name ${GITHUB_ACTOR}
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-          git commit "tests for latest commit"
+          git commit -m "tests for latest commit"
           git push
 
 
