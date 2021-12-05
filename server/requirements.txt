@@ -18,3 +18,4 @@ flask-httpauth==4.5.0
 requests==2.26.0
 pylint==2.11.1
 plotly==5.4.0
+pytest==6.2.5
