@@ -23,6 +23,10 @@ jobs:
       - name: commit tests
         run: |
           git config --global user.name ${GITHUB_ACTOR}
+          if [ ${GITHUB_ACTOR} = "tojoabella" ]
+          then
+            git config --global user.email "terricabella@gmail.com"
+          fi
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
           git commit -m "tests for latest commit"
