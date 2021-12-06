@@ -31,6 +31,33 @@ paths:
           200: 
             description: "Hello from Talking Potatoes!!!"
   /register:
+    get:
+      tags:
+      - "user"
+      summary: "get user info"
+      produces:
+      - "application/json"
+      - "{'status': 'success'}, 200"
+      parameters:
+      - in: "query"
+        name: "requirements to get user info"
+        description: "keys: either username or email, password"
+        required: true
+        type: string
+      responses:
+        200:
+          description: sucessful get user information
+        400:
+          description: failed get user information
+    put:
+      tags:
+      - "user"
+      summary: "edit user information"
+      responses:
+        200:
+          description: successful change user information
+        400:
+          description: failed change user information
     post:
       tags:
       - "user"
@@ -242,6 +269,34 @@ paths:
       - in: "query"
         name: "message filters"
         description: "keys: from_date, to_date, dimension (enum: user_source)"
+        required: false
+        type: string
+      responses:
+        200:
+          description: search results matching criteria
+          schema:
+            type: array
+            items:
+              allOf:
+                - $ref: '#/definitions/thumbtack.messages'
+                - $ref: '#/definitions/facebook.messages'
+        400:
+          description: bad input parameter
+      security:
+      - user_auth: []
+  
+  /message_analytics/trends:
+    get:
+      tags:
+      - "analytics"
+      summary: "get a count of messages per month or year."
+      description: "May filter by lead source. If filtered by lead source, may filter by dimension. If no dimension filtering, may visualize data in a graph. May specify date ranges."
+      produces:
+      - "application/json"
+      parameters:
+      - in: "query"
+        name: "message filters"
+        description: "keys: frequency, from_date, to_date, lead_source, dimension, data_format"
         required: false
         type: string
       responses:
