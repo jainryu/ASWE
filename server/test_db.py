@@ -36,7 +36,7 @@ class TestTestDatabase(unittest.TestCase):
 
         :return None
         """
-        expected_result = [('thumbtack_partner', 'thumbt@ck!')]
+        expected_result = [('thumbtack_partner', 'thumbt@ck!'), ('thumbtack_partner', 'thumbt@ck!'), ('hi', 'bye')]
         business_id = '286845156044809661'
         self.assertEqual(self.db_obj.get_thumbtack_auth(business_id), expected_result)
 
