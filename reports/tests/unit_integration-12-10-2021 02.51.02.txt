@@ -1,0 +1,179 @@
+============================= test session starts ==============================
+platform linux -- Python 3.10.0, pytest-6.2.5, py-1.11.0, pluggy-1.0.0 -- /opt/hostedtoolcache/Python/3.10.0/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/ASE/ASE
+collecting ... collected 24 items
+
+server/test_analytics.py::TestTestAnalytics::test_get_grouped_by_date PASSED [  4%]
+server/test_analytics.py::TestTestAnalytics::test_get_select_clause_cols PASSED [  8%]
+server/test_analytics.py::TestTestAnalytics::test_get_user_and_date_between_clause PASSED [ 12%]
+server/test_db.py::TestTestDatabase::test_get_data PASSED                [ 16%]
+server/test_db.py::TestTestDatabase::test_get_thumbtack_auth PASSED      [ 20%]
+server/test_db.py::TestTestDatabase::test_get_where_clause_arg PASSED    [ 25%]
+server/test_db.py::TestTestDatabase::test_insert_row PASSED              [ 29%]
+server/test_db.py::TestTestDatabase::test_run_sql PASSED                 [ 33%]
+server/test_helper.py::TestTestHelper::test_check_date_format PASSED     [ 37%]
+server/test_helper.py::TestTestHelper::test_convert_epoch_milliseconds_to_datetime_string FAILED [ 41%]
+server/test_helper.py::TestTestHelper::test_flatten_json PASSED          [ 45%]
+server/test_helper.py::TestTestHelper::test_get_todays_date_str FAILED   [ 50%]
+server/test_integration.py::test_home_url FAILED                         [ 54%]
+server/test_integration.py::test_register PASSED                         [ 58%]
+server/test_integration.py::test_receive_messages FAILED                 [ 62%]
+server/test_integration.py::test_receive_leads FAILED                    [ 66%]
+server/test_integration.py::test_get_all_leads PASSED                    [ 70%]
+server/test_integration.py::test_get_all_messages PASSED                 [ 75%]
+server/test_integration.py::test_get_lead_analytics PASSED               [ 79%]
+server/test_integration.py::test_get_messages_analytics PASSED           [ 83%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_create_test_data PASSED [ 87%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_lead_json_to_list PASSED [ 91%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_message_json_to_list PASSED [ 95%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_send_message PASSED [100%]
+
+=================================== FAILURES ===================================
+______ TestTestHelper.test_convert_epoch_milliseconds_to_datetime_string _______
+
+self = <test_helper.TestTestHelper testMethod=test_convert_epoch_milliseconds_to_datetime_string>
+
+    def test_convert_epoch_milliseconds_to_datetime_string(self):
+        """Unit test to test convert_epoch_milliseconds_to_datetime_string method
+    
+        :return None
+        """
+        epoch_timestamp = 1636985618000
+        expected_date_str = '2021-11-15 09:13:38'
+>       self.assertEqual(helper.convert_epoch_milliseconds_to_datetime_string(epoch_timestamp)
+                         , expected_date_str)
+E       AssertionError: '2021-11-15 14:13:38' != '2021-11-15 09:13:38'
+E       - 2021-11-15 14:13:38
+E       ?            ^^
+E       + 2021-11-15 09:13:38
+E       ?            ^^
+
+server/test_helper.py:35: AssertionError
+___________________ TestTestHelper.test_get_todays_date_str ____________________
+
+self = <test_helper.TestTestHelper testMethod=test_get_todays_date_str>
+
+    def test_get_todays_date_str(self):
+        """Unit test to test get_todays_date_str method
+    
+        :return None
+        """
+        expected_date = '2021-11-15'
+>       self.assertEqual(helper.get_todays_date_str(), expected_date)
+E       AssertionError: '2021-12-10' != '2021-11-15'
+E       - 2021-12-10
+E       ?       ^  ^
+E       + 2021-11-15
+E       ?       ^  ^
+
+server/test_helper.py:55: AssertionError
+________________________________ test_home_url _________________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_home_url(client):
+        """
+        Tests root url
+        """
+        response = client.get("/")
+>       assert b'Hello from Talking Potatoes!!!' in response.data
+E       assert b'Hello from Talking Potatoes!!!' in b'<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta http-equiv="X-UA-Compatible" conten...         </form>\n        </div>\n    </div>\n\n<div>\n\n    <script src="/static/form.js"></script>\n</body>\n</html>'
+E        +  where b'<!DOCTYPE html>\n<html lang="en">\n<head>\n    <meta charset="UTF-8">\n    <meta http-equiv="X-UA-Compatible" conten...         </form>\n        </div>\n    </div>\n\n<div>\n\n    <script src="/static/form.js"></script>\n</body>\n</html>' = <WrapperTestResponse 11031 bytes [200 OK]>.data
+
+server/test_integration.py:49: AssertionError
+____________________________ test_receive_messages _____________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_receive_messages(client):
+        """
+        Tests thumbtack_message endpoint with valid message
+        """
+        sample_message = {
+            "leadID": "299614694480093245",
+            "customerID": "331138063184986319",
+            "businessID": "286845156044809661",
+            "message": {
+                "messageID": "8699842694484326245",
+                "createTimestamp": "1498760294",
+                "text": "Do you offer fridge cleaning or is that extra?"
+            }
+        }
+    
+        response = client.post('/thumbtack_message', headers={
+        "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_message)
+    
+>       assert response.status_code == 200
+E       assert 404 == 200
+E         +404
+E         -200
+
+server/test_integration.py:87: AssertionError
+______________________________ test_receive_leads ______________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_receive_leads(client):
+        """
+        Tests thumbtack_lead endpoint with valid lead
+        """
+        sample_lead = {
+            "leadID": "299614694480093245",
+            "createTimestamp": "1498760294",
+            "request": {
+                "requestID": "2999842694480093245",
+                "category": "Interior Painting",
+                "title": "Interior Painting",
+                "description": "There is a stain on the door that needs to be touched up.",
+                "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+                "location": {
+                "city": "San Jose",
+                "state": "CA",
+                "zipCode": "95125"
+                },
+                "travelPreferences": "Professional must travel to my address.",
+                "details": [
+                {
+                    "question": "Type of property",
+                    "answer": "Home"
+                },
+                {
+                    "question": "Number of rooms",
+                    "answer": "4 rooms"
+                }
+                ]
+            },
+            "customer": {
+                "customerID": "331138063184986319",
+                "name": "John Davis",
+                "phone": "1234567890"
+            },
+            "business": {
+                "businessID": "286845156044809661",
+                "name": "Tim's Painting Business"
+            }
+        }
+    
+        response = client.post('/thumbtack_lead', headers={
+        "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_lead)
+    
+>       assert response.status_code == 200
+E       assert 400 == 200
+E         +400
+E         -200
+
+server/test_integration.py:133: AssertionError
+=============================== warnings summary ===============================
+server/test_integration.py::test_register
+  /home/runner/work/ASE/ASE/server/app.py:145: DeprecationWarning: the method passlib.handlers.sha2_crypt.sha256_crypt.encrypt() is deprecated as of Passlib 1.7, and will be removed in Passlib 2.0, use .hash() instead.
+    password_hash = sha256_crypt.encrypt(password)
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+=========================== short test summary info ============================
+FAILED server/test_helper.py::TestTestHelper::test_convert_epoch_milliseconds_to_datetime_string
+FAILED server/test_helper.py::TestTestHelper::test_get_todays_date_str - Asse...
+FAILED server/test_integration.py::test_home_url - assert b'Hello from Talkin...
+FAILED server/test_integration.py::test_receive_messages - assert 404 == 200
+FAILED server/test_integration.py::test_receive_leads - assert 400 == 200
+=================== 5 failed, 19 passed, 1 warning in 25.49s ===================
