@@ -34,3 +34,13 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: "6e5c3723-c89d-4425-8397-ad6db5836fa7"
+          heroku_app_name: "tp-leads-app"
+          heroku_email: "animesh.bhasin@columbia.edu"
+          appdir: server
