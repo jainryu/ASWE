@@ -397,7 +397,7 @@ def create_app(config):
         """
         message analytics: trends
 
-        :query param frquency: days, weeks, months, years
+        :query param frequency: days, weeks, months, years
             TODO: days, weeks
         :query param from_date: starting date to get message counts
         :query param to_date: ending date to get message counts
@@ -451,6 +451,3 @@ def create_app(config):
 # if __name__ == '__main__':
 app = create_app('config.py')
 # app.run(debug=True)
-
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000)
