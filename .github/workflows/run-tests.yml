@@ -34,7 +34,7 @@ jobs:
           coverage html -d ./reports/coverage
       - name: commit tests
         run: |
-          git config --global user.name ${GITHUB_ACTOR}
+          git config --global user.name ${GITHUB_ACTOR} -f
           if [ ${GITHUB_ACTOR} = "tojoabella" ]
           then
             git config --global user.email "terricabella@gmail.com"
