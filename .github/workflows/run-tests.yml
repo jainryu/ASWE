@@ -39,6 +39,7 @@ jobs:
           then
             git config --global user.email "terricabella@gmail.com"
           fi
+          git config advice.addIgnoredFile false
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
           git add ${GITHUB_WORKSPACE}/reports/coverage/*
