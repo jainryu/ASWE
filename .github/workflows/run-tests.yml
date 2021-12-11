@@ -33,16 +33,16 @@ jobs:
         coverage run -m unittest discover ./server
         coverage html -d ./reports/coverage
       - name: commit tests
-      run: |
-        git config --global user.name ${GITHUB_ACTOR}
-        if [ ${GITHUB_ACTOR} = "tojoabella" ]
-        then
-          git config --global user.email "terricabella@gmail.com"
-        fi
-        git add ${GITHUB_WORKSPACE}/reports/tests/*
-        git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-        git add ${GITHUB_WORKSPACE}/reports/coverage/*
-        git commit -m "ci style, postman, coverage, and unit tests for latest push"
+        run: |
+          git config --global user.name ${GITHUB_ACTOR}
+          if [ ${GITHUB_ACTOR} = "tojoabella" ]
+          then
+            git config --global user.email "terricabella@gmail.com"
+          fi
+          git add ${GITHUB_WORKSPACE}/reports/tests/*
+          git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
+          git add ${GITHUB_WORKSPACE}/reports/coverage/*
+          git commit -m "ci style, postman, coverage, and unit tests for latest push"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
