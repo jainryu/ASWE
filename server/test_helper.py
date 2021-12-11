@@ -45,11 +45,3 @@ class TestTestHelper(unittest.TestCase):
 
         date_str = '242345-05-10'
         self.assertFalse(helper.check_date_format(date_str))
-
-    def test_get_todays_date_str(self):
-        """Unit test to test get_todays_date_str method
-
-        :return None
-        """
-        expected_date = '2021-11-15'
-        self.assertEqual(helper.get_todays_date_str(), expected_date)
