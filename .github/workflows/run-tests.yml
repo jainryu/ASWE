@@ -27,11 +27,11 @@ jobs:
            ./run_style_checker.sh
            chmod +x ./run_unit_integration_tests.sh
            ./run_unit_integration_tests.sh
-          newman run ./postman_tests.json -r htmlextra --reporter-htmlextra-export ./reports/tests/postman_report.html --reporter-htmlextra-darkTheme  > ./reports/tests/postman_report.html
+           newman run ./postman_tests.json -r htmlextra --reporter-htmlextra-export ./reports/tests/postman_report.html --reporter-htmlextra-darkTheme  > ./reports/tests/postman_report.html
       - name: Run coverage tests
         run: |
-        coverage run -m unittest discover ./server
-        coverage html -d ./reports/coverage
+          coverage run -m unittest discover ./server
+          coverage html -d ./reports/coverage
       - name: commit tests
         run: |
           git config --global user.name ${GITHUB_ACTOR}
