@@ -40,10 +40,6 @@ jobs:
             git config --global user.email "terricabella@gmail.com"
           fi
           git config advice.addIgnoredFile false
-          git fetch origin master:tmp
-          git rebase tmp
-          git push origin HEAD:master
-          git branch -D tmp
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
           git add -f ${GITHUB_WORKSPACE}/reports/coverage/*
