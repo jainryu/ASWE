@@ -34,7 +34,7 @@ jobs:
           coverage html -d ./reports/coverage
       - name: commit tests
         run: |
-          git config --global user.name ${GITHUB_ACTOR} -f
+          git config --global user.name ${GITHUB_ACTOR}
           if [ ${GITHUB_ACTOR} = "tojoabella" ]
           then
             git config --global user.email "terricabella@gmail.com"
@@ -63,4 +63,3 @@ jobs:
           heroku_app_name: "tp-leads-app"
           heroku_email: "animesh.bhasin@columbia.edu"
           appdir: server
-          
