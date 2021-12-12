@@ -38,7 +38,7 @@ class TestTestDatabase(unittest.TestCase):
         """
         expected_result = [('thumbtack_partner', 'thumbt@ck!')]
         business_id = '286845156044809661'
-        self.assertEqual(self.db_obj.get_thumbtack_auth(business_id)[0], expected_result)
+        self.assertEqual(self.db_obj.get_thumbtack_auth(business_id)[0], expected_result[0])
 
     def test_run_sql(self):
         """Unit test to test run_sql method
