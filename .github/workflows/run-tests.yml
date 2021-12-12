@@ -48,6 +48,7 @@ jobs:
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
 
   build:
     runs-on: ubuntu-latest
@@ -59,3 +60,4 @@ jobs:
           heroku_app_name: "tp-leads-app"
           heroku_email: "animesh.bhasin@columbia.edu"
           appdir: server
+
