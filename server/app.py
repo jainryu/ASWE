@@ -4,7 +4,6 @@ Flask app for TalkingPotatoes project
 
 import uuid
 import json
-from sqlalchemy.sql.operators import from_
 import validators
 from passlib.hash import sha256_crypt
 from flask import Flask, request, render_template
