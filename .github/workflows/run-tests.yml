@@ -30,8 +30,7 @@ jobs:
            newman run ./postman_tests.json -r htmlextra --reporter-htmlextra-export ./reports/tests/postman_report.html --reporter-htmlextra-darkTheme  > ./reports/tests/postman_report.html
       - name: Run coverage tests
         run: |
-          coverage run -m unittest discover ./server
-          coverage html -d ./reports/coverage
+          pytest --cov=myproj --cov-append reports/htmlcov
       - name: commit tests
         run: |
           git config --global user.name ${GITHUB_ACTOR} -f
