@@ -30,8 +30,8 @@ jobs:
            newman run ./postman_tests.json -r htmlextra --reporter-htmlextra-export ./reports/tests/postman_report.html --reporter-htmlextra-darkTheme  > ./reports/tests/postman_report.html
       - name: Run coverage tests
         run: |
-          pytest --cov=myproj reports/htmlcov
-      - name: commit tests
+          pytest server/ --cov=myproj reports/ 
+        - name: commit tests
         run: |
           git config --global user.name ${GITHUB_ACTOR} -f
           if [ ${GITHUB_ACTOR} = "tojoabella" ]
@@ -45,7 +45,7 @@ jobs:
           git branch -D tmp
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-          git add -f ${GITHUB_WORKSPACE}/reports/htmlcov/*
+          git add -f ${GITHUB_WORKSPACE}/reports/*
           git commit -m "ci style, postman, coverage, and unit tests for latest push"
       - name: Push changes
         uses: ad-m/github-push-action@master
