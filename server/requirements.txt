@@ -19,3 +19,4 @@ requests==2.26.0
 pylint==2.11.1
 plotly==5.4.0
 pytest==6.2.5
+coverage==6.2

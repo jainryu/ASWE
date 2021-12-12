@@ -9,10 +9,17 @@ jobs:
         uses: actions/setup-python@v2
         with:
             python-version: '3.x'
+      - name: Set up Node.js
+        uses: actions/setup-node@v1
+        with:
+            node-version: '12.x'
       - name: install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install -r ./server/requirements.txt
+          npm install
+          npm install -g newman
+          npm install -g newman-reporter-htmlextra
       - name: run-tests
         run: |
            chmod +x ./server/requirements.txt
@@ -20,6 +27,11 @@ jobs:
            ./run_style_checker.sh
            chmod +x ./run_unit_integration_tests.sh
            ./run_unit_integration_tests.sh
+           newman run ./postman_tests.json -r htmlextra --reporter-htmlextra-export ./reports/tests/postman_report.html --reporter-htmlextra-darkTheme  > ./reports/tests/postman_report.html
+      - name: Run coverage tests
+        run: |
+          coverage run -m unittest discover ./server
+          coverage html -d ./reports/coverage
       - name: commit tests
         run: |
           git config --global user.name ${GITHUB_ACTOR}
@@ -29,8 +41,20 @@ jobs:
           fi
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-          git commit -m "ci style and unit tests for latest push"
+          git add ${GITHUB_WORKSPACE}/reports/coverage/*
+          git commit -m "ci style, postman, coverage, and unit tests for latest push"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: akhileshns/heroku-deploy@v3.12.12
+        with:
+          heroku_api_key: "6e5c3723-c89d-4425-8397-ad6db5836fa7"
+          heroku_app_name: "tp-leads-app"
+          heroku_email: "animesh.bhasin@columbia.edu"
+          appdir: server

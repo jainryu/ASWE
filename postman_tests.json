@@ -1,0 +1,933 @@
+{
+	"info": {
+		"_postman_id": "ec603c2c-de74-4233-ba29-cf0e144d9e85",
+		"name": "Heroku Testing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Register user",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/register?email=ab5051@columbia.edu&username=animeshbhasin&password=animeshbhasin",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"register"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "ab5051@columbia.edu"
+						},
+						{
+							"key": "username",
+							"value": "animeshbhasin"
+						},
+						{
+							"key": "password",
+							"value": "animeshbhasin"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Update user information",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/register?email=ab5051@columbia.edu&password=animeshbhasin&thumbtack_business_id=00000000",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"register"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "ab5051@columbia.edu"
+						},
+						{
+							"key": "password",
+							"value": "animeshbhasin"
+						},
+						{
+							"key": "thumbtack_business_id",
+							"value": "00000000"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Update user information 2",
+					"originalRequest": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/register?username=animeshbhasin&password=animeshbhasin&thumbtack_business_id=11111111",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"register"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "animeshbhasin"
+								},
+								{
+									"key": "password",
+									"value": "animeshbhasin"
+								},
+								{
+									"key": "thumbtack_business_id",
+									"value": "11111111"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Delete user",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/register?email=tta2117@columbia.edu&password=tojospassword",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"register"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "tta2117@columbia.edu"
+						},
+						{
+							"key": "password",
+							"value": "tojospassword"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Delete user 2",
+					"originalRequest": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/register?username=tojo&password=tojospassword",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"register"
+							],
+							"query": [
+								{
+									"key": "username",
+									"value": "tojo"
+								},
+								{
+									"key": "password",
+									"value": "tojospassword"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Post thumbtack leads",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "animeshbhasin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "animeshbhasin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"leadID\": \"437282430869512192\",\n    \"createTimestamp\": \"1636428031\",\n    \"price\": \"More information needed to give an estimate\",\n    \"request\": {\n        \"requestID\": \"437282427823792129\",\n        \"category\": \"House Cleaning\",\n        \"title\": \"House Cleaning\",\n        \"description\": \"I am looking for someone to clean my apartment before I move\",\n        \"schedule\": \"Date: Tue, May 05 2020\\nTime: 6:00 PM\\nLength: 3.5 hours\",\n        \"location\": {\n            \"city\": \"San Francisco\",\n            \"state\": \"CA\",\n            \"zipCode\": \"94103\"\n        },\n        \"travelPreferences\": \"Professional must travel to my address\"\n    },\n    \"customer\": {\n        \"customerID\": \"437282427635040257\",\n        \"name\": \"John Doe\"\n    },\n    \"business\": {\n        \"businessID\": \"437282430088732672\",\n        \"name\": \"Mr. Clean's Sparkly Cleaning Service\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/thumbtack_lead",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"thumbtack_lead"
+					],
+					"query": [
+						{
+							"key": "",
+							"value": "",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Post thumbtack messages",
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "animeshbhasin",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "animeshbhasin",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"leadID\": \"299614694480093245\",\n    \"customerID\": \"331138063184986319\",\n    \"businessID\": \"286845156044809661\",\n    \"message\": {\n        \"messageID\": \"8699842694484326245\",\n        \"createTimestamp\": \"1498760294\",\n        \"text\": \"Do you offer fridge cleaning or is that extra?\"\n    }\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/thumbtack_messages",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"thumbtack_messages"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Create thumbtack lead via webhook",
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/dummy_thumbtack_lead",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"dummy_thumbtack_lead"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get messages",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/get_messages",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"get_messages"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get messages 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/get_messages",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"get_messages"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Get leads",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/get_leads",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"get_leads"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Get leads 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/get_leads?date='2021-10-09'",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"get_leads"
+							],
+							"query": [
+								{
+									"key": "date",
+									"value": "'2021-10-09'"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Message analytics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/message_analytics",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"message_analytics"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Message analytics 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics?dimension=user_source&from_date=2021-10-01&to_date=2021-11-05",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics"
+							],
+							"query": [
+								{
+									"key": "dimension",
+									"value": "user_source"
+								},
+								{
+									"key": "from_date",
+									"value": "2021-10-01"
+								},
+								{
+									"key": "to_date",
+									"value": "2021-11-05"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Message analytics 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics?from_date=2021-10-01&to_date=2021-11-05",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics"
+							],
+							"query": [
+								{
+									"key": "from_date",
+									"value": "2021-10-01"
+								},
+								{
+									"key": "to_date",
+									"value": "2021-11-05"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Lead analytics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/lead_analytics",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"lead_analytics"
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Lead analytics 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/lead_analytics?from_date=2001-01-01&to_date=2021-11-15",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"lead_analytics"
+							],
+							"query": [
+								{
+									"key": "from_date",
+									"value": "2001-01-01"
+								},
+								{
+									"key": "to_date",
+									"value": "2021-11-15"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Lead analytics 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/lead_analytics?dimension=category",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"lead_analytics"
+							],
+							"query": [
+								{
+									"key": "dimension",
+									"value": "category"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Lead analytics 4",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/lead_analytics?dimension=state",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"lead_analytics"
+							],
+							"query": [
+								{
+									"key": "dimension",
+									"value": "state"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		},
+		{
+			"name": "Trend analytics",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends?email=tta2117@columbia.edu&password=tojospassword&username=tojo",
+					"protocol": "https",
+					"host": [
+						"tp-leads-app",
+						"herokuapp",
+						"com"
+					],
+					"path": [
+						"message_analytics",
+						"trends"
+					],
+					"query": [
+						{
+							"key": "email",
+							"value": "tta2117@columbia.edu"
+						},
+						{
+							"key": "password",
+							"value": "tojospassword"
+						},
+						{
+							"key": "username",
+							"value": "tojo"
+						}
+					]
+				}
+			},
+			"response": [
+				{
+					"name": "Trend analytics 2",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends?frequency=months",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							],
+							"query": [
+								{
+									"key": "frequency",
+									"value": "months"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 3",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends?frequency=months",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							],
+							"query": [
+								{
+									"key": "frequency",
+									"value": "months"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 4",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 5",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 6",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 7",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 8",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends?email=tta2117@columbia.edu&password=tojospassword&username=tojo",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "tta2117@columbia.edu"
+								},
+								{
+									"key": "password",
+									"value": "tojospassword"
+								},
+								{
+									"key": "username",
+									"value": "tojo"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				},
+				{
+					"name": "Trend analytics 9",
+					"originalRequest": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "https://tp-leads-app.herokuapp.com/message_analytics/trends?email=tta2117@columbia.edu&password=tojospassword&username=tojo",
+							"protocol": "https",
+							"host": [
+								"tp-leads-app",
+								"herokuapp",
+								"com"
+							],
+							"path": [
+								"message_analytics",
+								"trends"
+							],
+							"query": [
+								{
+									"key": "email",
+									"value": "tta2117@columbia.edu"
+								},
+								{
+									"key": "password",
+									"value": "tojospassword"
+								},
+								{
+									"key": "username",
+									"value": "tojo"
+								}
+							]
+						}
+					},
+					"_postman_previewlanguage": null,
+					"header": null,
+					"cookie": [],
+					"body": null
+				}
+			]
+		}
+	],
+	"auth": {
+		"type": "basic",
+		"basic": [
+			{
+				"key": "password",
+				"value": "animeshbhasin",
+				"type": "string"
+			},
+			{
+				"key": "username",
+				"value": "animeshbhasin",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	]
+}

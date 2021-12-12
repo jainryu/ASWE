@@ -1,5 +1,5 @@
 '''
-Flask app
+Flask app for TalkingPotatoes project
 '''
 
 import uuid
