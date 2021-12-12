@@ -45,7 +45,7 @@ jobs:
           git branch -D tmp
           git add ${GITHUB_WORKSPACE}/reports/tests/*
           git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-          git add -f ${GITHUB_WORKSPACE}/reports/coverage/*
+          git add -f ${GITHUB_WORKSPACE}/reports/htmlcov/*
           git commit -m "ci style, postman, coverage, and unit tests for latest push"
       - name: Push changes
         uses: ad-m/github-push-action@master
