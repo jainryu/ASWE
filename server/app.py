@@ -260,54 +260,67 @@ def create_app(config):
     def get_messages():
         """return the messages for a date range and lead source(s).
 
-        :query param source: lead source to filter by. If none, queries all lead sources.
+        :query param lead_source: lead source to filter by. If none, queries all lead sources.
         :query param date: contacted date to query.
 
         :return list result: a list of json messages
         """
         username = auth.current_user()
-        query = json.loads(db_obj.get_data(db_schema='talking_potato',
+        user = json.loads(db_obj.get_data(db_schema='talking_potato',
                                            table_name='users', filter_data={'username': username}))
-        filter_data = {'user_id': query[0]['user_id']}
-        source = request.args.get('source')
-        contacted_date = request.args.get('date')
-
-        if source:
-            source = source.replace("'", "")
-            filter_data['user_source'] = source
-        if contacted_date:
-            contacted_date = contacted_date.replace("'", "")
-            date_format_check = helper.check_date_format(contacted_date)
+        filter_data = {}
+        lead_source = request.args.get('lead_source')
+        date = request.args.get('date')
+        if date:
+            date = date.replace("'", "")
+            date_format_check = helper.check_date_format(date)
             if not date_format_check:
                 return 'Please enter the date in YYYY-MM-DD format'
-            filter_data['date(contacted_time)'] = contacted_date
-        result = db_obj.get_data(db_schema='talking_potato', table_name='messages',
+            filter_data['date(contacted_time)'] = date
+        if lead_source:
+            lead_source = lead_source.replace("'", "")
+            if lead_source == "facebook":
+                schema = "fb"
+                filter_data["page_id"] = user[0]["fb_page_id"]
+            elif lead_source == "thumbtack":
+                schema = "thumbtack"
+                filter_data["thumbtack_business_id"] = user[0]["thumbtack_business_id"]
+            result = db_obj.get_data(db_schema=schema, table_name='messages',
+                                     filter_data=filter_data)
+        else:
+            filter_data["page_id"] = user[0]["fb_page_id"]
+            result = db_obj.get_data(db_schema="fb", table_name='messages',
                                  filter_data=filter_data)
+            filter_data.pop('page_id')
+            schema = "thumbtack"
+            filter_data["thumbtack_business_id"] = user[0]["thumbtack_business_id"]
+            result += db_obj.get_data(db_schema="thumbtack", table_name='messages',
+                                      filter_data=filter_data)
         return result
-
 
     @app.route("/get_leads", methods=['GET'])
     @auth.login_required
     def get_leads():
         """return the leads for a date range and lead source(s).
 
-        :query param source: lead source to filter by. If none, queries all lead sources.
+        :query param lead_source: lead source to filter by. If none, queries all lead sources.
+            -currently only thumbtack
         :query param date: contacted date to query.
 
         :return list result: a list of json leads
         """
         username = auth.current_user()
-        query = json.loads(db_obj.get_data(db_schema='talking_potato',
+        user = json.loads(db_obj.get_data(db_schema='talking_potato',
                                            table_name='users', filter_data={'username': username}))
-        filter_data = {'thumbtack_business_id': query[0]['thumbtack_business_id']}
-        contacted_date = request.args.get('date')
+        filter_data = {'thumbtack_business_id': user[0]['thumbtack_business_id']}
+        date = request.args.get('date')
 
-        if contacted_date:
-            contacted_date = contacted_date.replace("'", "")
-            date_format_check = helper.check_date_format(contacted_date)
+        if date:
+            date = date.replace("'", "")
+            date_format_check = helper.check_date_format(date)
             if not date_format_check:
                 return 'Please enter the date in YYYY-MM-DD format'
-            filter_data['date(contacted_time)'] = contacted_date
+            filter_data['date(contacted_time)'] = date
         result = db_obj.get_data(db_schema='thumbtack', table_name='leads', filter_data=filter_data)
         return result
 
@@ -319,7 +332,7 @@ def create_app(config):
 
         :query param from_date: beginning date to filter by. Optional.
         :query param to_date: ending date to filter by. Optional.
-        :query param dimension: dimension to filter data by. Optional. (currently only lead source)
+        :query param lead_source: lead source to filter data by. Optional
 
         :return list result: a list of dicts with keys: date, count, optional user_source
         """
@@ -330,12 +343,12 @@ def create_app(config):
         filter_user_date_range = {'user_id': query[0]['user_id']}
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        dimension = request.args.get('dimension')
+        lead_source = request.args.get('lead_source')
 
         filter_data = {'date(contacted_time)': 1}
 
-        if dimension:
-            if dimension == 'user_source':
+        if lead_source:
+            if lead_source == 'user_source':
                 filter_data['user_source'] = 1
             else:
                 return 'Accepted value of dimension = user_source'
@@ -415,6 +428,10 @@ def create_app(config):
         frequency = request.args.get('frequency')
         lead_source = request.args.get('lead_source')
         dimension = request.args.get('dimension')
+
+        if not frequency or (frequency==""):
+            frequency = "years"
+
         from_date, to_date = analytics_obj.create_dates(frequency, request.args.get('from_date'),
                                                         request.args.get('to_date'))
         data_format = request.args.get('data_format')
@@ -429,9 +446,6 @@ def create_app(config):
 
         from_year = int(from_date.split("-")[0])
         to_year = int(to_date.split("-")[0])
-
-        if not frequency:
-            frequency = "years"
 
         if frequency == "years":
             counts = analytics_obj.get_message_counts_per_year(user[0], lead_source, dimension,
@@ -451,3 +465,6 @@ def create_app(config):
 # if __name__ == '__main__':
 app = create_app('config.py')
 # app.run(debug=True)
+
+if __name__ == '__main__':
+    app.run(host="127.0.0.1", port=5000)

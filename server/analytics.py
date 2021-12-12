@@ -89,6 +89,7 @@ class Analytics(Database):
             where_date_clause = self.get_user_and_date_between_clause(filter_user_date_range)
         sql_stmt = "select " + select_clause + ",count(*) from " + db_schema + "." + table_name \
                    + " " + where_date_clause + " group by " + select_clause + " order by 1 desc;"
+        print("tojo: ", sql_stmt)
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
 
