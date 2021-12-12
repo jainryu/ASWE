@@ -31,22 +31,22 @@ jobs:
       - name: Run coverage tests
         run: |
           pytest server/ --cov=myproj reports/ 
-        - name: commit tests
-        run: |
-          git config --global user.name ${GITHUB_ACTOR} -f
-          if [ ${GITHUB_ACTOR} = "tojoabella" ]
-          then
-            git config --global user.email "terricabella@gmail.com"
-          fi
-          git config advice.addIgnoredFile false
-          git fetch origin master:tmp
-          git rebase tmp
-          git push origin HEAD:master
-          git branch -D tmp
-          git add ${GITHUB_WORKSPACE}/reports/tests/*
-          git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
-          git add -f ${GITHUB_WORKSPACE}/reports/*
-          git commit -m "ci style, postman, coverage, and unit tests for latest push"
+      - name: commit tests
+      run: |
+        git config --global user.name ${GITHUB_ACTOR} -f
+        if [ ${GITHUB_ACTOR} = "tojoabella" ]
+        then
+          git config --global user.email "terricabella@gmail.com"
+        fi
+        git config advice.addIgnoredFile false
+        git fetch origin master:tmp
+        git rebase tmp
+        git push origin HEAD:master
+        git branch -D tmp
+        git add ${GITHUB_WORKSPACE}/reports/tests/*
+        git add ${GITHUB_WORKSPACE}/reports/style_bug_checker/*
+        git add -f ${GITHUB_WORKSPACE}/reports/*
+        git commit -m "ci style, postman, coverage, and unit tests for latest push"
       - name: Push changes
         uses: ad-m/github-push-action@master
         with:
