@@ -31,7 +31,7 @@ class TestTestHelper(unittest.TestCase):
         :return None
         """
         epoch_timestamp = 1636985618000
-        expected_date_str = '2021-11-15 09:13:38'
+        expected_date_str = '2021-11-15 14:13:38'
         self.assertEqual(helper.convert_epoch_milliseconds_to_datetime_string(epoch_timestamp)
                          , expected_date_str)
 
