@@ -4,6 +4,7 @@ Flask app for TalkingPotatoes project
 
 import uuid
 import json
+from sqlalchemy.sql.operators import from_
 import validators
 from passlib.hash import sha256_crypt
 from flask import Flask, request, render_template
@@ -230,7 +231,6 @@ def create_app(config):
 
         elif request.method == 'POST':
             payload = request.json
-            # print('payload: ', payload)
             event = payload['entry'][0]['messaging']
             for msg in event:
                 if fb_helper.is_user_message(msg):
@@ -336,6 +336,7 @@ def create_app(config):
 
         :return list result: a list of dicts with keys: date, count, optional user_source
         """
+
         username = auth.current_user()
         query = json.loads(db_obj.get_data(db_schema='talking_potato',
                                            table_name='users', filter_data={'username': username}))
@@ -343,18 +344,15 @@ def create_app(config):
         filter_user_date_range = {'user_id': query[0]['user_id']}
         from_date = request.args.get('from_date')
         to_date = request.args.get('to_date')
-        lead_source = request.args.get('lead_source')
 
         filter_data = {'date(contacted_time)': 1}
-
-        if lead_source:
-            if lead_source == 'user_source':
-                filter_data['user_source'] = 1
-            else:
-                return 'Accepted value of dimension = user_source'
+        filter_data['user_source'] = 1
 
         from_date, to_date = analytics_obj.create_dates('all', request.args.get('from_date'),
                                                         request.args.get('to_date'))
+        if from_date is None and to_date is None:
+            return 'Please enter the date in YYYY-MM-DD format'
+
         filter_user_date_range['from_date'] = from_date
         filter_user_date_range['to_date'] = to_date
 
@@ -363,7 +361,6 @@ def create_app(config):
                                                    filter_data=filter_data,
                                                    filter_user_date_range=filter_user_date_range)
         return result
-
 
     @app.route("/lead_analytics", methods=['GET'])
     @auth.login_required
@@ -377,25 +374,26 @@ def create_app(config):
         :return result: a list of dicts with keys: date, optional category, optimal state, count.
         """
         username = auth.current_user()
-        query = json.loads(db_obj.get_data(db_schema='talking_potato',
+        user = json.loads(db_obj.get_data(db_schema='talking_potato',
                                            table_name='users', filter_data={'username': username}))
 
-        filter_user_date_range = {'thumbtack_business_id': query[0]['thumbtack_business_id']}
+        filter_user_date_range = {'thumbtack_business_id': user[0]['thumbtack_business_id']}
 
-        from_date = request.args.get('from_date')
-        to_date = request.args.get('to_date')
         dimension = request.args.get('dimension')
 
         filter_data = {'date(contacted_time)': 1}
 
         if dimension:
-            if dimension in ('category', 'state'):
+            if dimension in ('category', 'state', 'travel_preferences'):
                 filter_data[dimension] = 1
             else:
-                return 'Accepted values of dimension = category or state'
+                return 'Accepted values of dimension = category, state, or travel_preferences'
 
         from_date, to_date = analytics_obj.create_dates('all', request.args.get('from_date'),
                                                         request.args.get('to_date'))
+        if from_date is None and to_date is None:
+            return 'Please enter the date in YYYY-MM-DD format'
+
         filter_user_date_range['from_date'] = from_date
         filter_user_date_range['to_date'] = to_date
         result = analytics_obj.get_grouped_by_date(db_schema='thumbtack',

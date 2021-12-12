@@ -84,12 +84,10 @@ class Analytics(Database):
         :return list result: the result of the sql select statement
         """
         select_clause = self.get_select_clause_cols(filter_data)
-        where_date_clause = ''
         if filter_user_date_range:
             where_date_clause = self.get_user_and_date_between_clause(filter_user_date_range)
         sql_stmt = "select " + select_clause + ",count(*) from " + db_schema + "." + table_name \
                    + " " + where_date_clause + " group by " + select_clause + " order by 1 desc;"
-        print("tojo: ", sql_stmt)
         result = self.run_sql(sql_stmt, fetch_flag=True)
         return result
 
@@ -349,7 +347,6 @@ class Analytics(Database):
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
                 if data_format == 'graph':
                     title = f"Message Counts Per Month for {lead_source.capitalize()}"
-                    print("title: ", title)
                     x_label = "Month"
                     y_label = "Counts"
                     return visualizer.single_plot(result, title=title,

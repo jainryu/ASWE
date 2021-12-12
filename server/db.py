@@ -34,7 +34,6 @@ class Database:
                 from talking_potato.users
                 where thumbtack_business_id = {business_id}"""
                                      ).fetchall()
-
         return result
 
     def run_sql(self, sql_statement, fetch_flag=False, commit_flag=False):
