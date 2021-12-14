@@ -279,25 +279,30 @@ def create_app(config):
             lead_source = lead_source.replace("'", "")
             if lead_source == "facebook":
                 schema = "fb"
-                filter_data['date(timestamp)'] = date
+                if date:
+                    filter_data['date(timestamp)'] = date
                 filter_data["page_id"] = user[0]["fb_page_id"]
             elif lead_source == "thumbtack":
                 schema = "thumbtack"
-                filter_data['date(contacted_time)'] = date
+                if date:
+                    filter_data['date(contacted_time)'] = date
                 filter_data["thumbtack_business_id"] = user[0]["thumbtack_business_id"]
             result = db_obj.get_data(db_schema=schema, table_name='messages',
                                      filter_data=filter_data)
         else:
             filter_data["page_id"] = user[0]["fb_page_id"]
-            filter_data['date(timestamp)'] = date
+            if date:
+                filter_data['date(timestamp)'] = date
             result = db_obj.get_data(db_schema="fb", table_name='messages',
                                  filter_data=filter_data)
             filter_data.pop('page_id')
-            filter_data.pop('date(timestamp)')
+            if 'date(timestamp)' in filter_data:
+                filter_data.pop('date(timestamp)')
 
-            schema = "thumbtack"
+
             filter_data["thumbtack_business_id"] = user[0]["thumbtack_business_id"]
-            filter_data['date(contacted_time)'] = date
+            if date:
+                filter_data['date(contacted_time)'] = date
             result += db_obj.get_data(db_schema="thumbtack", table_name='messages',
                                       filter_data=filter_data)
         return result
