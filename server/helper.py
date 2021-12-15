@@ -54,9 +54,58 @@ def check_date_format(date_str):
     except ValueError:
         return False
 
+def check_date_format_months(date_str):
+    """
+    check date format for months
+
+    :param string date_str: date
+    :return bool datetime: whether inputted date is in format "%Y-%m"
+    """
+    date_format = "%Y-%m"
+    try:
+        dt.datetime.strptime(date_str, date_format)
+        return True
+    except ValueError:
+        return False
+
+def check_date_format_years(date_str):
+    """
+    check date format for years
+
+    :param string date_str: date
+    :return bool datetime: whether inputted date is in format "%Y"
+    """
+    date_format = "%Y"
+    try:
+        dt.datetime.strptime(date_str, date_format)
+        return True
+    except ValueError:
+        return False
+
 def get_todays_date_str():
     """
     get today's date
     return string: today's date in '%Y-%m-%d'
     """
     return dt.datetime.today().strftime('%Y-%m-%d')
+
+def is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+    """
+    check if month is within a date month
+    """
+    if from_year == to_year:
+        if (year == from_year) and (month >= from_month) and (month <= to_month):
+            return True
+    elif (year == from_year) and (month >= from_month):
+        return True
+    elif (year == to_year) and (month <= to_month):
+        return True
+    return False
+
+def is_year_in_date_range(year, from_year, to_year):
+    """
+    check if year is within a date year
+    """
+    if (year >= from_year) and (year <= to_year):
+        return True
+    return False

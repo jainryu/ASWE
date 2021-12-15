@@ -449,7 +449,10 @@ def create_app(config):
                         "details": "if graph format, dimension should be None"}, 400
 
         if from_date is None and to_date is None:
-            return 'Please enter the date in YYYY-MM-DD format'
+            if frequency == "years":
+                return 'Please enter the date in YYYY format'
+            elif frequency == "months":
+                return 'Please enter the date in YYYY-MM format'
 
         from_year = int(from_date.split("-")[0])
         to_year = int(to_date.split("-")[0])
@@ -460,10 +463,6 @@ def create_app(config):
         elif frequency == "months":
             from_month = int(from_date.split("-")[1])
             to_month = int(to_date.split("-")[1])
-            print("from year: ", from_year)
-            print("to year: ", to_year)
-            print("from month: ", from_month)
-            print("to month: ", to_month)
             counts = analytics_obj.get_message_counts_per_month(user[0], lead_source, dimension,
                                                                 from_year, to_year,
                                                                 from_month, to_month, data_format)

@@ -103,30 +103,64 @@ class Analytics(Database):
             string to_date: to date
         """
 
-        if from_date:
-            from_date = from_date.replace("'", "")
-            date_format_check = helper.check_date_format(from_date)
-            if not date_format_check:
-                return None, None
-        else:
-            if analysis_type == 'all':
+        if analysis_type == "all":
+            if from_date:
+                from_date = from_date.replace("'", "")
+                date_format_check = helper.check_date_format(from_date)
+                if not date_format_check:
+                    return None, None
+            else:
                 from_date = '1900-01-01'
+            if to_date:
+                to_date = to_date.replace("'", "")
+                date_format_check = helper.check_date_format(to_date)
+                if not date_format_check:
+                    return None, None
+            else:
+                to_date = helper.get_todays_date_str()
+
+        elif analysis_type == "years":
+            if from_date:
+                date_format_check = helper.check_date_format_years(from_date)
+                if not date_format_check:
+                    return None, None
             else:
                 today_date = helper.get_todays_date_str()
                 today_year = today_date.split("-")[0]
-                today_month_and_day = today_date.split("-")[1] + "-" + today_date.split("-")[2]
-                if analysis_type == "years":
-                    from_year = str(int(today_year) - 10)
-                elif analysis_type == "months":
-                    from_year = str(int(today_year) - 1)
-                from_date = f"{from_year}-{today_month_and_day}"
-        if not to_date:
-            to_date = helper.get_todays_date_str()
-        else:
-            to_date = to_date.replace("'", "")
-            date_format_check = helper.check_date_format(to_date)
-            if not date_format_check:
-                return None, None
+                from_year = str(int(today_year) - 10)
+                from_date = f"{from_year}"
+            if to_date:
+                to_date = to_date.replace("'", "")
+                date_format_check = helper.check_date_format_years(to_date)
+                if not date_format_check:
+                    return None, None
+            else:
+                today_date = helper.get_todays_date_str()
+                today_year = today_date.split("-")[0]
+                to_date = f"{today_year}"
+            
+        elif analysis_type == "months":
+            if from_date:
+                date_format_check = helper.check_date_format_months(from_date)
+                if not date_format_check:
+                    return None, None
+            else:
+                today_date = helper.get_todays_date_str()
+                today_year = today_date.split("-")[0]
+                today_month = today_date.split("-")[1]
+                from_year = str(int(today_year) - 1)
+                from_date = f"{from_year}-{today_month}" 
+            if to_date:
+                to_date = to_date.replace("'", "")
+                date_format_check = helper.check_date_format_months(to_date)
+                if not date_format_check:
+                    return None, None
+            else:
+                to_date = helper.get_todays_date_str()
+                today_year = today_date.split("-")[0]
+                today_month = today_date.split("-")[1]
+                to_date = f"{today_year}-{today_month}"
+
         return from_date, to_date
 
     def single_source_year_count_aggregator(self, sql_result, from_year, to_year):
@@ -181,14 +215,8 @@ class Analytics(Database):
             year = int(year_month_counts["year"])
             month = int(year_month_counts["month"])
             count = year_month_counts["count"]
-            if from_year == to_year:
-                if (year == from_year) and (month >= from_month) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"] = count
-            else:
-                if (year == from_year) and (month >= from_month):
-                    final[f"{str(year)}_{str(month)}"] = count
-                elif (year == to_year) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"] = count
+            if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                final[f"{str(year)}_{str(month)}"] = count
 
         return final
 
@@ -207,8 +235,7 @@ class Analytics(Database):
         final = {}
 
         for year in range(from_year, to_year + 1):
-            if year not in final:
-                final[year] = {"facebook": 0, "thumbtack": 0, "total": 0}
+            final[year] = {"facebook": 0, "thumbtack": 0, "total": 0}
         for year_counts in fb_sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
@@ -254,18 +281,8 @@ class Analytics(Database):
             month = int(year_month_counts["month"])
             count = year_month_counts["count"]
 
-            if from_year == to_year:
-                if (year == from_year) and (month >= from_month) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"] = {"facebook": count,
-                                                          "thumbtack": 0,
-                                                          "total": count}
-            else:
-                if (year == from_year) and (month >= from_month):
-                    final[f"{str(year)}_{str(month)}"] = {"facebook": count,
-                                                          "thumbtack": 0,
-                                                          "total": count}
-                elif (year == to_year) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"] = {"facebook": count,
+            if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                final[f"{str(year)}_{str(month)}"] = {"facebook": count,
                                                           "thumbtack": 0,
                                                           "total": count}
         for year_month_counts in tt_sql_result:
@@ -273,20 +290,10 @@ class Analytics(Database):
             month = int(year_month_counts["month"])
             count = year_month_counts["count"]
 
-            if from_year == to_year:
-                if (year == from_year) and (month >= from_month) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                    final[f"{str(year)}_{str(month)}"]["total"] = \
-                        final[f"{str(year)}_{str(month)}"]["total"] + count
-            else:
-                if (year == from_year) and (month >= from_month):
-                    final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                    final[f"{str(year)}_{str(month)}"]["total"] = \
-                        final[f"{str(year)}_{str(month)}"]["total"] + count
-                elif (year == to_year) and (month <= to_month):
-                    final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
-                    final[f"{str(year)}_{str(month)}"]["total"] = \
-                        final[f"{str(year)}_{str(month)}"]["total"] + count
+            if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                final[f"{str(year)}_{str(month)}"]["thumbtack"] = count
+                final[f"{str(year)}_{str(month)}"]["total"] = \
+                    final[f"{str(year)}_{str(month)}"]["total"] + count
 
         return final
 
@@ -354,19 +361,11 @@ class Analytics(Database):
                 else:
                     return result
             else:
-                #result = {f"{lead_source}": result}
                 filtered_result = []
                 for datapoint in result:
                     year = datapoint['year']
-                    month = datapoint['month']
-                    if (from_year == to_year):
-                        if (year == from_year) and (month >= from_month) and (month <= to_month):
-                                filtered_result.append(datapoint)
-                    else:
-                        if (year == from_year) and (month >= from_month):
-                            filtered_result.append(datapoint)
-                        elif (year == to_year) and (month <= to_month):
-                            filtered_result.append(datapoint)
+                    if helper.is_year_in_date_range(year, from_year, to_year):
+                        filtered_result.append(datapoint)
                 result = {f"{lead_source}": filtered_result}
                 return result
 
@@ -398,29 +397,14 @@ class Analytics(Database):
                 fb_filtered_result = []
                 for fb_datapoint in fb_result:
                     year = fb_datapoint['year']
-                    month = fb_datapoint['month']
-                    if (from_year == to_year):
-                        if (year == from_year) and (month >= from_month) and (month <= to_month):
-                                fb_filtered_result.append(fb_datapoint)
-                    else:
-                        if (year == from_year) and (month >= from_month):
-                            fb_filtered_result.append(fb_datapoint)
-                        elif (year == to_year) and (month <= to_month):
-                            fb_filtered_result.append(fb_datapoint)
+                    if helper.is_year_in_date_range(year, from_year, to_year):
+                        fb_filtered_result.append(fb_datapoint)
                 tt_filtered_result = []
                 for tt_datapoint in tt_result:
                     year = tt_datapoint['year']
-                    month = tt_datapoint['month']
-                    if (from_year == to_year):
-                        if (year == from_year) and (month >= from_month) and (month <= to_month):
-                                tt_filtered_result.append(tt_datapoint)
-                    else:
-                        if (year == from_year) and (month >= from_month):
-                            tt_filtered_result.append(tt_datapoint)
-                        elif (year == to_year) and (month <= to_month):
-                            tt_filtered_result.append(tt_datapoint)
-                return {"facebook": fb_filtered_result, "thumbtack": tt_result}
-                #return {"facebook": fb_result, "thumbtack": tt_result}
+                    if helper.is_year_in_date_range(year, from_year, to_year):
+                        tt_filtered_result.append(tt_datapoint)
+                return {"facebook": fb_filtered_result, "thumbtack": tt_filtered_result}
 
     def get_message_counts_per_month(self, user, lead_source, dimension,
                                      from_year, to_year, from_month, to_month, data_format):
@@ -481,7 +465,6 @@ class Analytics(Database):
                                       order by year asc, month asc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
-            print("result: ", result)
             if data_format:
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,
@@ -499,14 +482,8 @@ class Analytics(Database):
                 for datapoint in result:
                     year = datapoint['year']
                     month = datapoint['month']
-                    if (from_year == to_year):
-                        if (year == from_year) and (month >= from_month) and (month <= to_month):
-                                filtered_result.append(datapoint)
-                    else:
-                        if (year == from_year) and (month >= from_month):
-                            filtered_result.append(datapoint)
-                        elif (year == to_year) and (month <= to_month):
-                            filtered_result.append(datapoint)
+                    if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                        filtered_result.append(datapoint)
                 result = {f"{lead_source}": filtered_result}
                 return result
 
@@ -543,24 +520,12 @@ class Analytics(Database):
                 for fb_datapoint in fb_result:
                     year = fb_datapoint['year']
                     month = fb_datapoint['month']
-                    if (from_year == to_year):
-                        if (year == from_year) and (month >= from_month) and (month <= to_month):
-                                fb_filtered_result.append(fb_datapoint)
-                    else:
-                        if (year == from_year) and (month >= from_month):
-                            fb_filtered_result.append(fb_datapoint)
-                        elif (year == to_year) and (month <= to_month):
-                            fb_filtered_result.append(fb_datapoint)
+                    if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                        fb_filtered_result.append(fb_datapoint)
                 tt_filtered_result = []
                 for tt_datapoint in tt_result:
                     year = tt_datapoint['year']
                     month = tt_datapoint['month']
-                    if (from_year == to_year):
-                        if (year == from_year) and (month >= from_month) and (month <= to_month):
-                                tt_filtered_result.append(tt_datapoint)
-                    else:
-                        if (year == from_year) and (month >= from_month):
-                            tt_filtered_result.append(tt_datapoint)
-                        elif (year == to_year) and (month <= to_month):
-                            tt_filtered_result.append(tt_datapoint)
-                return {"facebook": fb_filtered_result, "thumbtack": tt_result}
+                    if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                        tt_filtered_result.append(tt_datapoint)
+                return {"facebook": fb_filtered_result, "thumbtack": tt_filtered_result}
