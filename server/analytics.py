@@ -354,7 +354,20 @@ class Analytics(Database):
                 else:
                     return result
             else:
-                result = {f"{lead_source}": result}
+                #result = {f"{lead_source}": result}
+                filtered_result = []
+                for datapoint in result:
+                    year = datapoint['year']
+                    month = datapoint['month']
+                    if (from_year == to_year):
+                        if (year == from_year) and (month >= from_month) and (month <= to_month):
+                                filtered_result.append(datapoint)
+                    else:
+                        if (year == from_year) and (month >= from_month):
+                            filtered_result.append(datapoint)
+                        elif (year == to_year) and (month <= to_month):
+                            filtered_result.append(datapoint)
+                result = {f"{lead_source}": filtered_result}
                 return result
 
         else:
@@ -382,7 +395,32 @@ class Analytics(Database):
                 else:
                     return result
             else:
-                return {"facebook": fb_result, "thumbtack": tt_result}
+                fb_filtered_result = []
+                for fb_datapoint in fb_result:
+                    year = fb_datapoint['year']
+                    month = fb_datapoint['month']
+                    if (from_year == to_year):
+                        if (year == from_year) and (month >= from_month) and (month <= to_month):
+                                fb_filtered_result.append(fb_datapoint)
+                    else:
+                        if (year == from_year) and (month >= from_month):
+                            fb_filtered_result.append(fb_datapoint)
+                        elif (year == to_year) and (month <= to_month):
+                            fb_filtered_result.append(fb_datapoint)
+                tt_filtered_result = []
+                for tt_datapoint in tt_result:
+                    year = tt_datapoint['year']
+                    month = tt_datapoint['month']
+                    if (from_year == to_year):
+                        if (year == from_year) and (month >= from_month) and (month <= to_month):
+                                tt_filtered_result.append(tt_datapoint)
+                    else:
+                        if (year == from_year) and (month >= from_month):
+                            tt_filtered_result.append(tt_datapoint)
+                        elif (year == to_year) and (month <= to_month):
+                            tt_filtered_result.append(tt_datapoint)
+                return {"facebook": fb_filtered_result, "thumbtack": tt_result}
+                #return {"facebook": fb_result, "thumbtack": tt_result}
 
     def get_message_counts_per_month(self, user, lead_source, dimension,
                                      from_year, to_year, from_month, to_month, data_format):
@@ -396,6 +434,8 @@ class Analytics(Database):
         :param string dimension: optional dimensions to group counts by (along with year)
         :param string from_year: starting year to get message counts
         :param string to_year: ending year to get message counts
+        :param string from_month: starting month to get message counts
+        :param string to_month: ending month to get message counts
         :param string data_format: (optional) format of data to be returned
         :return dict or graph:
             if data_format is None: e.g. {"facebook": [{"count": 24, "month": 11, "year": 2021}],
@@ -441,6 +481,7 @@ class Analytics(Database):
                                       order by year asc, month asc""".format(*tt_args)
             result = self.run_sql(select_stmt, fetch_flag=True)
             result = ast.literal_eval(result)
+            print("result: ", result)
             if data_format:
                 result = self.single_source_month_count_aggregator(result,
                                                                    from_year, to_year,
@@ -454,7 +495,19 @@ class Analytics(Database):
                 else:
                     return result
             else:
-                result = {f"{lead_source}": result}
+                filtered_result = []
+                for datapoint in result:
+                    year = datapoint['year']
+                    month = datapoint['month']
+                    if (from_year == to_year):
+                        if (year == from_year) and (month >= from_month) and (month <= to_month):
+                                filtered_result.append(datapoint)
+                    else:
+                        if (year == from_year) and (month >= from_month):
+                            filtered_result.append(datapoint)
+                        elif (year == to_year) and (month <= to_month):
+                            filtered_result.append(datapoint)
+                result = {f"{lead_source}": filtered_result}
                 return result
 
         else:
@@ -484,7 +537,30 @@ class Analytics(Database):
                     y_label = "Counts"
                     return visualizer.both_plot(result, title=title,
                                                 x_label=x_label, y_label=y_label)
-                else:
-                    return result
+                return result
             else:
-                return {"facebook": fb_result, "thumbtack": tt_result}
+                fb_filtered_result = []
+                for fb_datapoint in fb_result:
+                    year = fb_datapoint['year']
+                    month = fb_datapoint['month']
+                    if (from_year == to_year):
+                        if (year == from_year) and (month >= from_month) and (month <= to_month):
+                                fb_filtered_result.append(fb_datapoint)
+                    else:
+                        if (year == from_year) and (month >= from_month):
+                            fb_filtered_result.append(fb_datapoint)
+                        elif (year == to_year) and (month <= to_month):
+                            fb_filtered_result.append(fb_datapoint)
+                tt_filtered_result = []
+                for tt_datapoint in tt_result:
+                    year = tt_datapoint['year']
+                    month = tt_datapoint['month']
+                    if (from_year == to_year):
+                        if (year == from_year) and (month >= from_month) and (month <= to_month):
+                                tt_filtered_result.append(tt_datapoint)
+                    else:
+                        if (year == from_year) and (month >= from_month):
+                            tt_filtered_result.append(tt_datapoint)
+                        elif (year == to_year) and (month <= to_month):
+                            tt_filtered_result.append(tt_datapoint)
+                return {"facebook": fb_filtered_result, "thumbtack": tt_result}

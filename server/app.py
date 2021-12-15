@@ -460,12 +460,15 @@ def create_app(config):
         elif frequency == "months":
             from_month = int(from_date.split("-")[1])
             to_month = int(to_date.split("-")[1])
+            print("from year: ", from_year)
+            print("to year: ", to_year)
+            print("from month: ", from_month)
+            print("to month: ", to_month)
             counts = analytics_obj.get_message_counts_per_month(user[0], lead_source, dimension,
                                                                 from_year, to_year,
                                                                 from_month, to_month, data_format)
 
         return counts
-        #return render_template('home.html', response=counts)
 
     return app
 
