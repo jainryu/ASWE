@@ -1,0 +1,76 @@
+************* Module server.app
+server/app.py:21:4: W0621: Redefining name 'app' from outer scope (line 475) (redefined-outer-name)
+server/app.py:17:0: R0914: Too many local variables (19/15) (too-many-locals)
+server/app.py:109:4: R0912: Too many branches (25/12) (too-many-branches)
+server/app.py:109:4: R0915: Too many statements (62/50) (too-many-statements)
+server/app.py:452:12: R1705: Unnecessary "elif" after "return" (no-else-return)
+server/app.py:17:0: R0915: Too many statements (196/50) (too-many-statements)
+************* Module server.helper
+server/helper.py:92:0: R0913: Too many arguments (6/5) (too-many-arguments)
+server/helper.py:97:11: R1716: Simplify chained comparison between the operands (chained-comparison)
+server/helper.py:109:7: R1716: Simplify chained comparison between the operands (chained-comparison)
+************* Module server.test_integration
+server/test_integration.py:40:30: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:38:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:44:18: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:52:18: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:65:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+server/test_integration.py:69:26: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:89:23: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:135:23: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:146:26: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:156:28: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:160:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:165:26: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+server/test_integration.py:172:32: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:176:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:181:26: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+server/test_integration.py:4:0: W0611: Unused import json (unused-import)
+************* Module server.analytics
+server/analytics.py:141:0: C0303: Trailing whitespace (trailing-whitespace)
+server/analytics.py:152:56: C0303: Trailing whitespace (trailing-whitespace)
+server/analytics.py:485:0: C0301: Line too long (108/100) (line-too-long)
+server/analytics.py:523:0: C0301: Line too long (108/100) (line-too-long)
+server/analytics.py:529:0: C0301: Line too long (108/100) (line-too-long)
+server/analytics.py:95:4: R0911: Too many return statements (7/6) (too-many-return-statements)
+server/analytics.py:95:4: R0912: Too many branches (21/12) (too-many-branches)
+server/analytics.py:183:15: R1716: Simplify chained comparison between the operands (chained-comparison)
+server/analytics.py:166:4: R0201: Method could be a function (no-self-use)
+server/analytics.py:187:4: R0913: Too many arguments (6/5) (too-many-arguments)
+server/analytics.py:187:4: R0201: Method could be a function (no-self-use)
+server/analytics.py:242:15: R1716: Simplify chained comparison between the operands (chained-comparison)
+server/analytics.py:247:15: R1716: Simplify chained comparison between the operands (chained-comparison)
+server/analytics.py:223:4: R0201: Method could be a function (no-self-use)
+server/analytics.py:252:4: R0913: Too many arguments (7/5) (too-many-arguments)
+server/analytics.py:252:4: R0201: Method could be a function (no-self-use)
+server/analytics.py:252:4: R0912: Too many branches (13/12) (too-many-branches)
+server/analytics.py:300:4: R0913: Too many arguments (7/5) (too-many-arguments)
+server/analytics.py:300:4: R0914: Too many local variables (31/15) (too-many-locals)
+server/analytics.py:355:16: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:388:16: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:300:4: R0912: Too many branches (22/12) (too-many-branches)
+server/analytics.py:300:4: R0915: Too many statements (56/50) (too-many-statements)
+server/analytics.py:409:4: R0913: Too many arguments (9/5) (too-many-arguments)
+server/analytics.py:409:4: R0914: Too many local variables (32/15) (too-many-locals)
+server/analytics.py:472:16: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:507:12: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:409:4: R0912: Too many branches (21/12) (too-many-branches)
+server/analytics.py:409:4: R0915: Too many statements (56/50) (too-many-statements)
+************* Module server.db
+server/db.py:1:0: R0801: Similar lines in 2 files
+==server.test_integration:[73:83]
+==server.test_thumbtack_conn:[47:57]
+            "leadID": "299614694480093245",
+            "customerID": "331138063184986319",
+            "businessID": "286845156044809661",
+            "message": {
+                "messageID": "8699842694484326245",
+                "createTimestamp": "1498760294",
+                "text": "Do you offer fridge cleaning or is that extra?"
+            }
+        }
+ (duplicate-code)
+
+-----------------------------------
+Your code has been rated at 9.43/10
+
