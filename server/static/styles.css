@@ -8,8 +8,14 @@ h4 {
     text-align: center;
 }
 
-#topright {
+#register_profile_button {
     position: fixed;
     top: 2%;
+    right: 2%;
+}
+
+#edit_profile_button {
+    position: fixed;
+    top: 8%;
     right: 2%;
 }
