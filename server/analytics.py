@@ -104,66 +104,58 @@ class Analytics(Database):
         """
 
         if analysis_type == "all":
+            from_date = '1900-01-01'
             if from_date:
                 from_date = from_date.replace("'", "")
                 date_format_check = helper.check_date_format(from_date)
                 if not date_format_check:
-                    return None, None
-            else:
-                from_date = '1900-01-01'
+                    from_date = None
+            to_date = helper.get_todays_date_str()
             if to_date:
                 to_date = to_date.replace("'", "")
                 date_format_check = helper.check_date_format(to_date)
                 if not date_format_check:
-                    return None, None
-            else:
-                to_date = helper.get_todays_date_str()
+                    to_date = None
 
         elif analysis_type == "years":
+            today_date = helper.get_todays_date_str()
+            today_year = today_date.split("-")[0]
+            from_year = str(int(today_year) - 10)
+            from_date = f"{from_year}"
             if from_date:
                 date_format_check = helper.check_date_format_years(from_date)
                 if not date_format_check:
-                    return None, None
-            else:
-                today_date = helper.get_todays_date_str()
-                today_year = today_date.split("-")[0]
-                from_year = str(int(today_year) - 10)
-                from_date = f"{from_year}"
+                    from_date = None
+
+            to_date = f"{today_year}"
             if to_date:
                 to_date = to_date.replace("'", "")
                 date_format_check = helper.check_date_format_years(to_date)
                 if not date_format_check:
-                    return None, None
-            else:
-                today_date = helper.get_todays_date_str()
-                today_year = today_date.split("-")[0]
-                to_date = f"{today_year}"
-            
+                    to_date = None
+
         elif analysis_type == "months":
+            today_date = helper.get_todays_date_str()
+            today_year = today_date.split("-")[0]
+            today_month = today_date.split("-")[1]
+            from_year = str(int(today_year) - 1)
+            from_date = f"{from_year}-{today_month}"
             if from_date:
                 date_format_check = helper.check_date_format_months(from_date)
                 if not date_format_check:
-                    return None, None
-            else:
-                today_date = helper.get_todays_date_str()
-                today_year = today_date.split("-")[0]
-                today_month = today_date.split("-")[1]
-                from_year = str(int(today_year) - 1)
-                from_date = f"{from_year}-{today_month}" 
+                    from_date = None
+
+            to_date = f"{today_year}-{today_month}"
             if to_date:
                 to_date = to_date.replace("'", "")
                 date_format_check = helper.check_date_format_months(to_date)
                 if not date_format_check:
-                    return None, None
-            else:
-                to_date = helper.get_todays_date_str()
-                today_year = today_date.split("-")[0]
-                today_month = today_date.split("-")[1]
-                to_date = f"{today_year}-{today_month}"
+                    to_date = None
 
         return from_date, to_date
 
-    def single_source_year_count_aggregator(self, sql_result, from_year, to_year):
+    @staticmethod
+    def single_source_year_count_aggregator(sql_result, from_year, to_year):
         '''
         reformat sql to show a count vs year relationship
 
@@ -180,11 +172,12 @@ class Analytics(Database):
         for year_counts in sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
-            if year >= from_year and year <= to_year:
+            if from_year <= year <= to_year:
                 final[year] = count
         return final
 
-    def single_source_month_count_aggregator(self, sql_result,
+    @staticmethod
+    def single_source_month_count_aggregator(sql_result,
                                              from_year, to_year,
                                              from_month, to_month):
         '''
@@ -220,7 +213,8 @@ class Analytics(Database):
 
         return final
 
-    def both_source_year_count_aggregator(self, fb_sql_result, tt_sql_result, from_year, to_year):
+    @staticmethod
+    def both_source_year_count_aggregator(fb_sql_result, tt_sql_result, from_year, to_year):
         '''
         reformat sql to show a (fb count, tt count, and total count) vs year relationship
 
@@ -239,17 +233,18 @@ class Analytics(Database):
         for year_counts in fb_sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
-            if year >= from_year and year <= to_year:
+            if from_year <= year <= to_year:
                 final[year] = {"facebook": count, "thumbtack": 0, "total": count}
         for year_counts in tt_sql_result:
             year = int(year_counts["year"])
             count = year_counts["count"]
-            if year >= from_year and year <= to_year:
+            if from_year <= year <= to_year:
                 final[year]["thumbtack"] = count
                 final[year]["total"] = final[year]["total"] + count
         return final
 
-    def both_source_month_count_aggregator(self, fb_sql_result, tt_sql_result,
+    @staticmethod
+    def both_source_month_count_aggregator(fb_sql_result, tt_sql_result,
                                            from_year, to_year, from_month, to_month):
         '''
         reformat sql to show a (fb count, tt count, and total count) vs year_month relationship
@@ -348,26 +343,21 @@ class Analytics(Database):
                                       from thumbtack.messages {tt_where_clause}
                                       group by {tt_select_and_group_by_clause}
                                       order by year asc""".format(*tt_args)
-            result = self.run_sql(select_stmt, fetch_flag=True)
-            result = ast.literal_eval(result)
+            result = ast.literal_eval(self.run_sql(select_stmt, fetch_flag=True))
             if data_format:
                 result = self.single_source_year_count_aggregator(result, from_year, to_year)
                 if data_format == 'graph':
                     title = f"Message Counts Per Month for {lead_source.capitalize()}"
-                    x_label = "Month"
-                    y_label = "Counts"
                     return visualizer.single_plot(result, title=title,
-                                                  x_label=x_label, y_label=y_label)
-                else:
-                    return result
+                                                  x_label="Month", y_label="Counts")
+                return result
             else:
                 filtered_result = []
                 for datapoint in result:
                     year = datapoint['year']
                     if helper.is_year_in_date_range(year, from_year, to_year):
                         filtered_result.append(datapoint)
-                result = {f"{lead_source}": filtered_result}
-                return result
+                return {f"{lead_source}": filtered_result}
 
         else:
             fb_select_stmt = f"""select {fb_select_and_group_by_clause} as year, count(*)
@@ -378,21 +368,16 @@ class Analytics(Database):
                                  from thumbtack.messages {tt_where_clause}
                                  group by {tt_select_and_group_by_clause}
                                  order by year asc""".format(*tt_args)
-            fb_result = self.run_sql(fb_select_stmt, fetch_flag=True)
-            tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
-            fb_result = ast.literal_eval(fb_result)
-            tt_result = ast.literal_eval(tt_result)
+            fb_result = ast.literal_eval(self.run_sql(fb_select_stmt, fetch_flag=True))
+            tt_result = ast.literal_eval(self.run_sql(tt_select_stmt, fetch_flag=True))
             if data_format:
                 result = self.both_source_year_count_aggregator(fb_result, tt_result,
                                                                 from_year, to_year)
                 if data_format == 'graph':
                     title = "Message Counts Per Month for Both Lead Sources"
-                    x_label = "Month"
-                    y_label = "Counts"
                     return visualizer.both_plot(result, title=title,
-                                                x_label=x_label, y_label=y_label)
-                else:
-                    return result
+                                                x_label="Month", y_label="Counts")
+                return result
             else:
                 fb_filtered_result = []
                 for fb_datapoint in fb_result:
@@ -471,18 +456,16 @@ class Analytics(Database):
                                                                    from_month, to_month)
                 if data_format == 'graph':
                     title = f"Message Counts Per Month for {lead_source.capitalize()}"
-                    x_label = "Month"
-                    y_label = "Counts"
                     return visualizer.single_plot(result, title=title,
-                                                  x_label=x_label, y_label=y_label)
-                else:
-                    return result
+                                                  x_label="Month", y_label="Counts")
+                return result
             else:
                 filtered_result = []
                 for datapoint in result:
                     year = datapoint['year']
                     month = datapoint['month']
-                    if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                    if helper.is_month_in_date_range(year, month, from_year, to_year,
+                                                     from_month, to_month):
                         filtered_result.append(datapoint)
                 result = {f"{lead_source}": filtered_result}
                 return result
@@ -500,32 +483,30 @@ class Analytics(Database):
                                  group by extract (year from contacted_time),
                                      extract (month from contacted_time) 
                                  order by year asc, month asc""".format(*tt_args)
-            fb_result = self.run_sql(fb_select_stmt, fetch_flag=True)
-            tt_result = self.run_sql(tt_select_stmt, fetch_flag=True)
-            fb_result = ast.literal_eval(fb_result)
-            tt_result = ast.literal_eval(tt_result)
+            fb_result = ast.literal_eval(self.run_sql(fb_select_stmt, fetch_flag=True))
+            tt_result = ast.literal_eval(self.run_sql(tt_select_stmt, fetch_flag=True))
             if data_format:
                 result = self.both_source_month_count_aggregator(fb_result, tt_result,
                                                                  from_year, to_year,
                                                                  from_month, to_month)
                 if data_format == 'graph':
                     title = "Message Counts Per Month for Both Lead Sources"
-                    x_label = "Month"
-                    y_label = "Counts"
                     return visualizer.both_plot(result, title=title,
-                                                x_label=x_label, y_label=y_label)
+                                                x_label="Month", y_label="Counts")
                 return result
             else:
                 fb_filtered_result = []
                 for fb_datapoint in fb_result:
                     year = fb_datapoint['year']
                     month = fb_datapoint['month']
-                    if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                    if helper.is_month_in_date_range(year, month, from_year, to_year,
+                                                     from_month, to_month):
                         fb_filtered_result.append(fb_datapoint)
                 tt_filtered_result = []
                 for tt_datapoint in tt_result:
                     year = tt_datapoint['year']
                     month = tt_datapoint['month']
-                    if helper.is_month_in_date_range(year, month, from_year, to_year, from_month, to_month):
+                    if helper.is_month_in_date_range(year, month, from_year, to_year,
+                                                     from_month, to_month):
                         tt_filtered_result.append(tt_datapoint)
                 return {"facebook": fb_filtered_result, "thumbtack": tt_filtered_result}

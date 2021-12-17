@@ -359,7 +359,7 @@ def create_app(config):
 
         from_date, to_date = analytics_obj.create_dates('all', request.args.get('from_date'),
                                                         request.args.get('to_date'))
-        if from_date is None and to_date is None:
+        if from_date is None or to_date is None:
             return 'Please enter the date in YYYY-MM-DD format'
 
         filter_user_date_range['from_date'] = from_date
@@ -400,7 +400,7 @@ def create_app(config):
 
         from_date, to_date = analytics_obj.create_dates('all', request.args.get('from_date'),
                                                         request.args.get('to_date'))
-        if from_date is None and to_date is None:
+        if from_date is None or to_date is None:
             return 'Please enter the date in YYYY-MM-DD format'
 
         filter_user_date_range['from_date'] = from_date
@@ -448,11 +448,10 @@ def create_app(config):
                 return {"status": "fail",
                         "details": "if graph format, dimension should be None"}, 400
 
-        if from_date is None and to_date is None:
+        if from_date is None or to_date is None:
             if frequency == "years":
                 return 'Please enter the date in YYYY format'
-            elif frequency == "months":
-                return 'Please enter the date in YYYY-MM format'
+            return 'Please enter the date in YYYY-MM format'
 
         from_year = int(from_date.split("-")[0])
         to_year = int(to_date.split("-")[0])

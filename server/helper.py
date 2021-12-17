@@ -94,7 +94,7 @@ def is_month_in_date_range(year, month, from_year, to_year, from_month, to_month
     check if month is within a date month
     """
     if from_year == to_year:
-        if (year == from_year) and (month >= from_month) and (month <= to_month):
+        if (year == from_year) and (from_month <= month <= to_month):
             return True
     elif (year == from_year) and (month >= from_month):
         return True
@@ -106,6 +106,6 @@ def is_year_in_date_range(year, from_year, to_year):
     """
     check if year is within a date year
     """
-    if (year >= from_year) and (year <= to_year):
+    if from_year <= year <= to_year:
         return True
     return False
