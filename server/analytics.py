@@ -104,53 +104,59 @@ class Analytics(Database):
         """
 
         if analysis_type == "all":
-            from_date = '1900-01-01'
             if from_date:
                 from_date = from_date.replace("'", "")
                 date_format_check = helper.check_date_format(from_date)
                 if not date_format_check:
                     from_date = None
-            to_date = helper.get_todays_date_str()
+            else:
+                from_date = '1900-01-01'
             if to_date:
                 to_date = to_date.replace("'", "")
                 date_format_check = helper.check_date_format(to_date)
                 if not date_format_check:
                     to_date = None
+            else:
+                to_date = helper.get_todays_date_str()
 
         elif analysis_type == "years":
             today_date = helper.get_todays_date_str()
             today_year = today_date.split("-")[0]
             from_year = str(int(today_year) - 10)
-            from_date = f"{from_year}"
-            if from_date:
+            if from_date and from_date != "":
                 date_format_check = helper.check_date_format_years(from_date)
                 if not date_format_check:
                     from_date = None
+            else:
+                from_date = f"{from_year}"
 
-            to_date = f"{today_year}"
-            if to_date:
+            if to_date and to_date != "":
                 to_date = to_date.replace("'", "")
                 date_format_check = helper.check_date_format_years(to_date)
                 if not date_format_check:
                     to_date = None
+            else:
+                to_date = f"{today_year}"
 
         elif analysis_type == "months":
             today_date = helper.get_todays_date_str()
             today_year = today_date.split("-")[0]
             today_month = today_date.split("-")[1]
             from_year = str(int(today_year) - 1)
-            from_date = f"{from_year}-{today_month}"
-            if from_date:
+            if from_date and from_date != "":
                 date_format_check = helper.check_date_format_months(from_date)
                 if not date_format_check:
                     from_date = None
+            else:
+                from_date = f"{from_year}-{today_month}"
 
-            to_date = f"{today_year}-{today_month}"
-            if to_date:
+            if to_date and to_date != "":
                 to_date = to_date.replace("'", "")
                 date_format_check = helper.check_date_format_months(to_date)
                 if not date_format_check:
                     to_date = None
+            else:
+                to_date = f"{today_year}-{today_month}"
 
         return from_date, to_date
 
