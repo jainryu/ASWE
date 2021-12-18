@@ -4,6 +4,7 @@ unit test for analytics module
 
 import unittest
 from analytics import Analytics
+import helper
 
 
 class TestTestAnalytics(unittest.TestCase):
@@ -88,3 +89,164 @@ class TestTestAnalytics(unittest.TestCase):
                                                        filter_data)
 
         self.assertEqual(expected_res, actual_result)
+
+    def test_create_dates_all_none(self):
+        """
+        testing create_dates
+        """
+        from_date = None
+        to_date = None
+        expected_from = '1900-01-01'
+        expected_to = helper.get_todays_date_str()
+        actual_from, actual_to = self.a_obj.create_dates("all", from_date, to_date)
+        self.assertEqual(expected_from, actual_from)
+        self.assertEqual(expected_to, actual_to)
+
+    def test_create_dates_all_both(self):
+        """
+        testing create_dates 2
+        """
+        from_date = "2018-10-10"
+        to_date = "2019-11-11"
+        expected_from = "2018-10-10"
+        expected_to = "2019-11-11"
+        actual_from, actual_to = self.a_obj.create_dates("all", from_date, to_date)
+        self.assertEqual(expected_from, actual_from)
+        self.assertEqual(expected_to, actual_to)
+
+    def test_create_dates_years_none(self):
+        """
+        testing create_dates 3. should work as of 2021
+        """
+        from_date = None
+        to_date = None
+        expected_from = "2011"
+        expected_to = "2021"
+        actual_from, actual_to = self.a_obj.create_dates("years", from_date, to_date)
+        self.assertEqual(expected_from, actual_from)
+        self.assertEqual(expected_to, actual_to)
+
+    def test_create_dates_years_both(self):
+        """
+        testing create_dates 4. should work as of 2021
+        """
+        from_date = "2018"
+        to_date = "2019"
+        expected_from = "2018"
+        expected_to = "2019"
+        actual_from, actual_to = self.a_obj.create_dates("years", from_date, to_date)
+        self.assertEqual(expected_from, actual_from)
+        self.assertEqual(expected_to, actual_to)
+
+    def test_create_dates_months_none(self):
+        """
+        testing create_dates 5. should work as of 2021-12
+        """
+        from_date = None
+        to_date = None
+        expected_from = "2020-12"
+        expected_to = "2021-12"
+        actual_from, actual_to = self.a_obj.create_dates("months", from_date, to_date)
+        self.assertEqual(expected_from, actual_from)
+        self.assertEqual(expected_to, actual_to)
+
+    def test_create_dates_months_both(self):
+        """
+        testing create_dates 5. should work as of 2021-12
+        """
+        from_date = "2018-1"
+        to_date = "2019-12"
+        expected_from = "2018-1"
+        expected_to = "2019-12"
+        actual_from, actual_to = self.a_obj.create_dates("months", from_date, to_date)
+        self.assertEqual(expected_from, actual_from)
+        self.assertEqual(expected_to, actual_to)
+
+    def test_single_source_year_count_aggregator(self):
+        """
+        test single_source_year_count_aggregator()
+        """
+        sql_res = [{"year": 2021.0, "count": 2}, {"year": 2017.0, "count": 8}]
+        from_year = 2015
+        to_year = 2021
+        expected_result = {2015: 0, 2016: 0, 2017: 8, 2018: 0, 2019: 0, 2020: 0, 2021: 2}
+        actual_result = self.a_obj.single_source_year_count_aggregator(sql_res, from_year, to_year)
+        self.assertEqual(expected_result, actual_result)
+    
+    def test_single_source_month_count_aggregator(self):
+        """
+        test single_source_month_count_aggregator()
+        """
+        sql_res = [{"year":2021.0, "month": 1, "count": 2}]
+        from_year = 2020
+        from_month = 12
+        to_year = 2021
+        to_month = 2
+        expected_result = {'2020_12': 0, '2021_1': 2, '2021_2': 0}
+        actual_result = self.a_obj.single_source_month_count_aggregator(sql_res, from_year, to_year, from_month, to_month)
+        self.assertEqual(expected_result, actual_result)
+
+    def test_both_source_year_count_aggregator(self):
+        """
+        test both_source_year_count_aggregator()
+        """
+        fb_sql_result = [{"year":2021.0,"count":24}]
+        tt_sql_result = [{"year":2021.0,"count":2},{"year":2017.0,"count":8}]
+        from_year = 2020
+        to_year = 2021
+        expected_result = {2020: {'facebook': 0, 'thumbtack': 0, 'total': 0},
+                           2021: {'facebook': 24, 'thumbtack': 2, 'total': 26}}
+        actual_result = self.a_obj.both_source_year_count_aggregator(fb_sql_result, tt_sql_result, from_year, to_year)
+        self.assertEqual(expected_result, actual_result)
+
+    def test_both_source_month_count_aggregator(self):
+        """
+        test both_source_month_count_aggregator()
+        """
+        fb_sql_result = [{"year":2021.0, "month": 1, "count":24}]
+        tt_sql_result = [{"year":2021.0, "month": 1, "count":2},{"year":2017.0, "month": 1, "count":8}]
+        from_year = 2020
+        to_year = 2021
+        from_month = 12
+        to_month = 1
+        expected_result = {'2020_12': {'facebook': 0, 'thumbtack': 0, 'total': 0},
+                           '2021_1': {'facebook': 24, 'thumbtack': 2, 'total': 26}}
+        actual_result = self.a_obj.both_source_month_count_aggregator(fb_sql_result, tt_sql_result, from_year, to_year, from_month, to_month)
+        self.assertEqual(expected_result, actual_result)
+    
+    def test_get_message_counts_per_year_1(self):
+        """
+        test get_message_counts_per_year()
+        """
+        
+        user = {'username': 'tojo',
+                'thumbtack_business_id': '286845156044809661',
+                'fb_page_id': '103603665458708'}
+        lead_source = 'facebook'
+        dimension = None
+        from_year = 2020
+        to_year = 2021
+        data_format = None
+        expected_result = {'facebook': [{'year': 2021.0, 'count': 24}]}
+        actual_result = self.a_obj.get_message_counts_per_year(user, lead_source, dimension, from_year, to_year, data_format)
+        self.assertEqual(expected_result, actual_result)
+    
+    def test_get_message_counts_per_month_1(self):
+        """
+        test get_message_counts_per_month()
+        """
+        
+        user = {'username': 'tojo',
+                'thumbtack_business_id': '286845156044809661',
+                'fb_page_id': '103603665458708'}
+        lead_source = 'facebook'
+        dimension = None
+        from_year = 2020
+        to_year = 2021
+        from_month = 1
+        to_month = 12
+        data_format = None
+        expected_result = {'facebook': [{'year': 2021.0, 'month': 11.0, 'count': 24}]}
+        actual_result = self.a_obj.get_message_counts_per_month(user, lead_source, dimension,\
+                                     from_year, to_year, from_month, to_month, data_format)
+        self.assertEqual(expected_result, actual_result)
