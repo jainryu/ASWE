@@ -55,8 +55,8 @@ def create_app(config):
         # result = db_obj.get_all_leads()
         # df_thumbtack = pd.DataFrame(list(result.fetchall()))
         # return df_thumbtack.to_json(orient="records")
-        # return "Hello from Talking Potatoes!!!"
-        return render_template("home.html")
+        return "Hello from Talking Potatoes!!!"
+        #return render_template("home.html")
 
 
     @app.route("/dummy_thumbtack_lead", methods=["GET"])

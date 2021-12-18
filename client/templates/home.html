@@ -1,8 +1,16 @@
-{% extends 'base.html' %}
-{% block title %}
-    Home Page
-{% endblock %}
-{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <link rel="stylesheet" type="text/css" href="{{url_for('static', filename='styles.css')}}">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.0/jquery.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+</head>
+<body>
 <div class="container">
 <h1 class="p-2">Welcome to Talking Potatoes</h1>
 <!-- Register Profile Button -->
@@ -202,7 +210,7 @@
         <!-- First column -->
         <div class="col-lg-6 border p-2">
             <!--<form action="http://127.0.0.1:5000/get_leads" method="GET" target="_blank">-->
-            <form action="/get_leads" method="GET" target="_blank">
+            <form action="https://tp-leads-app.herokuapp.com/get_leads" method="GET" target="_blank">
                 <h5>
                     Get Leads
                 </h5>
@@ -229,7 +237,7 @@
         <!-- Second column -->
         <div class="col-lg-6 border p-2">
             <!--<form action="http://127.0.0.1:5000/get_messages" method="GET" target="_blank">-->
-            <form action="/get_messages" method="GET" target="_blank">
+            <form action="https://tp-leads-app.herokuapp.com/get_messages" method="GET" target="_blank">
                 <h5>
                     Get Messages
                 </h5>
@@ -262,7 +270,7 @@
         <!-- First column -->
         <div class="col-lg-6 border p-2">
             <!--<form action="http://127.0.0.1:5000/lead_analytics" method="GET" target="_blank">-->
-            <form action="/lead_analytics" method="GET" target="_blank">
+            <form action="https://tp-leads-app.herokuapp.com/lead_analytics" method="GET" target="_blank">
                 <h5>
                     Lead Analytics
                 </h5>
@@ -305,7 +313,7 @@
         <!-- Second column -->
         <div class="col-lg-6 border p-2">
             <!--<form action="http://127.0.0.1.189:5000/message_analytics" method="GET" target="_blank">-->
-            <form action="/message_analytics" method="GET" target="_blank">
+            <form action="https://tp-leads-app.herokuapp.com/message_analytics" method="GET" target="_blank">
                 <h5>
                     Message Analytics
                 </h5>
@@ -345,7 +353,7 @@
         <div class="col-lg-6 border p-2">
             <!-- Trend Analytics Form-->
             <!--<form action="http://127.0.0.1:5000/message_analytics/trends" method="GET" target="_blank">-->
-            <form action="/message_analytics/trends" method="GET" target="_blank">
+            <form action="https://tp-leads-app.herokuapp.com/message_analytics/trends" method="GET" target="_blank">
                 <h5>
                     Message Trend Analytics
                 </h5>
@@ -404,4 +412,8 @@
     </div>
 <div>
 </div>
-{% endblock %}
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+<script src="{{url_for('static', filename='main.js')}}"></script>
+</body>
+</html>
