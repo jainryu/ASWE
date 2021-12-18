@@ -28,7 +28,12 @@ FLASK_ENV = 'development'
 $ cd server
 $ python3 -m virtualenv tp_env        # create the virtual environment
 $ source tp_env/bin/activate          # activate the virtual environment
-$ pip install -r requirements.txt   # install all dependencies
+$ python -m pip install --upgrade pip
+$ pip install -r ./server/requirements.txt # install all dependencies
+$ pip install --upgrade pytest-cov
+$ npm install
+$ npm install -g newman
+$ npm install -g newman-reporter-htmlextr
 ```
 #### iii. Run the server
 Flask server is started by running
@@ -56,6 +61,16 @@ $ (tp_env) ./run_style_checker.sh
 
 Style checker reports are created in `./reports/style_bug_checker/` directory . Each file has the timestamp to maintain report history.
 
+### iii. Postman Tests
+ ```
+ $ newman run ./postman_tests.json -r htmlextra --reporter-htmlextra-export ./reports/tests/postman_report.html --reporter-htmlextra-darkTheme  > ./reports/tests/postman_report.html
+ ```
+ 
+### iv. Coverage
+ ```
+ $ coverage run -m unittest discover ./server
+ $ coverage html -d ./reports/coverage
+ ```
 ## Deploy service to Heroku
 
 ```
