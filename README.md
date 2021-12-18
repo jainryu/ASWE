@@ -26,8 +26,6 @@ FLASK_ENV = 'development'
 #### ii. Virtual Environment activation and installing dependencies
 ```
 $ cd server
-$ python3 -m virtualenv tp_env        # create the virtual environment
-$ source tp_env/bin/activate          # activate the virtual environment
 $ python -m pip install --upgrade pip
 $ pip install -r ./server/requirements.txt # install all dependencies
 $ pip install --upgrade pytest-cov
@@ -48,7 +46,7 @@ We have used pytest to run our unit and system tests.
 
 To run unit and system/integration tests:
 ```
-$ (tp_env) ./run_unit_integration_tests.sh 
+$ ./run_unit_integration_tests.sh 
 ```
 The unit and system/integration test reports are created in the `./reports/tests/` directory . Each file has the timestamp to maintain report history.
 
@@ -56,7 +54,7 @@ The unit and system/integration test reports are created in the `./reports/tests
 
 To run pylint style checker:
 ```
-$ (tp_env) ./run_style_checker.sh 
+$ ./run_style_checker.sh 
 ```
 
 Style checker reports are created in `./reports/style_bug_checker/` directory . Each file has the timestamp to maintain report history.
