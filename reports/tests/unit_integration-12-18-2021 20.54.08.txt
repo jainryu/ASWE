@@ -1,0 +1,233 @@
+============================= test session starts ==============================
+platform linux -- Python 3.9.7, pytest-6.2.5, py-1.11.0, pluggy-1.0.0 -- /opt/hostedtoolcache/Python/3.9.7/x64/bin/python
+cachedir: .pytest_cache
+rootdir: /home/runner/work/ASE/ASE
+plugins: cov-3.0.0
+collecting ... collected 52 items
+
+server/test_analytics.py::TestTestAnalytics::test_both_source_month_count_aggregator PASSED [  1%]
+server/test_analytics.py::TestTestAnalytics::test_both_source_month_count_aggregator_2 PASSED [  3%]
+server/test_analytics.py::TestTestAnalytics::test_both_source_year_count_aggregator PASSED [  5%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_all_both PASSED [  7%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_all_both_wrong PASSED [  9%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_all_none PASSED [ 11%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_months_both PASSED [ 13%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_months_both_wrong PASSED [ 15%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_months_none PASSED [ 17%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_years_both PASSED [ 19%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_years_both_wrong PASSED [ 21%]
+server/test_analytics.py::TestTestAnalytics::test_create_dates_years_none PASSED [ 23%]
+server/test_analytics.py::TestTestAnalytics::test_get_grouped_by_date PASSED [ 25%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_1 PASSED [ 26%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_2 PASSED [ 28%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_3 PASSED [ 30%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_4 PASSED [ 32%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_5 PASSED [ 34%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_6 PASSED [ 36%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_month_7 PASSED [ 38%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_1 PASSED [ 40%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_2 PASSED [ 42%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_3 PASSED [ 44%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_4 PASSED [ 46%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_5 PASSED [ 48%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_6 PASSED [ 50%]
+server/test_analytics.py::TestTestAnalytics::test_get_message_counts_per_year_7 PASSED [ 51%]
+server/test_analytics.py::TestTestAnalytics::test_get_select_clause_cols PASSED [ 53%]
+server/test_analytics.py::TestTestAnalytics::test_get_user_and_date_between_clause PASSED [ 55%]
+server/test_analytics.py::TestTestAnalytics::test_single_source_month_count_aggregator PASSED [ 57%]
+server/test_analytics.py::TestTestAnalytics::test_single_source_month_count_aggregator_2 PASSED [ 59%]
+server/test_analytics.py::TestTestAnalytics::test_single_source_year_count_aggregator PASSED [ 61%]
+server/test_db.py::TestTestDatabase::test_get_data PASSED                [ 63%]
+server/test_db.py::TestTestDatabase::test_get_thumbtack_auth PASSED      [ 65%]
+server/test_db.py::TestTestDatabase::test_get_where_clause_arg PASSED    [ 67%]
+server/test_db.py::TestTestDatabase::test_insert_row PASSED              [ 69%]
+server/test_db.py::TestTestDatabase::test_run_sql PASSED                 [ 71%]
+server/test_helper.py::TestTestHelper::test_check_date_format PASSED     [ 73%]
+server/test_helper.py::TestTestHelper::test_convert_epoch_milliseconds_to_datetime_string PASSED [ 75%]
+server/test_helper.py::TestTestHelper::test_flatten_json PASSED          [ 76%]
+server/test_integration.py::test_home_url PASSED                         [ 78%]
+server/test_integration.py::test_register PASSED                         [ 80%]
+server/test_integration.py::test_receive_messages FAILED                 [ 82%]
+server/test_integration.py::test_receive_leads FAILED                    [ 84%]
+server/test_integration.py::test_get_all_leads PASSED                    [ 86%]
+server/test_integration.py::test_get_all_messages FAILED                 [ 88%]
+server/test_integration.py::test_get_lead_analytics PASSED               [ 90%]
+server/test_integration.py::test_get_messages_analytics PASSED           [ 92%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_create_test_data PASSED [ 94%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_lead_json_to_list PASSED [ 96%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_message_json_to_list PASSED [ 98%]
+server/test_thumbtack_conn.py::TestTestThumbtack::test_thumbtack_send_message PASSED [100%]
+
+=================================== FAILURES ===================================
+____________________________ test_receive_messages _____________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_receive_messages(client):
+        """
+        Tests thumbtack_message endpoint with valid message
+        """
+        sample_message = {
+            "leadID": "299614694480093245",
+            "customerID": "331138063184986319",
+            "businessID": "286845156044809661",
+            "message": {
+                "messageID": "8699842694484326245",
+                "createTimestamp": "1498760294",
+                "text": "Do you offer fridge cleaning or is that extra?"
+            }
+        }
+    
+        response = client.post('/thumbtack_message', headers={
+        "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_message)
+    
+>       assert response.status_code == 200
+E       assert 404 == 200
+E         +404
+E         -200
+
+server/test_integration.py:87: AssertionError
+______________________________ test_receive_leads ______________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_receive_leads(client):
+        """
+        Tests thumbtack_lead endpoint with valid lead
+        """
+        sample_lead = {
+            "leadID": "299614694480093245",
+            "createTimestamp": "1498760294",
+            "request": {
+                "requestID": "2999842694480093245",
+                "category": "Interior Painting",
+                "title": "Interior Painting",
+                "description": "There is a stain on the door that needs to be touched up.",
+                "schedule": "Date: Tue, May 05 2020\nTime: 6:00 PM\nLength: 3.5 hours",
+                "location": {
+                "city": "San Jose",
+                "state": "CA",
+                "zipCode": "95125"
+                },
+                "travelPreferences": "Professional must travel to my address.",
+                "details": [
+                {
+                    "question": "Type of property",
+                    "answer": "Home"
+                },
+                {
+                    "question": "Number of rooms",
+                    "answer": "4 rooms"
+                }
+                ]
+            },
+            "customer": {
+                "customerID": "331138063184986319",
+                "name": "John Davis",
+                "phone": "1234567890"
+            },
+            "business": {
+                "businessID": "286845156044809661",
+                "name": "Tim's Painting Business"
+            }
+        }
+    
+        response = client.post('/thumbtack_lead', headers={
+        "Authorization": _basic_auth_str('integtest', 'integtest')}, data=sample_lead)
+    
+>       assert response.status_code == 200
+E       assert 400 == 200
+E         +400
+E         -200
+
+server/test_integration.py:133: AssertionError
+____________________________ test_get_all_messages _____________________________
+
+client = <FlaskClient <Flask 'app'>>
+
+    def test_get_all_messages(client):
+        """
+        Tests get_messages endpoint query
+        """
+>       response = client.get('/get_messages', headers={
+             "Authorization": _basic_auth_str('integtest', 'integtest')})
+
+server/test_integration.py:150: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/werkzeug/test.py:1129: in get
+    return self.open(*args, **kw)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/testing.py:216: in open
+    return super().open(  # type: ignore
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/werkzeug/test.py:1074: in open
+    response = self.run_wsgi_app(request.environ, buffered=buffered)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/werkzeug/test.py:945: in run_wsgi_app
+    rv = run_wsgi_app(self.application, environ, buffered=buffered)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/werkzeug/test.py:1231: in run_wsgi_app
+    app_rv = app(environ, start_response)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/app.py:2091: in __call__
+    return self.wsgi_app(environ, start_response)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/app.py:2076: in wsgi_app
+    response = self.handle_exception(e)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/app.py:2073: in wsgi_app
+    response = self.full_dispatch_request()
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/app.py:1518: in full_dispatch_request
+    rv = self.handle_user_exception(e)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/app.py:1516: in full_dispatch_request
+    rv = self.dispatch_request()
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask/app.py:1502: in dispatch_request
+    return self.ensure_sync(self.view_functions[rule.endpoint])(**req.view_args)
+/opt/hostedtoolcache/Python/3.9.7/x64/lib/python3.9/site-packages/flask_httpauth.py:172: in decorated
+    return self.ensure_sync(f)(*args, **kwargs)
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ 
+
+    @app.route("/get_messages", methods=['GET'])
+    @auth.login_required
+    def get_messages():
+        """return the messages for a date range and lead source(s).
+    
+        :query param lead_source: lead source to filter by. If none, queries all lead sources.
+        :query param date: contacted date to query.
+    
+        :return list result: a list of json messages
+        """
+        username = auth.current_user()
+        user = json.loads(db_obj.get_data(db_schema='talking_potato',
+                                           table_name='users', filter_data={'username': username}))
+        filter_data = {}
+        lead_source = request.args.get('lead_source')
+        date = request.args.get('date')
+        if date:
+            date = date.replace("'", "")
+            date_format_check = helper.check_date_format(date)
+            if not date_format_check:
+                return 'Please enter the date in YYYY-MM-DD format'
+        if lead_source:
+            lead_source = lead_source.replace("'", "")
+            if lead_source == "facebook":
+                schema = "fb"
+                if date:
+                    filter_data['date(timestamp)'] = date
+                filter_data["page_id"] = user[0]["fb_page_id"]
+            elif lead_source == "thumbtack":
+                schema = "thumbtack"
+                if date:
+                    filter_data['date(contacted_time)'] = date
+                filter_data["thumbtack_business_id"] = user[0]["thumbtack_business_id"]
+            result = db_obj.get_data(db_schema=schema, table_name='messages',
+                                     filter_data=filter_data)
+        else:
+>           filter_data["page_id"] = user[0]["fb_page_id"]
+E           KeyError: 'fb_page_id'
+
+server/app.py:293: KeyError
+=============================== warnings summary ===============================
+server/test_integration.py::test_register
+  /home/runner/work/ASE/ASE/server/app.py:145: DeprecationWarning: the method passlib.handlers.sha2_crypt.sha256_crypt.encrypt() is deprecated as of Passlib 1.7, and will be removed in Passlib 2.0, use .hash() instead.
+    password_hash = sha256_crypt.encrypt(password)
+
+-- Docs: https://docs.pytest.org/en/stable/warnings.html
+=========================== short test summary info ============================
+FAILED server/test_integration.py::test_receive_messages - assert 404 == 200
+FAILED server/test_integration.py::test_receive_leads - assert 400 == 200
+FAILED server/test_integration.py::test_get_all_messages - KeyError: 'fb_page...
+=================== 3 failed, 49 passed, 1 warning in 45.65s ===================
