@@ -1,0 +1,115 @@
+************* Module server.app
+server/app.py:21:4: W0621: Redefining name 'app' from outer scope (line 474) (redefined-outer-name)
+server/app.py:17:0: R0914: Too many local variables (19/15) (too-many-locals)
+server/app.py:109:4: R0912: Too many branches (25/12) (too-many-branches)
+server/app.py:109:4: R0915: Too many statements (62/50) (too-many-statements)
+server/app.py:17:0: R0915: Too many statements (195/50) (too-many-statements)
+************* Module server.test_analytics
+server/test_analytics.py:116:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:188:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:211:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:221:0: C0301: Line too long (105/100) (line-too-long)
+server/test_analytics.py:222:0: C0301: Line too long (106/100) (line-too-long)
+server/test_analytics.py:224:0: C0301: Line too long (122/100) (line-too-long)
+server/test_analytics.py:237:0: C0301: Line too long (122/100) (line-too-long)
+server/test_analytics.py:250:0: C0301: Line too long (118/100) (line-too-long)
+server/test_analytics.py:258:0: C0301: Line too long (103/100) (line-too-long)
+server/test_analytics.py:277:0: C0301: Line too long (141/100) (line-too-long)
+server/test_analytics.py:279:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:285:0: C0301: Line too long (103/100) (line-too-long)
+server/test_analytics.py:291:0: C0301: Line too long (141/100) (line-too-long)
+server/test_analytics.py:293:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:299:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:309:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:311:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:317:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:326:0: C0301: Line too long (106/100) (line-too-long)
+server/test_analytics.py:327:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:329:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:335:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:345:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:353:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:362:0: C0301: Line too long (202/100) (line-too-long)
+server/test_analytics.py:363:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:365:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:371:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:381:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:383:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:397:0: C0301: Line too long (116/100) (line-too-long)
+server/test_analytics.py:398:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:400:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:414:0: C0301: Line too long (130/100) (line-too-long)
+server/test_analytics.py:415:0: C0301: Line too long (125/100) (line-too-long)
+server/test_analytics.py:423:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:438:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:444:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:455:0: C0301: Line too long (121/100) (line-too-long)
+server/test_analytics.py:459:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:465:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:476:0: C0301: Line too long (131/100) (line-too-long)
+server/test_analytics.py:480:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:486:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:497:151: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:497:0: C0301: Line too long (151/100) (line-too-long)
+server/test_analytics.py:498:0: C0301: Line too long (121/100) (line-too-long)
+server/test_analytics.py:508:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:523:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:528:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:539:86: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:540:0: C0301: Line too long (131/100) (line-too-long)
+server/test_analytics.py:544:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:549:0: C0303: Trailing whitespace (trailing-whitespace)
+server/test_analytics.py:566:0: C0304: Final newline missing (missing-final-newline)
+server/test_analytics.py:10:0: R0904: Too many public methods (34/20) (too-many-public-methods)
+************* Module server.helper
+server/helper.py:92:0: R0913: Too many arguments (6/5) (too-many-arguments)
+************* Module server.test_integration
+server/test_integration.py:40:30: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:38:0: C0116: Missing function or method docstring (missing-function-docstring)
+server/test_integration.py:44:18: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:52:18: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:65:27: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+server/test_integration.py:69:26: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:89:23: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:135:23: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:146:26: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:156:28: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:160:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:165:26: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+server/test_integration.py:172:32: W0621: Redefining name 'client' from outer scope (line 38) (redefined-outer-name)
+server/test_integration.py:176:4: W0622: Redefining built-in 'filter' (redefined-builtin)
+server/test_integration.py:181:26: C0209: Formatting a regular string which could be a f-string (consider-using-f-string)
+server/test_integration.py:4:0: W0611: Unused import json (unused-import)
+************* Module server.analytics
+server/analytics.py:95:4: R0912: Too many branches (21/12) (too-many-branches)
+server/analytics.py:95:4: R0915: Too many statements (51/50) (too-many-statements)
+server/analytics.py:253:4: R0913: Too many arguments (6/5) (too-many-arguments)
+server/analytics.py:253:4: R0912: Too many branches (13/12) (too-many-branches)
+server/analytics.py:301:4: R0913: Too many arguments (7/5) (too-many-arguments)
+server/analytics.py:301:4: R0914: Too many local variables (29/15) (too-many-locals)
+server/analytics.py:353:12: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:379:12: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:301:4: R0912: Too many branches (20/12) (too-many-branches)
+server/analytics.py:400:4: R0913: Too many arguments (9/5) (too-many-arguments)
+server/analytics.py:400:4: R0914: Too many local variables (30/15) (too-many-locals)
+server/analytics.py:459:12: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:494:12: R1705: Unnecessary "else" after "return" (no-else-return)
+server/analytics.py:400:4: R0912: Too many branches (20/12) (too-many-branches)
+************* Module server.db
+server/db.py:1:0: R0801: Similar lines in 2 files
+==server.test_integration:[73:83]
+==server.test_thumbtack_conn:[47:57]
+        "leadID": "299614694480093245",
+        "customerID": "331138063184986319",
+        "businessID": "286845156044809661",
+        "message": {
+            "messageID": "8699842694484326245",
+            "createTimestamp": "1498760294",
+            "text": "Do you offer fridge cleaning or is that extra?"
+        }
+    }
+ (duplicate-code)
+
+-----------------------------------
+Your code has been rated at 9.24/10
+
