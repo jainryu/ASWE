@@ -3,11 +3,11 @@ register_btn.addEventListener('click', () => {
     let form = document.getElementById("register_form");
     let formData = new FormData(form);
     let params = new URLSearchParams(formData).toString();
-   params = "register?" + params;
 
    $.ajax({
-    url: params,
+    url: "https://tp-leads-app.herokuapp.com/register?" + params,
     type: 'POST',
+    crossDomain: true,
     success: function(response) {
       console.log(response);
     }
@@ -19,10 +19,10 @@ edit_btn.addEventListener('click', () => {
     let form = document.getElementById("edit_form");
     let formData = new FormData(form);
     let params = new URLSearchParams(formData).toString();
-   params = "register?" + params;
+
 
    $.ajax({
-    url: params,
+    url: "https://tp-leads-app.herokuapp.com/register?" + params,
     type: 'PUT',
     success: function(response) {
       console.log(response);
