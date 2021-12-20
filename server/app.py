@@ -6,7 +6,7 @@ import uuid
 import json
 import validators
 from passlib.hash import sha256_crypt
-from flask import Flask, request, render_template
+from flask import Flask, request
 from flask_httpauth import HTTPBasicAuth
 import thumbtack_conn
 import db
@@ -56,7 +56,6 @@ def create_app(config):
         # df_thumbtack = pd.DataFrame(list(result.fetchall()))
         # return df_thumbtack.to_json(orient="records")
         return "Hello from Talking Potatoes!!!"
-        #return render_template("home.html")
 
 
     @app.route("/dummy_thumbtack_lead", methods=["GET"])
@@ -433,15 +432,23 @@ def create_app(config):
                                            table_name='users', filter_data={'username': username}))
 
         frequency = request.args.get('frequency')
-        lead_source = request.args.get('lead_source')
-        dimension = request.args.get('dimension')
+        if not analytics_obj.check_frequency(frequency):
+            return "frequency should be 'years', 'months', empty string, or None"
 
-        if not frequency or (frequency==""):
+        lead_source = request.args.get('lead_source')
+        if not analytics_obj.check_lead_source(lead_source):
+            return "Lead source should be 'facebook', 'thumbtack', empty string, or None"
+
+        dimension = request.args.get('dimension')
+        if frequency is None or (frequency==""):
             frequency = "years"
 
         from_date, to_date = analytics_obj.create_dates(frequency, request.args.get('from_date'),
                                                         request.args.get('to_date'))
+
         data_format = request.args.get('data_format')
+        if not analytics_obj.check_data_format(data_format):
+            return "data format should be 'by_year', 'graph', empty string, or None"
 
         if data_format == 'graph':
             if dimension is not None and dimension != '':

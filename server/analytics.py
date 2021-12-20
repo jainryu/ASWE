@@ -19,6 +19,33 @@ class Analytics(Database):
         :param string database_url: database url to create engine
         """
         Database.__init__(self, database_url=database_url)
+    
+    @staticmethod
+    def check_lead_source(lead_source):
+        """
+        check lead source correctness
+        """
+        if lead_source is None or lead_source == '' or lead_source == "facebook" or lead_source == "thumbtack":
+            return True
+        return False
+
+    @staticmethod
+    def check_frequency(frequency):
+        """
+        check frequency correctness
+        """
+        if frequency is None or frequency == '' or frequency == "years" or frequency=="months":
+            return True
+        return False
+    
+    @staticmethod
+    def check_data_format(data_format):
+        """
+        check data format correctness
+        """
+        if data_format is None or data_format == '' or data_format == "by_year" or data_format=="graph":
+            return True
+        return False
 
     @staticmethod
     def get_select_clause_cols(filter_data=None):
